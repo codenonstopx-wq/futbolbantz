@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FutbolBantz — Premier League's Most Unhinged Football Blog</title>
+  <meta name="description" content="Premier League news, hot takes, and video summaries. Football coverage for people who think VAR is a conspiracy.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ── TICKER ─────────────────────────────────────────────── -->
+<div class="ticker-wrap">
+  <span class="ticker-inner">
+    🚨 BREAKING: VAR takes 18 minutes to decide a throw-in was a throw-in &nbsp;|&nbsp; ⚽ CONFIRMED: Arsenal fans still "doing a season" despite it being May &nbsp;|&nbsp; 🟡 YELLOW CARD: Man United manager's presser lasted longer than the match &nbsp;|&nbsp; 🎤 PUNDIT: "He's hit that well" — man hit it wide by 12 yards &nbsp;|&nbsp; 🏆 Spurs name stand after trophy cabinet (both empty) &nbsp;|&nbsp; ⚽ Footballer giving "110%" — maths teachers furious &nbsp;|&nbsp; 🔥 RUMOURS: Club signs player for £80M, sells him for £12M eighteen months later, calls it "great business" &nbsp;|&nbsp; 😂 CONFIRMED: Pundit who said "I'd have scored that" has never scored in his life &nbsp;&nbsp;&nbsp;
+  </span>
+</div>
+
+<!-- ── NAVBAR ─────────────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="#home" class="logo">Futbol<span>Bantz</span></a>
+    <ul class="nav-links">
+      <li><a href="#home" class="nav-links-a active">Home</a></li>
+      <li><a href="#home" class="nav-links-a">Premier League</a></li>
+      <li><a href="#home" class="nav-links-a">Transfers</a></li>
+      <li><a href="#home" class="nav-links-a">Video Bantz</a></li>
+      <li id="nav-admin-link" style="display:none;"><a href="#admin" class="nav-links-a admin-link">⚡ Admin</a></li>
+    </ul>
+    <div class="flex items-center gap-12">
+      <div id="nav-auth-link">
+        <a href="#auth" class="nav-links-a" style="color:var(--mustard);">Login / Sign Up</a>
+      </div>
+      <button id="nav-logout" class="btn btn-sm btn-orange" style="display:none;" onclick="Auth.logout()">Log Out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PAGE: HOME                                              -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div data-page="home">
+
+  <!-- HERO SECTION -->
+  <div class="hero-section">
+    <!-- FEATURED LEFT -->
+    <div id="featured-article" style="min-height:420px;">
+      <!-- JS renders here -->
+    </div>
+
+    <!-- SIDEBAR RIGHT -->
+    <div>
+      <div class="card card-dark" style="height:100%;">
+        <div style="background:var(--mustard); border-bottom:3px solid var(--charcoal); padding:12px 20px;">
+          <h3 style="font-size:22px; color:var(--charcoal);">🔥 Trending Takes</h3>
+        </div>
+        <div id="sidebar-articles" style="padding:4px 16px;">
+          <!-- JS renders here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES BAR -->
+  <div class="cats-bar">
+    <div class="cats-inner">
+      <button class="cat-btn active" onclick="filterCat(this,'all')">🌍 All Bantz</button>
+      <button class="cat-btn" onclick="filterCat(this,'Match Report')">⚽ Match Reports</button>
+      <button class="cat-btn" onclick="filterCat(this,'Hot Take')">🔥 Hot Takes</button>
+      <button class="cat-btn" onclick="filterCat(this,'Banter')">😂 Pure Banter</button>
+      <button class="cat-btn" onclick="filterCat(this,'Transfers')">🤑 Transfers</button>
+      <button class="cat-btn" onclick="filterCat(this,'Tactical')">🧠 Tactical</button>
+    </div>
+  </div>
+
+  <!-- SILLY STAT BAR -->
+  <div class="halftone-mustard" style="border-top:3px solid var(--charcoal); border-bottom:3px solid var(--charcoal); padding:16px 0;">
+    <div class="section-wrap" style="padding:0 32px;">
+      <div style="display:flex; align-items:center; gap:32px; flex-wrap:wrap; justify-content:space-around;">
+        <div class="text-center">
+          <div style="font-family:'Bangers',cursive; font-size:48px; line-height:1; text-shadow:3px 3px 0 var(--charcoal);">380</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">PL games / season</div>
+        </div>
+        <div style="width:3px; height:60px; background:var(--charcoal); opacity:0.3;"></div>
+        <div class="text-center">
+          <div style="font-family:'Bangers',cursive; font-size:48px; line-height:1; text-shadow:3px 3px 0 var(--charcoal);">∞</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Hot Takes Available</div>
+        </div>
+        <div style="width:3px; height:60px; background:var(--charcoal); opacity:0.3;"></div>
+        <div class="text-center">
+          <div style="font-family:'Bangers',cursive; font-size:48px; line-height:1; text-shadow:3px 3px 0 var(--charcoal);">14</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Avg VAR mins wasted</div>
+        </div>
+        <div style="width:3px; height:60px; background:var(--charcoal); opacity:0.3;"></div>
+        <div class="text-center">
+          <div style="font-family:'Bangers',cursive; font-size:48px; line-height:1; text-shadow:3px 3px 0 var(--charcoal);">0</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Offsides called right</div>
+        </div>
+        <div style="width:3px; height:60px; background:var(--charcoal); opacity:0.3;"></div>
+        <div class="text-center">
+          <div style="font-family:'Bangers',cursive; font-size:48px; line-height:1; text-shadow:3px 3px 0 var(--charcoal);">47</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Channels summarised</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARTICLE GRID -->
+  <div class="section-wrap">
+    <div class="section-title-bar">
+      <h2>Latest Bantz</h2>
+      <div class="line"></div>
+      <span class="tag tag-orange">🔴 Fresh Content</span>
+    </div>
+    <div class="article-grid" id="articles-grid">
+      <!-- JS renders here -->
+    </div>
+  </div>
+
+  <!-- SPEECH BUBBLE CTA -->
+  <div class="halftone-bg" style="border-top:var(--border); border-bottom:var(--border); padding:48px 0;">
+    <div class="section-wrap text-center" style="padding:0 32px;">
+      <div class="speech-bubble" style="max-width:600px; margin:0 auto; background:var(--mustard);">
+        <h2 style="font-size:48px; margin-bottom:12px;">Want More Unhinged Football Opinions? 🎙️</h2>
+        <p style="font-family:'DM Sans',sans-serif; font-size:16px; line-height:1.7; margin-bottom:20px;">We turn YouTube football channels into readable articles so you don't have to watch a 45-minute video where someone shouts about formation for 40 minutes before getting to the point.</p>
+        <div class="flex gap-12" style="justify-content:center; flex-wrap:wrap;">
+          <button class="btn btn-charcoal btn-lg" onclick="Router.go('auth')">🏆 Create Account</button>
+          <a href="#home" class="btn btn-outline btn-lg">Browse All Bantz →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer style="background:var(--charcoal); border-top:var(--border-thick); padding:48px 32px;">
+    <div style="max-width:1280px; margin:0 auto;">
+      <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; margin-bottom:40px;">
+        <div>
+          <div class="logo" style="font-size:36px; margin-bottom:12px;">Futbol<span>Bantz</span></div>
+          <p style="font-family:'DM Sans',sans-serif; font-size:14px; color:#666; line-height:1.7; max-width:260px;">The UK's most opinionated Premier League blog. Every opinion is probably wrong, and we're absolutely fine with that.</p>
+        </div>
+        <div>
+          <h4 style="font-family:'Archivo Black',sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--mustard); margin-bottom:16px;">Sections</h4>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <a href="#" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Premier League</a>
+            <a href="#" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Transfers</a>
+            <a href="#" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Banter Zone</a>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-family:'Archivo Black',sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--mustard); margin-bottom:16px;">Account</h4>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <a href="#auth" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Login</a>
+            <a href="#auth" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Register</a>
+            <a href="#admin" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Admin Panel</a>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-family:'Archivo Black',sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--mustard); margin-bottom:16px;">Legal (lol)</h4>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <a href="#" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Privacy Policy</a>
+            <a href="#" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Disclaimer</a>
+            <a href="#" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Cookie Bantz</a>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:2px solid rgba(255,255,255,0.1); padding-top:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <p style="font-family:'Space Mono',monospace; font-size:11px; color:#555;">© 2024 FutbolBantz Ltd. All opinions wrong. VAR is rubbish.</p>
+        <p style="font-family:'Space Mono',monospace; font-size:11px; color:#555;">Made with ☕ and an unreasonable amount of football opinions.</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PAGE: AUTH                                              -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div data-page="auth" class="hidden">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <a href="#home" class="logo">Futbol<span>Bantz</span></a>
+        <p style="font-family:'Space Mono',monospace; font-size:11px; color:#888; margin-top:6px;">Join the banter. It's free (and mostly harmless).</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">Log In</button>
+        <button class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">Sign Up</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="login-form">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input id="login-email" class="form-input" type="email" placeholder="yourname@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input id="login-pass" class="form-input" type="password" placeholder="••••••••">
+        </div>
+        <button class="btn btn-mustard w-full btn-lg" style="justify-content:center;" onclick="doLogin()">⚽ Log In, Mate</button>
+        <div style="margin-top:20px; padding:14px; background:var(--cream-dk); border:2px solid var(--charcoal); border-radius:var(--radius); box-shadow:var(--shadow-sm);">
+          <p style="font-family:'Space Mono',monospace; font-size:11px; color:#888; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">Demo Accounts:</p>
+          <p style="font-family:'Space Mono',monospace; font-size:11px; color:#666;">👑 Admin: admin@futbolbantz.com / admin123</p>
+          <p style="font-family:'Space Mono',monospace; font-size:11px; color:#666;">⚽ Fan: fan@futbolbantz.com / fan123</p>
+        </div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="register-form" class="hidden">
+        <div class="form-group">
+          <label class="form-label">Your Football Name</label>
+          <input id="reg-name" class="form-input" type="text" placeholder="e.g. BigMouthBarry, TacticalTimothy...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input id="reg-email" class="form-input" type="email" placeholder="yourname@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password (6+ chars)</label>
+          <input id="reg-pass" class="form-input" type="password" placeholder="••••••••">
+        </div>
+        <div class="admin-badge-row mb-16">
+          <input type="checkbox" id="reg-admin" onchange="toggleAdminCode(this.checked)">
+          <label for="reg-admin">👑 I want Admin Access (for the brave and/or employed here)</label>
+        </div>
+        <div id="admin-code-row" class="form-group hidden">
+          <label class="form-label" style="color:var(--orange);">🔐 Admin Secret Code</label>
+          <input id="reg-code" class="form-input" type="text" placeholder="Ask your gaffer for the code...">
+          <p style="font-family:'Space Mono',monospace; font-size:11px; color:#888; margin-top:6px;">Hint: It's BANTZ2024. Don't tell anyone. Obviously.</p>
+        </div>
+        <button class="btn btn-mustard w-full btn-lg" style="justify-content:center;" onclick="doRegister()">🏆 Join the Bantz</button>
+      </div>
+
+      <div style="text-align:center; margin-top:20px;">
+        <a href="#home" style="font-family:'Space Mono',monospace; font-size:12px; color:#888; text-decoration:none;">← Back to the homepage, coward</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PAGE: ARTICLE VIEW                                      -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div data-page="article" class="hidden" id="article-page">
+  <!-- JS renders article content here -->
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PAGE: ADMIN                                             -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div data-page="admin" class="hidden">
+  <div style="display:flex; min-height:100vh;">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        Futbol<span>Bantz</span>
+        <sub>⚡ Admin Command Centre</sub>
+      </div>
+      <nav class="admin-nav">
+        <a class="admin-nav-item active" data-panel="dashboard" onclick="switchAdminPanel('dashboard')">
+          <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <a class="admin-nav-item" data-panel="generate" onclick="switchAdminPanel('generate')">
+          <span class="nav-icon">⚡</span> Video Machine
+        </a>
+        <a class="admin-nav-item" data-panel="articles" onclick="switchAdminPanel('articles')">
+          <span class="nav-icon">📄</span> All Articles
+        </a>
+        <a class="admin-nav-item" data-panel="users" onclick="switchAdminPanel('users')">
+          <span class="nav-icon">👥</span> Users
+        </a>
+      </nav>
+      <div style="padding:16px 24px; border-top:2px solid rgba(255,255,255,0.1);">
+        <button class="btn btn-sm btn-orange w-full" style="justify-content:center;" onclick="Router.go('home')">← Back to Site</button>
+        <button class="btn btn-sm btn-outline w-full mt-16" style="justify-content:center; border-color:#555; color:#888;" onclick="Auth.logout()">Log Out</button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="admin-content">
+      <!-- TOP BAR -->
+      <div class="admin-topbar">
+        <h2 id="admin-page-title" style="font-size:28px;">📊 Dashboard</h2>
+        <div class="flex items-center gap-12">
+          <div id="admin-user-info" style="font-family:'Space Mono',monospace; font-size:12px; color:#888;"></div>
+          <span class="tag tag-orange">👑 Admin</span>
+        </div>
+      </div>
+
+      <!-- ── DASHBOARD PAGE ── -->
+      <div class="admin-page active" id="admin-dashboard">
+        <div class="admin-stats">
+          <div class="stat-card-admin">
+            <span class="accent">📄</span>
+            <div class="big-num text-mustard" id="stat-articles">0</div>
+            <div class="lbl">Published Articles</div>
+          </div>
+          <div class="stat-card-admin">
+            <span class="accent">👁</span>
+            <div class="big-num text-orange" id="stat-views">0</div>
+            <div class="lbl">Total Views</div>
+          </div>
+          <div class="stat-card-admin">
+            <span class="accent">👥</span>
+            <div class="big-num" id="stat-users">0</div>
+            <div class="lbl">Registered Users</div>
+          </div>
+          <div class="stat-card-admin" style="background:var(--mustard); border:var(--border);">
+            <span class="accent">📺</span>
+            <div class="big-num" id="stat-channels">0</div>
+            <div class="lbl">Channels Tracked</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card mb-24">
+          <div style="background:var(--charcoal); padding:14px 20px; border-bottom:var(--border);">
+            <h3 style="font-size:22px; color:var(--mustard);">⚡ Quick Actions</h3>
+          </div>
+          <div style="padding:24px; display:flex; gap:16px; flex-wrap:wrap;">
+            <button class="btn btn-mustard" onclick="switchAdminPanel('generate')">🎬 Generate Articles</button>
+            <button class="btn btn-charcoal" onclick="switchAdminPanel('articles')">📄 Manage Articles</button>
+            <button class="btn btn-orange" onclick="switchAdminPanel('users')">👥 View Users</button>
+            <button class="btn btn-outline" onclick="Router.go('home')">🌐 View Live Site</button>
+          </div>
+        </div>
+
+        <!-- Recent articles quick list -->
+        <div class="card">
+          <div style="background:var(--charcoal); padding:14px 20px; border-bottom:var(--border);">
+            <h3 style="font-size:22px; color:var(--cream);">📰 Recent Articles</h3>
+          </div>
+          <div style="padding:20px;" id="admin-recent-articles">
+            <p style="color:#888; font-style:italic; text-align:center; padding:20px;">Loading articles...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VIDEO MACHINE PAGE ── -->
+      <div class="admin-page" id="admin-generate">
+        <div class="card mb-24">
+          <div style="background:var(--charcoal); padding:14px 20px; border-bottom:var(--border);">
+            <h3 style="font-size:22px; color:var(--mustard);">📺 Video → Article Machine</h3>
+          </div>
+          <div style="padding:28px;">
+            <p style="font-family:'DM Sans',sans-serif; font-size:15px; color:#666; margin-bottom:24px; font-style:italic; line-height:1.7;">
+              Drop in YouTube channel URLs, video topics, or even paste a transcript snippet. The AI will turn it into a proper FutbolBantz article — with all the banter included at no extra charge. <strong>Note:</strong> For best results with real channels, include the topic or a brief description alongside the URL.
+            </p>
+
+            <!-- VIDEO UPLOAD ZONE -->
+            <div class="upload-zone mb-24" onclick="document.getElementById('video-file-input').click()" id="upload-zone-el"
+                 ondragover="event.preventDefault(); this.classList.add('drag-over')"
+                 ondragleave="this.classList.remove('drag-over')"
+                 ondrop="handleVideoDrop(event)">
+              <span class="upload-icon">🎬</span>
+              <h3>Drop Video Files Here</h3>
+              <p>Drag & drop MP4/WebM or click to upload. We'll extract the topic and generate an article.<br><span style="font-family:'Space Mono',monospace; font-size:11px; color:#aaa;">Supports: MP4, WebM, MOV • Max 500MB per file</span></p>
+              <input type="file" id="video-file-input" accept="video/*" multiple style="display:none;" onchange="handleVideoFiles(this.files)">
+            </div>
+
+            <!-- YOUTUBE SOURCES -->
+            <div class="mb-24">
+              <label class="form-label">Or Enter YouTube Channels / Topics</label>
+              <div id="video-sources-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                <div style="display:flex; gap:10px; align-items:center;">
+                  <input class="form-input video-source-input" placeholder="YouTube URL, @channel handle, or topic (e.g. 'Haaland hat trick vs Liverpool analysis')">
+                  <button class="btn btn-sm" style="background:var(--orange);color:white;flex-shrink:0;" onclick="this.parentElement.remove()">✕</button>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="Admin.addVideoSource()">+ Add Another Source</button>
+            </div>
+
+            <!-- OPTIONS -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Article Tone</label>
+                <select id="gen-tone" class="form-select">
+                  <option value="banter">😂 Absolute Banter (Recommended)</option>
+                  <option value="serious">📰 Trying to be Serious</option>
+                  <option value="tactical">🧠 Tactical Breakdown</option>
+                  <option value="fan">🏟️ Fan's Perspective</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Article Length</label>
+                <select id="gen-length" class="form-select">
+                  <option value="short">Short — Quick Read (pub chat level)</option>
+                  <option value="medium" selected>Medium — Proper Article (half-time rant)</option>
+                  <option value="long">Long — Full Post-Match Debrief</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- STATUS & PROGRESS -->
+            <div id="gen-status" class="status-bar mb-8"></div>
+            <div id="gen-progress" class="progress-wrap mb-20" style="display:none;">
+              <div class="progress-fill"></div>
+            </div>
+
+            <button class="btn btn-mustard btn-lg w-full" style="justify-content:center;" id="generate-btn" onclick="Admin.generateFromVideo()">
+              ⚡ Generate Articles — IT'S SHOWTIME
+            </button>
+          </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="gen-results"></div>
+      </div>
+
+      <!-- ── ARTICLES PAGE ── -->
+      <div class="admin-page" id="admin-articles">
+        <div class="flex justify-between items-center mb-24">
+          <h3 style="font-family:'Bangers',cursive; font-size:32px;">All Articles</h3>
+          <button class="btn btn-mustard btn-sm" onclick="switchAdminPanel('generate')">+ Generate New</button>
+        </div>
+        <div id="admin-articles-list">
+          <p style="color:#888; text-align:center; padding:40px; font-style:italic;">Loading articles...</p>
+        </div>
+      </div>
+
+      <!-- ── USERS PAGE ── -->
+      <div class="admin-page" id="admin-users">
+        <h3 style="font-family:'Bangers',cursive; font-size:32px; margin-bottom:24px;">Registered Users</h3>
+        <div id="admin-users-list"></div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </div>
+</div><!-- /admin page -->
+
+<script src="js/app.js"></script>
+<script>
+  // ── INIT ──────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    FB.init();
+    Toast.init();
+
+    // update admin user info
+    const userInfo = document.getElementById('admin-user-info');
+    if (userInfo && FB.currentUser) userInfo.textContent = `${FB.currentUser.avatar} ${FB.currentUser.name}`;
+    Nav.update();
+  });
+
+  // ── CATEGORY FILTER ───────────────────────────────────────
+  function filterCat(btn, cat) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const grid = document.getElementById('articles-grid');
+    const published = FB.articles.filter(a => a.published).sort((a,b) => new Date(b.date)-new Date(a.date));
+    const filtered = cat === 'all' ? published : published.filter(a => a.tag === cat);
+    if (grid) grid.innerHTML = filtered.map(a => Pages.articleCard(a)).join('') ||
+      `<div style="grid-column:1/-1; text-align:center; padding:60px; color:#888;"><p style="font-family:'Bangers',cursive;font-size:36px;">No "${cat}" articles yet!</p><p style="font-family:'DM Sans',sans-serif;font-style:italic;">Probably VAR's fault.</p></div>`;
+  }
+
+  // ── VIDEO FILE HANDLER ────────────────────────────────────
+  function handleVideoDrop(event) {
+    event.preventDefault();
+    document.getElementById('upload-zone-el').classList.remove('drag-over');
+    handleVideoFiles(event.dataTransfer.files);
+  }
+
+  function handleVideoFiles(files) {
+    const list = document.getElementById('video-sources-list');
+    Array.from(files).forEach(file => {
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex;gap:10px;align-items:center;';
+      div.innerHTML = `
+        <input class="form-input video-source-input" value="Video: ${file.name} — describe content here" style="flex:1; border-color:var(--orange);">
+        <span style="font-family:'Space Mono',monospace;font-size:10px;color:#888;white-space:nowrap;">${(file.size/1024/1024).toFixed(1)}MB</span>
+        <button class="btn btn-sm" style="background:var(--orange);color:white;flex-shrink:0;" onclick="this.parentElement.remove()">✕</button>`;
+      list.appendChild(div);
+    });
+    Toast.show(`📁 ${files.length} video file(s) added. Edit the description, then generate!`, 'info');
+  }
+
+  // ── ADMIN USERS RENDER ────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    const usersList = document.getElementById('admin-users-list');
+    if (usersList) {
+      const render = () => {
+        usersList.innerHTML = FB.users.map(u => `
+          <div class="card mb-16">
+            <div style="padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+              <div class="flex items-center gap-12">
+                <div style="width:44px;height:44px;border-radius:50%;background:${u.isAdmin?'var(--mustard)':'var(--cream-dk)'};border:var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:var(--shadow-sm);">${u.avatar}</div>
+                <div>
+                  <div style="font-family:'Archivo Black',sans-serif;font-size:15px;">${u.name}</div>
+                  <div style="font-family:'Space Mono',monospace;font-size:11px;color:#888;">${u.email}</div>
+                </div>
+              </div>
+              <div class="flex gap-8 items-center">
+                <span class="tag ${u.isAdmin?'tag-orange':'tag-charcoal'}">${u.isAdmin?'👑 Admin':'⚽ Fan'}</span>
+                <span style="font-family:'Space Mono',monospace;font-size:10px;color:#888;">Joined ${new Date(u.joined).toLocaleDateString('en-GB')}</span>
+              </div>
+            </div>
+          </div>`).join('');
+      };
+      // Re-render when users page is opened
+      document.querySelector('[data-panel="users"]')?.addEventListener('click', render);
+    }
+  });
+
+  // ── DASHBOARD RECENT ─────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    const recent = document.getElementById('admin-recent-articles');
+    if (recent) {
+      const arts = FB.articles.slice(0,4);
+      recent.innerHTML = arts.map(a=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--cream-dk);flex-wrap:wrap;gap:8px;">
+          <div>
+            <span class="tag tag-${a.published?'mustard':'charcoal'} mb-8">${a.published?'Live':'Draft'}</span>
+            <span style="font-family:'Archivo Black',sans-serif;font-size:14px;margin-left:10px;">${a.title}</span>
+          </div>
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:#888;">👁 ${(a.views||0).toLocaleString()}</span>
+        </div>`).join('') || '<p style="color:#888;padding:20px;text-align:center;font-style:italic;">No articles yet!</p>';
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "futbolbantz",
+  "version": "1.0.0",
+  "description": "Premier League's most unhinged football blog",
+  "type": "module",
+  "scripts": {
+    "fetch": "node scripts/fetch-pl-data.js",
+    "build": "node scripts/build-site.js",
+    "refresh": "npm run fetch && npm run build",
+    "dev": "npx serve public"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
