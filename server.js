@@ -1,17 +1,31 @@
 import express from 'express';
+import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, join, exists } from 'path';
+import fs from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app  = express();
 const PORT = process.env.PORT || 3000;
+const publicDir = join(__dirname, 'public');
+const indexPath = join(publicDir, 'index.html');
 
-// Serve everything in /public
-app.use(express.static(join(__dirname, 'public')));
+// On startup: build the site if index.html doesn't exist yet
+if (!fs.existsSync(indexPath)) {
+  console.log('📦 index.html not found — running build...');
+  try {
+    execSync('node scripts/build-site.js', { stdio: 'inherit' });
+  } catch (e) {
+    console.error('Build failed:', e.message);
+  }
+}
 
-// All routes → index.html (hash routing works client-side)
+// Serve static files from /public
+app.use(express.static(publicDir));
+
+// All routes → index.html (hash routing is client-side)
 app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, 'public', 'index.html'));
+  res.sendFile(indexPath);
 });
 
 app.listen(PORT, () => {

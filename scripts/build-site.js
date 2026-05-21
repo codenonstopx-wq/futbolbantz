@@ -1,25 +1,52 @@
 // scripts/build-site.js
-// Reads pl-data.json and injects it into the standalone HTML file
-// Runs after fetch-pl-data.js in GitHub Actions
+// Reads pl-data.json and injects it into the site HTML
+// Runs after fetch-pl-data.js in GitHub Actions, or on Railway startup
 
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-const dataPath = 'public/pl-data.json';
-const sitePath = 'futbolbantz-standalone.html'; // your main site file
-const outPath  = 'public/index.html';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const root      = join(__dirname, '..');
+const dataPath  = join(root, 'public', 'pl-data.json');
+const srcPath   = join(root, 'futbolbantz-standalone.html');
+const outPath   = join(root, 'public', 'index.html');
 
 console.log('🏗️  Building FutbolBantz site...');
 
-// Read live data
-if (!fs.existsSync(dataPath)) {
-  console.error('❌ pl-data.json not found — run fetch-pl-data.js first');
+// ── Load data — crash-safe ─────────────────────────────────────────────────────
+let data;
+if (fs.existsSync(dataPath)) {
+  data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+  console.log(`📊 Loaded pl-data.json (updated: ${data.lastUpdated})`);
+} else if (fs.existsSync(outPath)) {
+  // pl-data.json missing but index.html already exists — just leave it alone
+  console.log('⚠️  pl-data.json not found — keeping existing public/index.html');
+  process.exit(0);
+} else if (fs.existsSync(srcPath)) {
+  // No data at all — just copy the standalone file as-is
+  console.log('⚠️  pl-data.json not found — copying standalone HTML without data injection');
+  fs.mkdirSync(join(root, 'public'), { recursive: true });
+  fs.copyFileSync(srcPath, outPath);
+  console.log('✅ Copied standalone HTML to public/index.html');
+  process.exit(0);
+} else {
+  console.error('❌ Neither pl-data.json nor source HTML found. Nothing to build.');
   process.exit(1);
 }
 
-const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-let html   = fs.readFileSync(sitePath, 'utf8');
+// ── Source HTML ────────────────────────────────────────────────────────────────
+let html;
+if (fs.existsSync(srcPath)) {
+  html = fs.readFileSync(srcPath, 'utf8');
+} else if (fs.existsSync(outPath)) {
+  html = fs.readFileSync(outPath, 'utf8');
+} else {
+  console.error('❌ No source HTML file found.');
+  process.exit(1);
+}
 
-// ── BUILD STANDINGS DATA BLOCK ─────────────────────────────────────────────────
+// ── Badge map ─────────────────────────────────────────────────────────────────
 const badges = {
   ARS:'🔴', MCI:'🔵', MUN:'🔴', AVL:'🟣', LFC:'🔴',
   BOU:'🍒', BRI:'🔵', CFC:'🔵', BRE:'🐝', SUN:'🔴',
@@ -27,22 +54,32 @@ const badges = {
   NFO:'🔴', TOT:'⚪', WHU:'🟣', BUR:'🟤', WOL:'🐺'
 };
 
-const newStandingsJS = `
-    // ── LIVE STANDINGS — auto-generated ${new Date().toUTCString()} ──
+// ── Inject data into the JS data blocks ──────────────────────────────────────
+// Find the plTable array and replace it
+const newTable = `// ── LIVE STANDINGS — auto-generated ${new Date().toUTCString()} ──
     const plTable = [
       ${data.standings.map(t => {
         const badge = badges[t.team_abbr] || '⚽';
-        const form  = t.form ? t.form.split(',').slice(-5).map(f =>
-          f === 'W' ? 'W' : f === 'D' ? 'D' : 'L'
-        ) : [];
-        const gd = t.goal_diff >= 0 ? '+' + t.goal_diff : String(t.goal_diff);
+        const gd    = t.goal_diff >= 0 ? '+' + t.goal_diff : String(t.goal_diff);
+        const form  = t.form
+          ? t.form.split(',').slice(-5).map(f => f.trim())
+          : [];
         return `{ pos:${t.position}, team:'${t.team_name.replace(/'/g,"\\'")}', abbr:'${t.team_abbr}', p:${t.played}, w:${t.won}, d:${t.drawn}, l:${t.lost}, pts:${t.points}, badge:'${badge}', gd:'${gd}', form:${JSON.stringify(form)} }`;
       }).join(',\n      ')}
     ];`;
 
-// ── BUILD TOP SCORERS DATA BLOCK ───────────────────────────────────────────────
-const newScorersJS = `
-    // ── LIVE TOP SCORERS — auto-generated ${new Date().toUTCString()} ──
+// Replace between the live standings markers
+const standStart = html.indexOf('// ── LIVE STANDINGS');
+const standEnd   = html.indexOf('\n    ];', standStart) + 7;
+if (standStart !== -1 && standEnd > standStart) {
+  html = html.slice(0, standStart) + newTable + html.slice(standEnd);
+  console.log('✅ Standings injected');
+} else {
+  console.warn('⚠️  Standings markers not found — skipping standings injection');
+}
+
+// ── Inject top scorers ─────────────────────────────────────────────────────────
+const newScorers = `// ── LIVE TOP SCORERS — auto-generated ${new Date().toUTCString()} ──
     const scorers = [
       ${data.scorers.slice(0, 8).map(s => {
         const badge = badges[s.team_abbr] || '⚽';
@@ -50,58 +87,23 @@ const newScorersJS = `
       }).join(',\n      ')}
     ];`;
 
-// ── BUILD RESULTS DATA BLOCK ───────────────────────────────────────────────────
-const newResultsJS = `
-    // ── LIVE RESULTS — auto-generated ${new Date().toUTCString()} ──
-    const recentResults = [
-      ${data.results.slice(0, 8).map(r => {
-        const d = new Date(r.match_date);
-        const dateStr = d.toLocaleDateString('en-GB', { day:'numeric', month:'short' });
-        return `{ date:'${dateStr}', h:'${r.home_team.replace(/'/g,"\\'")}', a:'${r.away_team.replace(/'/g,"\\'")}', hs:${r.home_score}, as:${r.away_score} }`;
-      }).join(',\n      ')}
-    ];`;
-
-// ── BUILD UPCOMING FIXTURES DATA BLOCK ────────────────────────────────────────
-const newUpcomingJS = `
-    // ── LIVE UPCOMING FIXTURES — auto-generated ${new Date().toUTCString()} ──
-    const upcoming = [
-      ${data.upcoming.slice(0, 10).map(f => {
-        return `{ h:'${f.home_team.replace(/'/g,"\\'")}', a:'${f.away_team.replace(/'/g,"\\'")}', hProb:50, aProb:30 }`;
-      }).join(',\n      ')}
-    ];`;
-
-// ── INJECT INTO HTML ──────────────────────────────────────────────────────────
-// Replace the static data blocks between marker comments
-function injectBetweenMarkers(html, startMarker, endMarker, newContent) {
-  const start = html.indexOf(startMarker);
-  const end   = html.indexOf(endMarker, start);
-  if (start === -1 || end === -1) {
-    console.warn(`⚠️  Markers not found: "${startMarker}"`);
-    return html;
-  }
-  return html.slice(0, start + startMarker.length) + newContent + html.slice(end);
+const scorerStart = html.indexOf('// ── LIVE TOP SCORERS');
+const scorerEnd   = html.indexOf('\n    ];', scorerStart) + 7;
+if (scorerStart !== -1 && scorerEnd > scorerStart) {
+  html = html.slice(0, scorerStart) + newScorers + html.slice(scorerEnd);
+  console.log('✅ Scorers injected');
+} else {
+  console.warn('⚠️  Scorers markers not found — skipping');
 }
 
-html = injectBetweenMarkers(html,
-  '// ── LIVE STANDINGS',
-  '    ];',
-  newStandingsJS + '\n'
-);
+// ── Update last-updated timestamp ─────────────────────────────────────────────
+const dateStr = new Date(data.lastUpdated).toLocaleDateString('en-GB', {
+  day:'numeric', month:'long', year:'numeric'
+});
+html = html.replace(/⚡ Updated:.*?• Matchday/, `⚡ Updated: ${dateStr} • Matchday`);
 
-// Update the last-updated timestamp shown on page
-const now = new Date();
-const dateStr = now.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
-html = html.replace(
-  /⚡ Updated:.*?Matchday/,
-  `⚡ Updated: ${dateStr} • Matchday`
-);
-
-// Write output
-fs.mkdirSync('public', { recursive: true });
+// ── Write output ───────────────────────────────────────────────────────────────
+fs.mkdirSync(join(root, 'public'), { recursive: true });
 fs.writeFileSync(outPath, html);
-console.log(`✅ Built public/index.html (${(html.length / 1024).toFixed(1)}KB)`);
-console.log(`📊 Table: ${data.standings.length} teams`);
-console.log(`📅 Results: ${data.results.length} matches`);
-console.log(`🗓️  Fixtures: ${data.upcoming.length} upcoming`);
-console.log(`🥅 Scorers: ${data.scorers.length} players`);
-console.log(`⏰ Last updated: ${data.lastUpdated}`);
+console.log(`\n✅ Built public/index.html (${(html.length / 1024).toFixed(1)}KB)`);
+console.log(`📊 ${data.standings.length} teams | 🥅 ${data.scorers.length} scorers | 📅 ${data.results.length} results`);
