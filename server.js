@@ -1,12 +1,12 @@
 import express from 'express';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
-import { dirname, join, exists } from 'path';
+import { dirname, join } from 'path';
 import fs from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const app  = express();
-const PORT = process.env.PORT || 3000;
+const app       = express();
+const PORT      = process.env.PORT || 3000;
 const publicDir = join(__dirname, 'public');
 const indexPath = join(publicDir, 'index.html');
 
