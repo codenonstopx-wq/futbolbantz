@@ -2,10 +2,672 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- GitHub Pages fix: if your site is at username.github.io/REPONAME/ 
+       change the content below to "/REPONAME/" -->
+  <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FutbolBantz — Premier League's Most Unhinged Football Blog</title>
   <meta name="description" content="Premier League news, hot takes, and video summaries. Football coverage for people who think VAR is a conspiracy.">
-  <link rel="stylesheet" href="css/style.css">
+  <style>/* ============================================================
+   FUTBOLBANTZ — Comic Fanzine Design System
+   ============================================================ */
+
+/* Google Fonts loaded via <link> in <head> */
+
+:root {
+  --cream:    #FFFDF6;
+  --charcoal: #1C1917;
+  --mustard:  #FFC72C;
+  --orange:   #FF6B35;
+  --cream-dk: #F0ECD8;
+  --shadow:   5px 5px 0px #1C1917;
+  --shadow-lg: 8px 8px 0px #1C1917;
+  --shadow-sm: 3px 3px 0px #1C1917;
+  --border:   3px solid #1C1917;
+  --border-thick: 4px solid #1C1917;
+  --radius:   4px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--cream);
+  background-image: radial-gradient(circle, #1C191715 1px, transparent 1px);
+  background-size: 18px 18px;
+  color: var(--charcoal);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── TYPOGRAPHY ── */
+.font-bangers  { font-family: 'Bangers', cursive; letter-spacing: 2px; }
+.font-archivo  { font-family: 'Archivo Black', sans-serif; }
+.font-mono     { font-family: 'Space Mono', monospace; }
+.font-body     { font-family: 'DM Sans', sans-serif; }
+
+h1,h2,h3 { font-family: 'Bangers', cursive; letter-spacing: 2px; line-height: 0.95; }
+
+/* ── TICKER ── */
+.ticker-wrap {
+  background: var(--mustard);
+  border-bottom: 3px solid var(--charcoal);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 7px 0;
+}
+.ticker-inner {
+  display: inline-block;
+  animation: ticker 40s linear infinite;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+@keyframes ticker { 0%{transform:translateX(100vw)} 100%{transform:translateX(-100%)} }
+
+/* ── NAV ── */
+.navbar {
+  background: var(--charcoal);
+  border-bottom: var(--border-thick);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 32px;
+}
+.logo {
+  font-family: 'Bangers', cursive;
+  font-size: 42px;
+  color: var(--mustard);
+  letter-spacing: 4px;
+  line-height: 1;
+  text-decoration: none;
+  text-shadow: 3px 3px 0 var(--orange);
+}
+.logo span { color: var(--orange); text-shadow: 3px 3px 0 var(--mustard); }
+.nav-links { display: flex; gap: 4px; list-style: none; align-items: center; }
+.nav-links a {
+  color: #ccc;
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+  border-radius: 2px;
+}
+.nav-links a:hover { color: var(--mustard); border-color: var(--mustard); }
+.nav-links a.active { color: var(--charcoal); background: var(--mustard); border-color: var(--mustard); }
+.nav-links a.admin-link { color: var(--orange); border-color: var(--orange); }
+.nav-links a.admin-link:hover { background: var(--orange); color: white; }
+
+/* ── BUTTONS ── */
+.btn {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 14px;
+  padding: 10px 22px;
+  border: var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+}
+.btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0px #1C1917; }
+.btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0px #1C1917; }
+
+.btn-mustard { background: var(--mustard); color: var(--charcoal); }
+.btn-orange  { background: var(--orange);  color: white; }
+.btn-charcoal { background: var(--charcoal); color: var(--cream); }
+.btn-outline { background: transparent; color: var(--charcoal); }
+.btn-lg { font-size: 18px; padding: 14px 32px; box-shadow: var(--shadow); }
+.btn-sm { font-size: 12px; padding: 6px 14px; box-shadow: var(--shadow-sm); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--cream);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.card:hover { transform: translate(-3px,-3px); box-shadow: var(--shadow-lg); }
+.card-dark { background: var(--charcoal); color: var(--cream); }
+.card-mustard { background: var(--mustard); }
+.card-orange { background: var(--orange); color: white; }
+
+/* ── TAGS / BADGES ── */
+.tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 3px 10px;
+  border: 2px solid var(--charcoal);
+  border-radius: 2px;
+  display: inline-block;
+  box-shadow: 2px 2px 0 var(--charcoal);
+}
+.tag-mustard { background: var(--mustard); color: var(--charcoal); }
+.tag-orange  { background: var(--orange); color: white; }
+.tag-charcoal { background: var(--charcoal); color: var(--cream); }
+.tag-cream   { background: var(--cream); color: var(--charcoal); }
+
+/* ── DIAGONAL BADGE ── */
+.diag-badge {
+  position: absolute;
+  top: 18px; right: -28px;
+  background: var(--orange);
+  color: white;
+  font-family: 'Bangers', cursive;
+  font-size: 16px;
+  letter-spacing: 2px;
+  padding: 6px 40px;
+  transform: rotate(35deg);
+  border-top: 2px solid var(--charcoal);
+  border-bottom: 2px solid var(--charcoal);
+  z-index: 10;
+  box-shadow: 0 2px 0 var(--charcoal);
+  white-space: nowrap;
+}
+
+/* ── SPEECH BUBBLE ── */
+.speech-bubble {
+  background: var(--cream);
+  border: var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -18px; left: 24px;
+  border: 9px solid transparent;
+  border-top-color: var(--charcoal);
+}
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -14px; left: 24px;
+  border: 9px solid transparent;
+  border-top-color: var(--cream);
+  z-index: 1;
+}
+.speech-bubble.right::after { left: auto; right: 24px; }
+.speech-bubble.right::before { left: auto; right: 24px; }
+
+/* ── HALFTONE SECTION ── */
+.halftone-bg {
+  background-color: var(--charcoal);
+  background-image: radial-gradient(circle, #ffffff18 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+.halftone-mustard {
+  background-color: var(--mustard);
+  background-image: radial-gradient(circle, #1C191720 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+}
+
+/* ── FORMS ── */
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  color: var(--charcoal);
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: var(--cream);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--charcoal);
+  outline: none;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  box-shadow: 5px 5px 0 var(--mustard);
+  transform: translate(-1px, -1px);
+}
+.form-textarea { resize: vertical; min-height: 120px; }
+
+/* ── ARTICLE GRID ── */
+.article-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.article-grid-2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+/* ── HERO ── */
+.hero-section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 32px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+/* ── SIDEBAR LIST ── */
+.sidebar-item {
+  border-bottom: 2px solid var(--charcoal);
+  padding: 14px 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  cursor: pointer;
+  transition: padding-left 0.15s;
+}
+.sidebar-item:hover { padding-left: 8px; }
+.sidebar-item:last-child { border-bottom: none; }
+.sidebar-num {
+  font-family: 'Bangers', cursive;
+  font-size: 32px;
+  color: var(--mustard);
+  line-height: 1;
+  min-width: 36px;
+  text-shadow: 2px 2px 0 var(--charcoal);
+}
+
+/* ── CATEGORIES BAR ── */
+.cats-bar {
+  background: var(--charcoal);
+  border-top: var(--border);
+  border-bottom: var(--border);
+  padding: 0;
+  overflow-x: auto;
+}
+.cats-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  padding: 0 32px;
+}
+.cat-btn {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #aaa;
+  padding: 14px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 4px solid transparent;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.cat-btn:hover, .cat-btn.active { color: var(--mustard); border-bottom-color: var(--mustard); }
+
+/* ── SECTION WRAPPER ── */
+.section-wrap { max-width: 1280px; margin: 0 auto; padding: 48px 32px; }
+.section-title-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  border-bottom: var(--border-thick);
+  padding-bottom: 12px;
+}
+.section-title-bar h2 {
+  font-size: 42px;
+  color: var(--charcoal);
+}
+.section-title-bar .line {
+  flex: 1;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--mustard) 0, var(--mustard) 10px, transparent 10px, transparent 20px);
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(28,25,23,0.85);
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-box {
+  background: var(--cream);
+  border: var(--border-thick);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  animation: popIn 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes popIn { from{transform:scale(0.85) translateY(20px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+.modal-close {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--charcoal); color: var(--cream);
+  border: 2px solid var(--charcoal); border-radius: 2px;
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; font-weight: 700;
+  transition: background 0.15s;
+}
+.modal-close:hover { background: var(--orange); border-color: var(--orange); }
+
+/* ── ADMIN PANEL ── */
+.admin-sidebar {
+  background: var(--charcoal);
+  width: 260px;
+  min-height: 100vh;
+  position: fixed;
+  left: 0; top: 0;
+  border-right: var(--border-thick);
+  display: flex;
+  flex-direction: column;
+  z-index: 150;
+}
+.admin-logo {
+  padding: 20px 24px;
+  border-bottom: var(--border);
+  font-family: 'Bangers', cursive;
+  font-size: 28px;
+  color: var(--mustard);
+  letter-spacing: 3px;
+}
+.admin-logo span { color: var(--orange); }
+.admin-logo sub { display:block; font-family:'Space Mono',monospace; font-size:10px; color:#666; letter-spacing:2px; margin-top:2px; }
+.admin-nav { flex: 1; padding: 16px 0; }
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  color: #888;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+.admin-nav-item:hover { color: var(--cream); background: rgba(255,255,255,0.05); }
+.admin-nav-item.active { color: var(--mustard); border-left-color: var(--mustard); background: rgba(255,199,44,0.08); }
+.admin-nav-item .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+.admin-content {
+  margin-left: 260px;
+  min-height: 100vh;
+  background: var(--cream-dk);
+  background-image: radial-gradient(circle, #1C191710 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+.admin-topbar {
+  background: var(--cream);
+  border-bottom: var(--border);
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 3px 0 var(--charcoal);
+}
+.admin-page { padding: 32px; display: none; }
+.admin-page.active { display: block; }
+
+/* ── STAT CARDS ADMIN ── */
+.admin-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 32px; }
+.stat-card-admin {
+  background: var(--cream);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card-admin .big-num {
+  font-family: 'Bangers', cursive;
+  font-size: 52px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-card-admin .lbl { font-family:'Space Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#888; }
+.stat-card-admin .accent { position:absolute; right:-10px; top:-10px; font-size:60px; opacity:0.07; }
+
+/* ── VIDEO UPLOAD ── */
+.upload-zone {
+  border: 4px dashed var(--charcoal);
+  border-radius: var(--radius);
+  padding: 48px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--cream);
+  box-shadow: inset 0 0 0 0 var(--mustard);
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-style: solid;
+  border-color: var(--mustard);
+  background: #FFFDF6;
+  box-shadow: var(--shadow);
+  transform: translate(-2px,-2px);
+}
+.upload-zone .upload-icon { font-size: 56px; margin-bottom: 16px; display: block; }
+.upload-zone h3 { font-size: 28px; margin-bottom: 8px; }
+.upload-zone p { font-family:'DM Sans',sans-serif; color:#888; font-size:14px; }
+
+/* ── PROGRESS BAR ── */
+.progress-wrap { background: #e5e0d0; border: 2px solid var(--charcoal); border-radius: 2px; height: 20px; overflow: hidden; box-shadow: var(--shadow-sm); }
+.progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(45deg, var(--mustard) 0, var(--mustard) 10px, var(--orange) 10px, var(--orange) 20px);
+  background-size: 28px 28px;
+  animation: progress-stripes 0.8s linear infinite, progress-grow 3s ease-out forwards;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+@keyframes progress-stripes { to { background-position: 28px 0; } }
+@keyframes progress-grow { 0%{width:5%} 40%{width:60%} 80%{width:85%} 100%{width:100%} }
+
+/* ── ARTICLE RESULT CARD ── */
+.article-result {
+  background: var(--cream);
+  border: var(--border-thick);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 20px;
+  animation: popIn 0.3s ease forwards;
+}
+.article-result-header {
+  background: var(--charcoal);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.article-result-body { padding: 24px; }
+.article-result-body h3 {
+  font-size: 28px;
+  margin-bottom: 12px;
+  color: var(--charcoal);
+  line-height: 1.1;
+}
+.article-result-body p { font-size: 15px; line-height: 1.8; color: #444; margin-bottom: 14px; }
+.key-points { list-style: none; margin-bottom: 14px; }
+.key-points li {
+  padding: 5px 0 5px 22px;
+  position: relative;
+  font-size: 14px;
+  color: #444;
+  line-height: 1.6;
+}
+.key-points li::before { content:'▶'; position:absolute; left:0; color:var(--mustard); font-size:10px; top:8px; }
+.article-actions {
+  border-top: 2px solid var(--charcoal);
+  padding: 14px 20px;
+  display: flex;
+  gap: 10px;
+  background: var(--cream-dk);
+}
+
+/* ── AUTH PAGES ── */
+.auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--cream);
+  background-image: radial-gradient(circle, #1C191715 1px, transparent 1px);
+  background-size: 18px 18px;
+  padding: 40px 20px;
+}
+.auth-card {
+  background: var(--cream);
+  border: var(--border-thick);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 440px;
+}
+.auth-logo { text-align:center; margin-bottom:32px; }
+.auth-logo .logo { font-size:36px; }
+.auth-tabs { display:flex; border:var(--border); border-radius: var(--radius); overflow:hidden; margin-bottom:28px; }
+.auth-tab {
+  flex:1; padding:10px; text-align:center;
+  font-family:'Archivo Black',sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:1px;
+  cursor:pointer; background:var(--cream-dk); border:none; transition:all 0.15s;
+}
+.auth-tab.active { background:var(--mustard); color:var(--charcoal); }
+.auth-tab:first-child { border-right: 2px solid var(--charcoal); }
+.admin-badge-row { display:flex; align-items:center; gap:12px; margin-bottom:18px; padding:12px 16px; border:2px solid var(--orange); border-radius:var(--radius); background: rgba(255,107,53,0.06); box-shadow:var(--shadow-sm); }
+.admin-badge-row input[type=checkbox] { width:18px; height:18px; cursor:pointer; accent-color:var(--orange); }
+.admin-badge-row label { font-family:'Archivo Black',sans-serif; font-size:13px; color:var(--orange); text-transform:uppercase; letter-spacing:1px; cursor:pointer; }
+
+/* ── TOAST ── */
+.toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:10px; }
+.toast {
+  background:var(--charcoal); color:var(--cream);
+  border: var(--border); border-radius:var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 20px;
+  font-family:'Space Mono',monospace; font-size:13px;
+  animation: slideIn 0.3s ease, fadeOut 0.4s ease 3s forwards;
+  min-width: 280px;
+}
+.toast.success { border-left: 6px solid #4CAF50; }
+.toast.error   { border-left: 6px solid var(--orange); }
+.toast.info    { border-left: 6px solid var(--mustard); }
+@keyframes slideIn { from{transform:translateX(120%)} to{transform:translateX(0)} }
+@keyframes fadeOut { to{opacity:0; transform:translateX(120%)} }
+
+/* ── LOADING SPINNER ── */
+.spinner {
+  width: 40px; height: 40px;
+  border: 4px solid var(--cream-dk);
+  border-top-color: var(--mustard);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* ── STATUS MESSAGES ── */
+.status-bar {
+  font-family:'Space Mono',monospace; font-size:12px;
+  color:var(--mustard); padding:8px 0;
+  min-height:22px;
+}
+
+/* ── UTIL ── */
+.hidden  { display: none !important; }
+.flex    { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-8   { gap: 8px; }
+.gap-12  { gap: 12px; }
+.gap-16  { gap: 16px; }
+.gap-24  { gap: 24px; }
+.mb-8    { margin-bottom: 8px; }
+.mb-16   { margin-bottom: 16px; }
+.mb-24   { margin-bottom: 24px; }
+.mb-32   { margin-bottom: 32px; }
+.mt-16   { margin-top: 16px; }
+.mt-24   { margin-top: 24px; }
+.text-center { text-align: center; }
+.text-orange  { color: var(--orange); }
+.text-mustard { color: var(--mustard); }
+.text-muted   { color: #888; }
+.w-full  { width: 100%; }
+.italic  { font-style: italic; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .hero-section { grid-template-columns: 1fr; }
+  .article-grid { grid-template-columns: 1fr 1fr; }
+  .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+  .admin-sidebar.open { transform: translateX(0); }
+  .admin-content { margin-left: 0; }
+  .admin-stats { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .nav-links { display: none; }
+  .article-grid { grid-template-columns: 1fr; }
+  .admin-stats { grid-template-columns: 1fr; }
+  .hero-section { padding: 24px 16px; }
+  .section-wrap { padding: 32px 16px; }
+}
+</style>
+<meta name="robots" content="index, follow">
+  <meta name="author" content="FutbolBantz">
+  <meta property="og:site_name" content="FutbolBantz">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:site" content="@FutbolBantz">
+  <style>
+    article h2 { font-family:'Bangers',cursive; font-size:32px; letter-spacing:2px; margin:32px 0 14px; color:var(--charcoal); border-left:5px solid var(--mustard); padding-left:14px; line-height:1.1; }
+    article h3 { font-family:'Archivo Black',sans-serif; font-size:20px; margin:24px 0 10px; color:var(--charcoal); }
+    article p  { margin-bottom:18px; }
+    article ul, article ol { margin:0 0 18px 24px; }
+    article li { margin-bottom:8px; line-height:1.7; }
+    article strong { color:var(--charcoal); font-weight:700; background:rgba(255,199,44,0.25); padding:0 3px; border-radius:2px; }
+    article a  { color:var(--orange); text-decoration:underline; }
+    article blockquote { border-left:5px solid var(--orange); margin:24px 0; padding:12px 20px; background:var(--cream-dk); font-style:italic; border-radius:0 4px 4px 0; }
+    details > summary { user-select:none; }
+    details > summary::marker, details > summary::-webkit-details-marker { display:none; }
+  </style>
+  <!-- Google Fonts — loaded via <link> for reliability on GitHub Pages -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Archivo+Black&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -21,10 +683,10 @@
   <div class="nav-inner">
     <a href="#home" class="logo">Futbol<span>Bantz</span></a>
     <ul class="nav-links">
-      <li><a href="#home" class="nav-links-a active">Home</a></li>
-      <li><a href="#home" class="nav-links-a">Premier League</a></li>
-      <li><a href="#home" class="nav-links-a">Transfers</a></li>
-      <li><a href="#home" class="nav-links-a">Video Bantz</a></li>
+      <li><a href="#home" class="nav-links-a" id="nav-home">Home</a></li>
+      <li><a href="#pl" class="nav-links-a" id="nav-pl">⚽ Premier League</a></li>
+      <li><a href="#transfers" class="nav-links-a" id="nav-transfers">🤑 Transfers</a></li>
+      <li><a href="#videobantz" class="nav-links-a" id="nav-videobantz">📺 Video Bantz</a></li>
       <li id="nav-admin-link" style="display:none;"><a href="#admin" class="nav-links-a admin-link">⚡ Admin</a></li>
     </ul>
     <div class="flex items-center gap-12">
@@ -65,7 +727,7 @@
   <div class="cats-bar">
     <div class="cats-inner">
       <button class="cat-btn active" onclick="filterCat(this,'all')">🌍 All Bantz</button>
-      <button class="cat-btn" onclick="filterCat(this,'Match Report')">⚽ Match Reports</button>
+      <button class="cat-btn" onclick="filterCat(this,'Match Report'); Router.go('pl')">⚽ Match Reports</button>
       <button class="cat-btn" onclick="filterCat(this,'Hot Take')">🔥 Hot Takes</button>
       <button class="cat-btn" onclick="filterCat(this,'Banter')">😂 Pure Banter</button>
       <button class="cat-btn" onclick="filterCat(this,'Transfers')">🤑 Transfers</button>
@@ -142,9 +804,9 @@
         <div>
           <h4 style="font-family:'Archivo Black',sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--mustard); margin-bottom:16px;">Sections</h4>
           <div style="display:flex; flex-direction:column; gap:8px;">
-            <a href="#" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Premier League</a>
-            <a href="#" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Transfers</a>
-            <a href="#" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Banter Zone</a>
+            <a href="#pl" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Premier League</a>
+            <a href="#transfers" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Transfers</a>
+            <a href="#videobantz" style="color:#888; text-decoration:none; font-family:'Space Mono',monospace; font-size:12px;">Video Bantz</a>
           </div>
         </div>
         <div>
@@ -173,73 +835,118 @@
 </div>
 
 <!-- ════════════════════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════════════════ -->
 <!-- PAGE: AUTH                                              -->
 <!-- ════════════════════════════════════════════════════════ -->
 <div data-page="auth" class="hidden">
-  <div class="auth-wrap">
-    <div class="auth-card">
-      <div class="auth-logo">
-        <a href="#home" class="logo">Futbol<span>Bantz</span></a>
-        <p style="font-family:'Space Mono',monospace; font-size:11px; color:#888; margin-top:6px;">Join the banter. It's free (and mostly harmless).</p>
-      </div>
+  <div style="min-height:100vh; display:grid; grid-template-columns:1fr 1fr;">
 
-      <div class="auth-tabs">
-        <button class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">Log In</button>
-        <button class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">Sign Up</button>
-      </div>
-
-      <!-- LOGIN FORM -->
-      <div id="login-form">
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input id="login-email" class="form-input" type="email" placeholder="yourname@example.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input id="login-pass" class="form-input" type="password" placeholder="••••••••">
-        </div>
-        <button class="btn btn-mustard w-full btn-lg" style="justify-content:center;" onclick="doLogin()">⚽ Log In, Mate</button>
-        <div style="margin-top:20px; padding:14px; background:var(--cream-dk); border:2px solid var(--charcoal); border-radius:var(--radius); box-shadow:var(--shadow-sm);">
-          <p style="font-family:'Space Mono',monospace; font-size:11px; color:#888; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">Demo Accounts:</p>
-          <p style="font-family:'Space Mono',monospace; font-size:11px; color:#666;">👑 Admin: admin@futbolbantz.com / admin123</p>
-          <p style="font-family:'Space Mono',monospace; font-size:11px; color:#666;">⚽ Fan: fan@futbolbantz.com / fan123</p>
+    <!-- LEFT PANEL — branding -->
+    <div class="halftone-bg" style="padding:60px 48px; display:flex; flex-direction:column; justify-content:space-between; border-right:4px solid var(--charcoal);">
+      <a href="#home" class="logo" style="font-size:48px;">Futbol<span>Bantz</span></a>
+      <div>
+        <h2 style="font-family:'Bangers',cursive; font-size:72px; color:var(--cream); letter-spacing:3px; line-height:0.9; text-shadow:4px 4px 0 var(--mustard); margin-bottom:24px;">JOIN THE<br><span style="color:var(--mustard);">BANTER.</span></h2>
+        <p style="font-family:'DM Sans',sans-serif; font-size:16px; color:#aaa; line-height:1.7; max-width:380px; margin-bottom:32px;">Premier League opinions delivered at dangerous speeds. VAR complaints at no extra charge.</p>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="speech-bubble" style="background:var(--mustard); max-width:360px;">
+            <p style="font-family:'Space Mono',monospace; font-size:12px; font-weight:700;">"Best football blog since I stopped arguing with strangers on Reddit"</p>
+            <p style="font-family:'Space Mono',monospace; font-size:10px; color:#666; margin-top:6px;">— BigMouthBarry, Registered Member</p>
+          </div>
+          <div class="speech-bubble right" style="background:var(--orange); margin-left:auto; max-width:300px;">
+            <p style="font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:white;">"I read it ironically and then I just... read it."</p>
+            <p style="font-family:'Space Mono',monospace; font-size:10px; color:rgba(255,255,255,0.7); margin-top:6px;">— TacticalTimothy</p>
+          </div>
         </div>
       </div>
-
-      <!-- REGISTER FORM -->
-      <div id="register-form" class="hidden">
-        <div class="form-group">
-          <label class="form-label">Your Football Name</label>
-          <input id="reg-name" class="form-input" type="text" placeholder="e.g. BigMouthBarry, TacticalTimothy...">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input id="reg-email" class="form-input" type="email" placeholder="yourname@example.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Password (6+ chars)</label>
-          <input id="reg-pass" class="form-input" type="password" placeholder="••••••••">
-        </div>
-        <div class="admin-badge-row mb-16">
-          <input type="checkbox" id="reg-admin" onchange="toggleAdminCode(this.checked)">
-          <label for="reg-admin">👑 I want Admin Access (for the brave and/or employed here)</label>
-        </div>
-        <div id="admin-code-row" class="form-group hidden">
-          <label class="form-label" style="color:var(--orange);">🔐 Admin Secret Code</label>
-          <input id="reg-code" class="form-input" type="text" placeholder="Ask your gaffer for the code...">
-          <p style="font-family:'Space Mono',monospace; font-size:11px; color:#888; margin-top:6px;">Hint: It's BANTZ2024. Don't tell anyone. Obviously.</p>
-        </div>
-        <button class="btn btn-mustard w-full btn-lg" style="justify-content:center;" onclick="doRegister()">🏆 Join the Bantz</button>
+      <div class="flex gap-12" style="flex-wrap:wrap;">
+        <span class="tag tag-mustard">⚽ 380 Articles</span>
+        <span class="tag tag-orange">🔥 Free to Join</span>
+        <span class="tag tag-cream">😂 100% Unbiased*</span>
       </div>
+      <p style="font-family:'Space Mono',monospace; font-size:10px; color:#555; margin-top:8px;">*Not even slightly unbiased</p>
+    </div>
 
-      <div style="text-align:center; margin-top:20px;">
-        <a href="#home" style="font-family:'Space Mono',monospace; font-size:12px; color:#888; text-decoration:none;">← Back to the homepage, coward</a>
+    <!-- RIGHT PANEL — form -->
+    <div style="background:var(--cream); padding:60px 48px; display:flex; flex-direction:column; justify-content:center; overflow-y:auto;">
+      <div style="max-width:400px; width:100%; margin:0 auto;">
+
+        <!-- TABS -->
+        <div style="display:flex; border:var(--border-thick); border-radius:var(--radius); overflow:hidden; margin-bottom:32px; box-shadow:var(--shadow);">
+          <button id="tab-login"    class="auth-tab active" onclick="switchAuthTab('login')"    style="flex:1; padding:14px; font-size:15px;">🔑 Log In</button>
+          <button id="tab-register" class="auth-tab"        onclick="switchAuthTab('register')" style="flex:1; padding:14px; font-size:15px; border-left:3px solid var(--charcoal);">🏆 Sign Up</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div id="login-form">
+          <h2 style="font-size:40px; margin-bottom:6px;">Welcome Back</h2>
+          <p style="font-family:'DM Sans',sans-serif; font-size:14px; color:#888; margin-bottom:28px; font-style:italic;">Your hot takes missed you.</p>
+
+          <div class="form-group">
+            <label class="form-label">📧 Email Address</label>
+            <input id="login-email" class="form-input" type="email" placeholder="yourname@example.com" onkeydown="if(event.key==='Enter')doLogin()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">🔒 Password</label>
+            <input id="login-pass" class="form-input" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+          </div>
+
+          <button class="btn btn-mustard w-full btn-lg" style="justify-content:center; margin-bottom:16px;" onclick="doLogin()">⚽ Log In, Mate</button>
+          <button class="btn btn-charcoal w-full" style="justify-content:center;" onclick="switchAuthTab('register')">No account? Sign Up Free →</button>
+
+          <!-- Demo creds -->
+          <div style="margin-top:24px; padding:16px; background:var(--cream-dk); border:2px dashed var(--charcoal); border-radius:var(--radius);">
+            <p style="font-family:'Archivo Black',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">🎮 Try Demo Accounts</p>
+            <button onclick="quickLogin('admin@futbolbantz.com','admin123')" class="btn btn-sm w-full" style="background:var(--orange);color:white;justify-content:center;margin-bottom:8px;box-shadow:var(--shadow-sm);">👑 Login as Admin</button>
+            <button onclick="quickLogin('fan@futbolbantz.com','fan123')" class="btn btn-sm w-full btn-outline" style="justify-content:center;">⚽ Login as Fan</button>
+          </div>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="register-form" class="hidden">
+          <h2 style="font-size:40px; margin-bottom:6px;">Create Account</h2>
+          <p style="font-family:'DM Sans',sans-serif; font-size:14px; color:#888; margin-bottom:28px; font-style:italic;">Pick a good football name. You'll regret it otherwise.</p>
+
+          <div class="form-group">
+            <label class="form-label">🏟️ Your Football Name</label>
+            <input id="reg-name" class="form-input" type="text" placeholder="e.g. BigMouthBarry, TacticalTimothy...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">📧 Email Address</label>
+            <input id="reg-email" class="form-input" type="email" placeholder="yourname@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">🔒 Password (6+ characters)</label>
+            <input id="reg-pass" class="form-input" type="password" placeholder="Something better than 'password123'">
+          </div>
+
+          <!-- Admin toggle -->
+          <div style="border:2px solid var(--charcoal); border-radius:var(--radius); padding:14px 16px; margin-bottom:16px; background:var(--cream-dk); box-shadow:var(--shadow-sm); cursor:pointer;" onclick="document.getElementById('reg-admin').click()">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <input type="checkbox" id="reg-admin" onchange="toggleAdminCode(this.checked)" style="width:18px; height:18px; accent-color:var(--orange); cursor:pointer;" onclick="event.stopPropagation()">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:13px; color:var(--orange);">👑 Request Admin Access</div>
+                <div style="font-family:'DM Sans',sans-serif; font-size:12px; color:#888; margin-top:2px;">For blog owners & editors. Requires a secret code.</div>
+              </div>
+            </div>
+          </div>
+          <div id="admin-code-row" class="form-group hidden">
+            <label class="form-label" style="color:var(--orange);">🔐 Admin Secret Code</label>
+            <input id="reg-code" class="form-input" type="text" placeholder="Ask your editor for the code..." style="border-color:var(--orange);">
+            <p style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:4px;">Hint: BANTZ2024. Don't shout it.</p>
+          </div>
+
+          <button class="btn btn-mustard w-full btn-lg" style="justify-content:center; margin-bottom:16px;" onclick="doRegister()">🏆 Join the Bantz</button>
+          <button class="btn btn-outline w-full" style="justify-content:center;" onclick="switchAuthTab('login')">Already got an account? Log In →</button>
+        </div>
+
+        <div style="text-align:center; margin-top:20px;">
+          <a href="#home" style="font-family:'Space Mono',monospace; font-size:11px; color:#aaa; text-decoration:none;">← Back to the homepage, coward</a>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════ -->
 <!-- PAGE: ARTICLE VIEW                                      -->
 <!-- ════════════════════════════════════════════════════════ -->
 <div data-page="article" class="hidden" id="article-page">
@@ -247,6 +954,234 @@
 </div>
 
 <!-- ════════════════════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PAGE: PREMIER LEAGUE                                    -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div data-page="pl" class="hidden">
+
+  <!-- HERO BANNER -->
+  <div class="halftone-bg" style="border-bottom:4px solid var(--charcoal); padding:48px 32px;">
+    <div style="max-width:1280px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;">
+      <div>
+        <span class="tag tag-mustard mb-16" style="display:inline-block;">⚽ 2025/26 Season — Matchday 37</span>
+        <h1 style="font-family:'Bangers',cursive; font-size:80px; color:var(--cream); letter-spacing:3px; line-height:0.9; text-shadow:4px 4px 0 var(--orange);">PREMIER<br>LEAGUE</h1>
+        <p style="font-family:'DM Sans',sans-serif; font-size:16px; color:#aaa; margin-top:16px; max-width:500px; font-style:italic;">380 games. 20 clubs. Infinite controversy. VAR involvement: absolutely constant. Welcome to the greatest show on earth — allegedly.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="card card-mustard" style="padding:20px; text-align:center; cursor:default;">
+          <div style="font-family:'Bangers',cursive; font-size:56px; line-height:1; text-shadow:3px 3px 0 var(--charcoal);">37</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Matchdays<br>played</div>
+        </div>
+        <div class="card" style="padding:20px; text-align:center; background:var(--orange); border:var(--border); cursor:default;">
+          <div style="font-family:'Bangers',cursive; font-size:56px; line-height:1; color:white; text-shadow:3px 3px 0 var(--charcoal);">82</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700; color:white;">Arsenal<br>points</div>
+        </div>
+        <div class="card" style="padding:20px; text-align:center; background:var(--charcoal); border:3px solid var(--mustard); cursor:default;">
+          <div style="font-family:'Bangers',cursive; font-size:56px; line-height:1; color:var(--mustard); text-shadow:3px 3px 0 var(--orange);">27</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700; color:#888;">Haaland<br>goals</div>
+        </div>
+        <div class="card card-mustard" style="padding:20px; text-align:center; cursor:default;">
+          <div style="font-family:'Bangers',cursive; font-size:56px; line-height:1; text-shadow:3px 3px 0 var(--charcoal);">1</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Game left.<br>Final Day!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOCK LEAGUE TABLE -->
+  <div class="section-wrap">
+    <div class="section-title-bar">
+      <h2>📊 The Table (Opinions Vary)</h2>
+      <div class="line"></div>
+      <span class="tag tag-orange">🔴 Live — Matchday 37 of 38</span>
+    </div>
+
+    <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px;">
+      <div>
+        <div class="card" style="overflow:hidden;">
+          <div style="background:var(--charcoal); padding:10px 16px; display:grid; grid-template-columns:28px 1fr 36px 36px 36px 36px 48px 80px; gap:4px; align-items:center;">
+            <span style="font-family:'Space Mono',monospace; font-size:10px; color:#555;">#</span>
+            <span style="font-family:'Space Mono',monospace; font-size:10px; color:#888; text-transform:uppercase; letter-spacing:1px;">Club</span>
+            <span style="font-family:'Space Mono',monospace; font-size:10px; color:#888; text-align:center;">P</span>
+            <span style="font-family:'Space Mono',monospace; font-size:10px; color:#22c55e; text-align:center;">W</span>
+            <span style="font-family:'Space Mono',monospace; font-size:10px; color:#f59e0b; text-align:center;">D</span>
+            <span style="font-family:'Space Mono',monospace; font-size:10px; color:#ef4444; text-align:center;">L</span>
+            <span style="font-family:'Space Mono',monospace; font-size:10px; color:#888; text-align:center;">GD</span>
+            <span style="font-family:'Space Mono',monospace; font-size:10px; color:var(--mustard); text-align:center; font-weight:700;">PTS</span>
+          </div>
+          <div id="pl-table-rows"></div>
+        </div>
+        <p style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:10px; font-style:italic;">* Positions may cause strong emotions. FutbolBantz is not liable for broken televisions.</p>
+      </div>
+
+      <!-- SIDEBAR: TOP SCORERS + LATEST RESULTS -->
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <div class="card">
+          <div style="background:var(--mustard); border-bottom:var(--border); padding:12px 16px;">
+            <h3 style="font-size:20px;">🥅 Top Scorers</h3>
+          </div>
+          <div style="padding:4px 16px;" id="top-scorers"></div>
+        </div>
+        <div class="card">
+          <div style="background:var(--charcoal); border-bottom:var(--border); padding:12px 16px;">
+            <h3 style="font-size:20px; color:var(--cream);">📅 Recent Results</h3>
+          </div>
+          <div style="padding:16px;" id="recent-results"></div>
+        </div>
+        <div class="card">
+          <div style="background:var(--orange); border-bottom:var(--border); padding:12px 16px;">
+            <h3 style="font-size:20px; color:white;">🗓️ Final Day — 24 May</h3>
+          </div>
+          <div style="padding:16px; max-height:400px; overflow-y:auto;" id="upcoming-fixtures"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PL ARTICLES -->
+  <div class="section-wrap" style="padding-top:0;">
+    <div class="section-title-bar">
+      <h2>⚽ Latest PL Coverage</h2>
+      <div class="line"></div>
+    </div>
+    <div class="article-grid" id="pl-articles-grid"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PAGE: TRANSFERS                                         -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div data-page="transfers" class="hidden">
+
+  <div style="background:var(--charcoal); border-bottom:4px solid var(--orange); padding:48px 32px; position:relative; overflow:hidden;">
+    <div style="position:absolute; right:-20px; top:-30px; font-size:200px; opacity:0.04;">🤑</div>
+    <div style="max-width:1280px; margin:0 auto;">
+      <span class="tag tag-orange mb-16" style="display:inline-block;">💸 Transfer Window</span>
+      <h1 style="font-family:'Bangers',cursive; font-size:80px; color:var(--cream); letter-spacing:3px; line-height:0.9; text-shadow:4px 4px 0 var(--mustard);">THE RUMOUR<br>MILL</h1>
+      <p style="font-family:'DM Sans',sans-serif; font-size:16px; color:#aaa; margin-top:16px; max-width:560px; font-style:italic;">Where agents spin, clubs deny everything, and your club's top scorer is "definitely not leaving" right up until they leave. Powered entirely by speculation, Twitter sources, and a bloke called Carlo who works near the training ground.</p>
+      <div class="speech-bubble" style="max-width:400px; margin-top:28px; background:var(--mustard);">
+        <p style="font-family:'Bangers',cursive; font-size:20px; letter-spacing:1px;">"The player is very happy here and not looking to leave" — Every club, two weeks before a transfer</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSFER TIERS -->
+  <div class="section-wrap">
+    <div class="section-title-bar">
+      <h2>🔥 Transfer Rumour Reliability Tier</h2>
+      <div class="line"></div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:40px;">
+      <div class="card card-mustard" style="padding:20px; text-align:center;">
+        <div style="font-size:32px; margin-bottom:8px;">🔴</div>
+        <div style="font-family:'Bangers',cursive; font-size:24px; letter-spacing:1px; margin-bottom:6px;">DONE DEAL</div>
+        <p style="font-family:'DM Sans',sans-serif; font-size:12px;">Club confirmed it on their own website. Medical passed. Photo with scarf uploaded. Still somehow surprised it happened.</p>
+      </div>
+      <div class="card" style="padding:20px; text-align:center; background:var(--orange); border:var(--border); box-shadow:var(--shadow);">
+        <div style="font-size:32px; margin-bottom:8px;">🟠</div>
+        <div style="font-family:'Bangers',cursive; font-size:24px; letter-spacing:1px; margin-bottom:6px; color:white;">LIKELY</div>
+        <p style="font-family:'DM Sans',sans-serif; font-size:12px; color:white;">Fabrizio Romano said "here we go". Pack your bags, lad — you're going.</p>
+      </div>
+      <div class="card" style="padding:20px; text-align:center;">
+        <div style="font-size:32px; margin-bottom:8px;">🟡</div>
+        <div style="font-family:'Bangers',cursive; font-size:24px; letter-spacing:1px; margin-bottom:6px;">RUMOUR</div>
+        <p style="font-family:'DM Sans',sans-serif; font-size:12px; color:#666;">A journalist with 400 followers who "covers the region" tweeted it. Could be anything.</p>
+      </div>
+      <div class="card" style="padding:20px; text-align:center; background:var(--cream-dk);">
+        <div style="font-size:32px; margin-bottom:8px;">💨</div>
+        <div style="font-family:'Bangers',cursive; font-size:24px; letter-spacing:1px; margin-bottom:6px;">NONSENSE</div>
+        <p style="font-family:'DM Sans',sans-serif; font-size:12px; color:#666;">Fan account speculation. The player has never been to that city. His agent denied it twice.</p>
+      </div>
+    </div>
+
+    <!-- TRANSFER ARTICLES -->
+    <div class="section-title-bar">
+      <h2>💸 Latest Transfer News</h2>
+      <div class="line"></div>
+    </div>
+    <div class="article-grid" id="transfers-articles-grid"></div>
+  </div>
+
+  <!-- BIG MONEY MOVES -->
+  <div class="halftone-mustard" style="border-top:var(--border); border-bottom:var(--border);">
+    <div class="section-wrap">
+      <div class="section-title-bar"><h2>💰 Stupidest Transfer Fees (This Season)</h2><div class="line"></div></div>
+      <div style="display:flex; flex-direction:column; gap:12px;" id="silly-fees"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PAGE: VIDEO BANTZ                                       -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div data-page="videobantz" class="hidden">
+
+  <div style="background:var(--charcoal); border-bottom:4px solid var(--mustard); padding:48px 32px; position:relative; overflow:hidden;">
+    <div style="position:absolute; right:-10px; top:-20px; font-size:200px; opacity:0.04;">📺</div>
+    <div style="max-width:1280px; margin:0 auto;">
+      <span class="tag tag-mustard mb-16" style="display:inline-block;">📺 YouTube Summarised</span>
+      <h1 style="font-family:'Bangers',cursive; font-size:80px; color:var(--cream); letter-spacing:3px; line-height:0.9; text-shadow:4px 4px 0 var(--mustard);">VIDEO<br><span style="color:var(--mustard);">BANTZ</span></h1>
+      <p style="font-family:'DM Sans',sans-serif; font-size:16px; color:#aaa; margin-top:16px; max-width:560px; font-style:italic;">We watch hours of football YouTube so you don't have to. Every 45-minute tactical breakdown, every fan meltdown, every pundit hot take — summarised into readable articles. You're welcome.</p>
+      <div style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;">
+        <button class="btn btn-mustard btn-lg" onclick="Router.go('admin'); setTimeout(()=>switchAdminPanel('generate'),100)">⚡ Generate Article from Video</button>
+        <button class="btn btn-outline btn-lg" style="color:var(--cream); border-color:var(--cream);" onclick="document.getElementById('vb-channels-section').scrollIntoView({behavior:'smooth'})">📡 Browse Channels ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section-wrap">
+    <div class="section-title-bar"><h2>⚙️ How The Machine Works</h2><div class="line"></div></div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:40px;">
+      <div class="card" style="padding:24px; text-align:center; position:relative;">
+        <div style="width:48px; height:48px; background:var(--mustard); border:var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Bangers',cursive; font-size:28px; margin:0 auto 16px; box-shadow:var(--shadow-sm);">1</div>
+        <h3 style="font-size:22px; margin-bottom:8px;">Add Channel</h3>
+        <p style="font-family:'DM Sans',sans-serif; font-size:13px; color:#666; line-height:1.6;">You drop in a YouTube channel URL. Sky Sports, Anfield Wrap, whoever you fancy.</p>
+      </div>
+      <div class="card" style="padding:24px; text-align:center; background:var(--mustard);">
+        <div style="width:48px; height:48px; background:var(--charcoal); border:var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Bangers',cursive; font-size:28px; color:var(--mustard); margin:0 auto 16px; box-shadow:var(--shadow-sm);">2</div>
+        <h3 style="font-size:22px; margin-bottom:8px;">Fetch Videos</h3>
+        <p style="font-family:'DM Sans',sans-serif; font-size:13px; line-height:1.6;">YouTube API grabs the latest videos — titles, descriptions, all the metadata.</p>
+      </div>
+      <div class="card" style="padding:24px; text-align:center; background:var(--charcoal);">
+        <div style="width:48px; height:48px; background:var(--orange); border:3px solid var(--orange); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Bangers',cursive; font-size:28px; color:white; margin:0 auto 16px; box-shadow:var(--shadow-sm);">3</div>
+        <h3 style="font-size:22px; margin-bottom:8px; color:var(--cream);">AI Writes It</h3>
+        <p style="font-family:'DM Sans',sans-serif; font-size:13px; color:#aaa; line-height:1.6;">Claude reads the video info and writes a proper blog article with our signature banter.</p>
+      </div>
+      <div class="card" style="padding:24px; text-align:center; background:var(--orange);">
+        <div style="width:48px; height:48px; background:white; border:var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Bangers',cursive; font-size:28px; color:var(--orange); margin:0 auto 16px; box-shadow:var(--shadow-sm);">4</div>
+        <h3 style="font-size:22px; margin-bottom:8px; color:white;">You Publish</h3>
+        <p style="font-family:'DM Sans',sans-serif; font-size:13px; color:white; line-height:1.6;">One click to go live. Article on your site, source video linked. Job done.</p>
+      </div>
+    </div>
+
+    <!-- FEATURED CHANNELS -->
+    <div id="vb-channels-section">
+      <div class="section-title-bar"><h2>📡 YouTube Channels Directory</h2><div class="line"></div></div>
+      <p style="font-family:'DM Sans',sans-serif; font-size:15px; color:#666; font-style:italic; margin-bottom:32px;">Click any channel card to copy the handle — then paste it into the Admin Video Machine. Easy as a tap-in from six yards.</p>
+
+      <h3 style="font-family:'Bangers',cursive; font-size:28px; letter-spacing:2px; margin-bottom:16px; display:flex; align-items:center; gap:10px;">📺 Broadcasters &amp; Official <span class="tag tag-orange" style="font-size:11px; vertical-align:middle;">Start Here</span></h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin-bottom:36px;" id="channels-broadcast"></div>
+
+      <h3 style="font-family:'Bangers',cursive; font-size:28px; letter-spacing:2px; margin-bottom:16px;">🏆 Big Six — Official Channels</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin-bottom:36px;" id="channels-big6"></div>
+
+      <h3 style="font-family:'Bangers',cursive; font-size:28px; letter-spacing:2px; margin-bottom:16px;">⚽ Rest of the Premier League</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin-bottom:36px;" id="channels-pl"></div>
+
+      <h3 style="font-family:'Bangers',cursive; font-size:28px; letter-spacing:2px; margin-bottom:16px;">🎙️ Fan Channels &amp; Pundits</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin-bottom:36px;" id="channels-fans"></div>
+
+      <p style="font-family:'Space Mono',monospace; font-size:11px; color:#888; text-align:center; margin-bottom:40px;">👆 Click any card to copy the channel handle to your clipboard</p>
+    </div>
+
+        <!-- VIDEO BANTZ ARTICLES -->
+    <div class="section-title-bar"><h2>📺 Latest Video Articles</h2><div class="line"></div></div>
+    <div id="vb-articles-grid" class="article-grid"></div>
+    <div style="margin-top:32px; text-align:center;" id="vb-generate-cta"></div>
+  </div>
+</div>
+
 <!-- PAGE: ADMIN                                             -->
 <!-- ════════════════════════════════════════════════════════ -->
 <div data-page="admin" class="hidden">
@@ -340,40 +1275,107 @@
 
       <!-- ── VIDEO MACHINE PAGE ── -->
       <div class="admin-page" id="admin-generate">
+
+        <!-- API KEYS CARD -->
         <div class="card mb-24">
           <div style="background:var(--charcoal); padding:14px 20px; border-bottom:var(--border);">
-            <h3 style="font-size:22px; color:var(--mustard);">📺 Video → Article Machine</h3>
+            <h3 style="font-size:22px; color:var(--mustard);">🔑 API Keys</h3>
+          </div>
+          <div style="padding:24px; display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+            <div>
+              <div class="flex items-center gap-8 mb-8">
+                <label class="form-label" style="margin-bottom:0;">Anthropic API Key</label>
+                <span class="tag tag-orange">Required</span>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <input id="api-key-input" class="form-input" type="password" placeholder="sk-ant-api03-..." oninput="saveApiKey(this.value)">
+                <button class="btn btn-sm btn-mustard" onclick="toggleApiKeyVis('api-key-input')">👁</button>
+              </div>
+              <p style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:6px;">Get it at <strong>console.anthropic.com</strong> → API Keys</p>
+            </div>
+            <div>
+              <div class="flex items-center gap-8 mb-8">
+                <label class="form-label" style="margin-bottom:0;">YouTube Data API v3 Key</label>
+                <span class="tag tag-mustard">Real Videos</span>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <input id="yt-key-input" class="form-input" type="password" placeholder="AIzaSy..." oninput="saveYtKey(this.value)">
+                <button class="btn btn-sm btn-mustard" onclick="toggleApiKeyVis('yt-key-input')">👁</button>
+              </div>
+              <p style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:6px;">Get it at <strong>console.cloud.google.com</strong> → YouTube Data API v3</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIDEO MACHINE CARD -->
+        <div class="card mb-24">
+          <div style="background:var(--charcoal); padding:14px 20px; border-bottom:var(--border);">
+            <h3 style="font-size:22px; color:var(--mustard);">📺 YouTube → Article Machine</h3>
           </div>
           <div style="padding:28px;">
             <p style="font-family:'DM Sans',sans-serif; font-size:15px; color:#666; margin-bottom:24px; font-style:italic; line-height:1.7;">
-              Drop in YouTube channel URLs, video topics, or even paste a transcript snippet. The AI will turn it into a proper FutbolBantz article — with all the banter included at no extra charge. <strong>Note:</strong> For best results with real channels, include the topic or a brief description alongside the URL.
+              Enter YouTube channel handles or video URLs. With your YouTube API key we fetch the real video titles, descriptions and stats — then Claude turns them into proper FutbolBantz articles. No more watching 45-minute videos where the host spends 40 minutes clearing his throat.
             </p>
 
-            <!-- VIDEO UPLOAD ZONE -->
-            <div class="upload-zone mb-24" onclick="document.getElementById('video-file-input').click()" id="upload-zone-el"
-                 ondragover="event.preventDefault(); this.classList.add('drag-over')"
-                 ondragleave="this.classList.remove('drag-over')"
-                 ondrop="handleVideoDrop(event)">
-              <span class="upload-icon">🎬</span>
-              <h3>Drop Video Files Here</h3>
-              <p>Drag & drop MP4/WebM or click to upload. We'll extract the topic and generate an article.<br><span style="font-family:'Space Mono',monospace; font-size:11px; color:#aaa;">Supports: MP4, WebM, MOV • Max 500MB per file</span></p>
-              <input type="file" id="video-file-input" accept="video/*" multiple style="display:none;" onchange="handleVideoFiles(this.files)">
+            <!-- MODE TABS -->
+            <div style="display:flex; border:var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:24px; box-shadow:var(--shadow-sm);">
+              <button id="mode-tab-channel" class="auth-tab active" onclick="switchInputMode('channel')" style="flex:1; padding:12px;">📡 By Channel</button>
+              <button id="mode-tab-video"   class="auth-tab" onclick="switchInputMode('video')"   style="flex:1; padding:12px; border-left:2px solid var(--charcoal);">🎬 By Video URL</button>
+              <button id="mode-tab-manual"  class="auth-tab" onclick="switchInputMode('manual')"  style="flex:1; padding:12px; border-left:2px solid var(--charcoal);">✍️ Manual Topic</button>
             </div>
 
-            <!-- YOUTUBE SOURCES -->
-            <div class="mb-24">
-              <label class="form-label">Or Enter YouTube Channels / Topics</label>
+            <!-- CHANNEL MODE -->
+            <div id="input-mode-channel">
+              <label class="form-label">YouTube Channel Handles</label>
+              <p style="font-family:'DM Sans',sans-serif; font-size:13px; color:#888; margin-bottom:12px;">We'll fetch the latest videos from each channel and generate one article per video.</p>
               <div id="video-sources-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
                 <div style="display:flex; gap:10px; align-items:center;">
-                  <input class="form-input video-source-input" placeholder="YouTube URL, @channel handle, or topic (e.g. 'Haaland hat trick vs Liverpool analysis')">
+                  <input class="form-input video-source-input" data-mode="channel" placeholder="e.g. @SkySportsPL or https://youtube.com/@TheAnfieldWrap">
                   <button class="btn btn-sm" style="background:var(--orange);color:white;flex-shrink:0;" onclick="this.parentElement.remove()">✕</button>
                 </div>
               </div>
-              <button class="btn btn-outline btn-sm" onclick="Admin.addVideoSource()">+ Add Another Source</button>
+              <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                <button class="btn btn-outline btn-sm" onclick="Admin.addVideoSource('channel')">+ Add Channel</button>
+                <div style="display:flex; align-items:center; gap:8px; margin-left:auto;">
+                  <label class="form-label" style="margin-bottom:0; font-size:12px;">Videos per channel:</label>
+                  <select id="vids-per-channel" class="form-select" style="width:auto; padding:6px 10px; font-size:13px;">
+                    <option value="1">Latest 1</option>
+                    <option value="3" selected>Latest 3</option>
+                    <option value="5">Latest 5</option>
+                    <option value="10">Latest 10</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIDEO URL MODE -->
+            <div id="input-mode-video" class="hidden">
+              <label class="form-label">YouTube Video URLs</label>
+              <p style="font-family:'DM Sans',sans-serif; font-size:13px; color:#888; margin-bottom:12px;">Paste specific video URLs — we'll fetch the real title and description for each one.</p>
+              <div id="video-url-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                <div style="display:flex; gap:10px; align-items:center;">
+                  <input class="form-input video-source-input" data-mode="video" placeholder="e.g. https://youtube.com/watch?v=abc123">
+                  <button class="btn btn-sm" style="background:var(--orange);color:white;flex-shrink:0;" onclick="this.parentElement.remove()">✕</button>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="Admin.addVideoSource('video')">+ Add Video URL</button>
+            </div>
+
+            <!-- MANUAL MODE -->
+            <div id="input-mode-manual" class="hidden">
+              <label class="form-label">Manual Topics / Paste Content</label>
+              <p style="font-family:'DM Sans',sans-serif; font-size:13px; color:#888; margin-bottom:12px;">No YouTube key? Enter topics or paste transcript text directly and Claude will work with that.</p>
+              <div id="manual-source-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                <div style="display:flex; gap:10px; align-items:flex-start;">
+                  <textarea class="form-textarea video-source-input" data-mode="manual" placeholder="e.g. 'Haaland hat-trick vs Arsenal — Sky Sports breakdown. Covered his movement off the ball, De Bruyne assists, Arteta's reaction, title race implications...'" style="flex:1; min-height:80px;"></textarea>
+                  <button class="btn btn-sm" style="background:var(--orange);color:white;flex-shrink:0;margin-top:4px;" onclick="this.parentElement.remove()">✕</button>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="Admin.addVideoSource('manual')">+ Add Topic</button>
             </div>
 
             <!-- OPTIONS -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0 20px;">
               <div class="form-group" style="margin-bottom:0;">
                 <label class="form-label">Article Tone</label>
                 <select id="gen-tone" class="form-select">
@@ -386,8 +1388,8 @@
               <div class="form-group" style="margin-bottom:0;">
                 <label class="form-label">Article Length</label>
                 <select id="gen-length" class="form-select">
-                  <option value="short">Short — Quick Read (pub chat level)</option>
-                  <option value="medium" selected>Medium — Proper Article (half-time rant)</option>
+                  <option value="short">Short — Quick Read (pub chat)</option>
+                  <option value="medium" selected>Medium — Proper Article</option>
                   <option value="long">Long — Full Post-Match Debrief</option>
                 </select>
               </div>
@@ -395,20 +1397,27 @@
 
             <!-- STATUS & PROGRESS -->
             <div id="gen-status" class="status-bar mb-8"></div>
-            <div id="gen-progress" class="progress-wrap mb-20" style="display:none;">
-              <div class="progress-fill"></div>
+            <div id="gen-progress" class="progress-wrap mb-16" style="display:none;"><div class="progress-fill"></div></div>
+
+            <!-- FETCHED VIDEOS PREVIEW -->
+            <div id="fetched-videos-preview" class="hidden mb-20">
+              <div style="background:var(--charcoal); border:var(--border); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow-sm);">
+                <h4 style="font-family:'Archivo Black',sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--mustard); margin-bottom:12px;">📋 Videos Found — Ready to Generate</h4>
+                <div id="fetched-videos-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+              </div>
             </div>
 
-            <button class="btn btn-mustard btn-lg w-full" style="justify-content:center;" id="generate-btn" onclick="Admin.generateFromVideo()">
-              ⚡ Generate Articles — IT'S SHOWTIME
-            </button>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              <button class="btn btn-charcoal" id="fetch-btn" onclick="Admin.fetchYouTubeVideos()" style="flex:1; justify-content:center;">🔍 Step 1: Fetch from YouTube</button>
+              <button class="btn btn-mustard btn-lg" id="generate-btn" onclick="Admin.generateFromVideo()" style="flex:2; justify-content:center;">⚡ Step 2: Generate Articles</button>
+            </div>
+            <p style="font-family:'Space Mono',monospace; font-size:11px; color:#888; margin-top:8px;">No YouTube key? Skip Step 1 — Claude writes from the channel name / topic alone.</p>
           </div>
         </div>
 
         <!-- RESULTS -->
         <div id="gen-results"></div>
       </div>
-
       <!-- ── ARTICLES PAGE ── -->
       <div class="admin-page" id="admin-articles">
         <div class="flex justify-between items-center mb-24">
@@ -430,12 +1439,1010 @@
   </div>
 </div><!-- /admin page -->
 
-<script src="js/app.js"></script>
+<script>/* ============================================================
+   FUTBOLBANTZ — Core JS: Auth, State, Utils
+   ============================================================ */
+
+// ── STATE ──────────────────────────────────────────────────
+const FB = {
+  currentUser: null,
+  currentPage: 'home',
+  articles: [],
+  users: [],
+
+  init() {
+    this.loadState();
+    this.seedData();
+    Router.init();
+  },
+
+  loadState() {
+    try {
+      const u = localStorage.getItem('fb_user');
+      this.currentUser = u ? JSON.parse(u) : null;
+      const arts = localStorage.getItem('fb_articles');
+      this.articles = arts ? JSON.parse(arts) : [];
+      const users = localStorage.getItem('fb_users');
+      this.users = users ? JSON.parse(users) : [];
+    } catch(e) { console.warn('State load error', e); }
+  },
+
+  saveArticles() {
+    localStorage.setItem('fb_articles', JSON.stringify(this.articles));
+  },
+
+  saveUsers() {
+    localStorage.setItem('fb_users', JSON.stringify(this.users));
+  },
+
+  seedData() {
+    if (this.articles.length === 0) {
+      this.articles = [
+        {
+          id: 'a1', title: "Haaland Does It AGAIN — How Many Is Too Many?",
+          tag: "Match Report", channel: "@ManCityTV", summary: "Erling Haaland has once again made goalkeepers question their career choices, slotting home his 47th league goal and apparently still hungry. The man doesn't walk to training — he runs, uphill, backwards, with a defender on his back.",
+          keypoints: ["Hat-trick inside 22 minutes like he was bored", "Third keeper this season reduced to tears", "Pep's post-match face was pure smug", "Fantasy football managers weeping with joy"],
+          conclusion: "At this rate Haaland will need a separate trophy cabinet just for Golden Boots.",
+          date: new Date(Date.now()-3600000*2).toISOString(), published: true, views: 4821
+        },
+        {
+          id: 'a2', title: "VAR Watch: 18 Minutes To Spot A Toenail Offside",
+          tag: "Hot Take", channel: "@RefereeTalk", summary: "Eighteen. Whole. Minutes. While thirty thousand fans stood in existential dread, the VAR team apparently needed to recalibrate the camera, phone a friend, and have a quiet cry before ruling the goal out for a toenail.",
+          keypoints: ["Offside margin: 0.3 centimetres", "Draw the line, they said. It'll be fun, they said.", "Match effectively ruined. Tea gone cold.", "PGMOL issued a statement nobody read"],
+          conclusion: "Football: the beautiful game. Until technology gets involved.",
+          date: new Date(Date.now()-3600000*6).toISOString(), published: true, views: 9214
+        },
+        {
+          id: 'a3', title: "Arsenal's Title Charge: Bottled It Faster Than A Craft Beer",
+          tag: "Banter", channel: "@ArsenalFanTV", summary: "It was going so well. Four points clear, ten games to go, the internet full of Arsenal fans being absolutely NORMAL about things. And then, as is tradition, the wheels fell off spectacularly.",
+          keypoints: ["Dropped 14 points in 7 games somehow", "Mikel Arteta press conference lasted 40 minutes of sighing", "Fan cam footage now classified as distressing content", "Still technically in fourth. Silver linings."],
+          conclusion: "Next year is definitely the year. It's always next year.",
+          date: new Date(Date.now()-3600000*12).toISOString(), published: true, views: 18740
+        },
+        {
+          id: 'a4', title: "The £85M Signing Who's Touched The Ball 4 Times This Season",
+          tag: "Transfers", channel: "@TransferGossip", summary: "He arrived to fanfare, a full stadium, a replica shirt photoshoot, and a manager talking about 'world class'. Seven months later he's been subbed off at half time three times and blamed a slight hamstring twinge.",
+          keypoints: ["Contribution: 1 goal, 1 assist, 14 disappearing acts", "Was described as 'still settling in' in November", "Agent already making calls apparently", "Club insists he's 'not for sale at any price' (£45m will do)"],
+          conclusion: "A bargain at £85m — if you squint, stand very far back, and have very low standards.",
+          date: new Date(Date.now()-3600000*24).toISOString(), published: true, views: 7331
+        },
+      ];
+      this.saveArticles();
+    }
+    if (this.users.length === 0) {
+      this.users = [
+        { id:'u1', email:'admin@futbolbantz.com', password:'admin123', name:'The Gaffer', isAdmin:true, joined: new Date().toISOString(), avatar:'🧔' },
+        { id:'u2', email:'fan@futbolbantz.com', password:'fan123', name:'BigMouthBarry', isAdmin:false, joined: new Date().toISOString(), avatar:'🤩' }
+      ];
+      this.saveUsers();
+    }
+  }
+};
+
+// ── AUTH ───────────────────────────────────────────────────
+const Auth = {
+  login(email, password) {
+    const user = FB.users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+    if (!user) throw new Error("Wrong email or password, mate. Try again.");
+    FB.currentUser = user;
+    localStorage.setItem('fb_user', JSON.stringify(user));
+    return user;
+  },
+
+  register(name, email, password, isAdmin, adminCode) {
+    if (!name || !email || !password) throw new Error("Fill in all the fields, you muppet.");
+    if (password.length < 6) throw new Error("Password needs to be at least 6 characters. 'pass' won't cut it.");
+    if (FB.users.find(u => u.email.toLowerCase() === email.toLowerCase())) throw new Error("That email's already registered. Forget your password again?");
+    if (isAdmin && adminCode !== 'BANTZ2024') throw new Error("Wrong admin code. It's not 'password'. Nice try.");
+    const user = {
+      id: 'u' + Date.now(), email, password, name, isAdmin,
+      joined: new Date().toISOString(),
+      avatar: isAdmin ? '👑' : '⚽'
+    };
+    FB.users.push(user);
+    FB.saveUsers();
+    FB.currentUser = user;
+    localStorage.setItem('fb_user', JSON.stringify(user));
+    return user;
+  },
+
+  logout() {
+    FB.currentUser = null;
+    localStorage.removeItem('fb_user');
+    Router.go('home');
+  },
+
+  requireAdmin() {
+    if (!FB.currentUser || !FB.currentUser.isAdmin) {
+      Toast.show("🚫 Admins only, pal. Log in with an admin account.", 'error');
+      Router.go('auth');
+      return false;
+    }
+    return true;
+  },
+
+  requireAuth() {
+    if (!FB.currentUser) {
+      Toast.show("You need to log in first, chief.", 'info');
+      Router.go('auth');
+      return false;
+    }
+    return true;
+  }
+};
+
+// ── ROUTER ─────────────────────────────────────────────────
+const Router = {
+  routes: ['home','auth','admin','article'],
+
+  init() {
+    const hash = location.hash.replace('#','') || 'home';
+    this.go(hash, false);
+    window.addEventListener('hashchange', () => {
+      const page = location.hash.replace('#','') || 'home';
+      this.go(page, false);
+    });
+  },
+
+  go(page, updateHash = true) {
+    if (updateHash) location.hash = page;
+    FB.currentPage = page;
+
+    // Hide all pages
+    document.querySelectorAll('[data-page]').forEach(el => el.classList.add('hidden'));
+
+    const target = document.querySelector(`[data-page="${page}"]`);
+    if (target) target.classList.remove('hidden');
+
+    // Special page setups
+    if (page === 'home')  Pages.renderHome();
+    if (page === 'admin') Pages.renderAdmin();
+    if (page === 'auth')  Pages.renderAuth();
+
+    Nav.update();
+    window.scrollTo(0, 0);
+  }
+};
+
+// ── NAV ────────────────────────────────────────────────────
+const Nav = {
+  update() {
+    const u = FB.currentUser;
+    const authEl = document.getElementById('nav-auth-link');
+    if (authEl) authEl.innerHTML = u
+      ? `<span style="color:var(--mustard);font-family:'Space Mono',monospace;font-size:12px;display:flex;align-items:center;gap:6px;border:1px solid rgba(255,199,44,0.3);padding:4px 10px;border-radius:2px;">${u.avatar} ${u.name}${u.isAdmin?' <span style=\"background:var(--orange);color:white;font-size:9px;padding:1px 5px;border-radius:2px;\">ADMIN</span>':''}</span>`
+      : '<a href="#auth" class="nav-links-a" style="color:var(--mustard);">Login / Sign Up</a>';
+    const adminLink = document.getElementById('nav-admin-link');
+    if (adminLink) adminLink.style.display = (u && u.isAdmin) ? 'list-item' : 'none';
+    const logoutBtn = document.getElementById('nav-logout');
+    if (logoutBtn) logoutBtn.style.display = u ? 'flex' : 'none';
+  }
+};
+
+// ── TOAST ──────────────────────────────────────────────────
+const Toast = {
+  container: null,
+
+  init() {
+    this.container = document.createElement('div');
+    this.container.className = 'toast-container';
+    document.body.appendChild(this.container);
+  },
+
+  show(msg, type = 'info') {
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.textContent = msg;
+    this.container.appendChild(el);
+    setTimeout(() => el.remove(), 3800);
+  }
+};
+
+// ── AI ARTICLE ENGINE ──────────────────────────────────────
+const AIEngine = {
+  statuses: [
+    "📡 Hacking into the YouTube mainframe...",
+    "🎙️ Transcribing 400 'to be fairs'...",
+    "🤖 Asking the AI to have opinions...",
+    "✂️ Cutting out 'SMASH THAT LIKE BUTTON'...",
+    "🧠 Translating football man to English...",
+    "☕ Hot takes brewing at dangerous temperatures...",
+    "⚽ Summoning the spirit of Martin Tyler...",
+    "📝 Writing headlines that aren't clickbait (failing)...",
+    "🔍 Fact-checking: 1 fact found, 0 checked...",
+    "✨ Polishing until it sparkles like a new kit..."
+  ],
+
+  async generateFromSource(sourceText, sourceName, tone, length) {
+    const toneMap = {
+      banter: 'absolute banter — witty, sharp, football-fan humour with jokes',
+      serious: 'serious football journalism with analysis and insight',
+      tactical: 'tactical deep-dive with formations, pressing patterns, and analysis',
+      fan: "passionate supporter's perspective, emotional and authentic"
+    };
+    const lengthMap = { short: '200-300 words', medium: '400-500 words', long: '600-800 words' };
+
+    const wordCount = { short: '300-400', medium: '500-700', long: '800-1000' };
+    const prompt = `You are FutbolBantz, Britain's most entertaining Premier League football blog. Write a fully SEO-optimised blog article.
+
+Source: "${sourceName}"
+Content: "${sourceText}"
+Tone: ${toneMap[tone] || toneMap.banter}
+Target word count: ${wordCount[length] || wordCount.medium} words
+
+SEO RULES:
+- Title: 50-60 characters, include the primary keyword naturally
+- metaDescription: exactly 140-155 characters, includes keyword, ends with a call to action
+- slug: lowercase, hyphens only, 3-6 words, no stop words
+- focusKeyword: the most important 2-4 word phrase for Google
+- secondaryKeywords: 3-5 related phrases
+- fullBody: use HTML h2 subheadings every 150-200 words, strong tags on key terms, ul/li for lists. Include focus keyword in first 100 words, in at least one h2, and naturally 3-5x total. Write ${wordCount[length] || wordCount.medium} words.
+- readTimeMinutes: integer
+- faqSchema: 3 questions real fans Google, with concise answers under 50 words each
+- breadcrumb: ["Home", category]
+
+Respond ONLY with valid JSON, no markdown fences, no preamble:
+{"title":"SEO title 50-60 chars","slug":"url-slug-here","tag":"Match Report","focusKeyword":"2-4 word keyword","secondaryKeywords":["kw2","kw3","kw4"],"metaDescription":"140-155 char meta description with keyword and CTA.","summary":"Two punchy lede sentences.","keypoints":["Point 1","Point 2","Point 3","Point 4","Point 5"],"conclusion":"One killer closing line.","fullBody":"<h2>Subheading</h2><p>Body with <strong>key terms</strong>...</p>","readTimeMinutes":4,"faqSchema":[{"question":"Q1?","answer":"A1."},{"question":"Q2?","answer":"A2."},{"question":"Q3?","answer":"A3."}],"breadcrumb":["Home","Match Report"]}`;
+
+    const apiKey = localStorage.getItem('fb_api_key') || '';
+    if (!apiKey) throw new Error("No API key set! Add your Anthropic API key in the settings box above the generate button.");
+
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 2000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    if (!resp.ok) {
+      const errBody = await resp.json().catch(() => ({}));
+      const msg = errBody?.error?.message || `HTTP ${resp.status}`;
+      throw new Error(`API error: ${msg}`);
+    }
+
+    const data = await resp.json();
+
+    // Check for stop_reason issues (e.g. max_tokens hit)
+    const stopReason = data.stop_reason;
+    if (stopReason === 'max_tokens') {
+      console.warn('Response was truncated — increase max_tokens');
+    }
+
+    let raw = data.content?.map(b => b.type === 'text' ? b.text : '').join('') || '';
+
+    // Strip any markdown fences
+    raw = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+
+    // If the JSON is truncated, try to salvage it
+    if (!raw.endsWith('}')) {
+      // Close open arrays/objects best-effort
+      const openBraces   = (raw.match(/\{/g) || []).length - (raw.match(/\}/g) || []).length;
+      const openBrackets = (raw.match(/\[/g) || []).length - (raw.match(/\]/g) || []).length;
+      // Close any open string first
+      if ((raw.match(/"/g) || []).length % 2 !== 0) raw += '"';
+      for (let i = 0; i < openBrackets; i++) raw += ']';
+      for (let i = 0; i < openBraces; i++) raw += '}';
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch(parseErr) {
+      // Last resort: extract fields with regex
+      console.error('JSON parse failed, raw:', raw.substring(0, 300));
+      const titleMatch = raw.match(/"title"\s*:\s*"([^"]+)"/);
+      const summaryMatch = raw.match(/"summary"\s*:\s*"([^"]+)"/);
+      if (!titleMatch) throw new Error('Could not parse AI response. Try again — it sometimes hiccups.');
+      parsed = {
+        title: titleMatch[1],
+        tag: (raw.match(/"tag"\s*:\s*"([^"]+)"/) || [])[1] || 'Hot Take',
+        summary: summaryMatch ? summaryMatch[1] : 'A cracking piece of football analysis.',
+        keypoints: ['See full article for details'],
+        conclusion: 'Football, eh.',
+        fullBody: raw.replace(/[{}"[\]:,]/g, ' ').substring(0, 800)
+      };
+    }
+    return parsed;
+  }
+};
+
+// ── PAGE RENDERERS ─────────────────────────────────────────
+const Pages = {
+
+  renderHome() {
+    const grid = document.getElementById('articles-grid');
+    const featured = document.getElementById('featured-article');
+    const sidebar = document.getElementById('sidebar-articles');
+    if (!grid) return;
+
+    const published = FB.articles.filter(a => a.published).sort((a,b) => new Date(b.date)-new Date(a.date));
+
+    if (featured && published.length > 0) {
+      const f = published[0];
+      featured.innerHTML = `
+        <div class="card card-dark" style="height:100%; cursor:pointer; position:relative; overflow:hidden;" onclick="Pages.openArticle('${f.id}')">
+          <div class="diag-badge">MUST READ!</div>
+          <div style="padding:32px; height:100%; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div class="flex gap-8 mb-16"><span class="tag tag-mustard">${f.tag}</span></div>
+              <h2 style="font-size:52px; color:var(--cream); margin-bottom:16px; line-height:0.92;">${f.title}</h2>
+              <p style="color:#aaa; font-size:15px; line-height:1.7; font-style:italic;">${f.summary}</p>
+            </div>
+            <div style="border-top:2px solid rgba(255,255,255,0.15); padding-top:16px; margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-family:'Space Mono',monospace; font-size:11px; color:#666;">📺 ${f.channel} • ${Pages.timeAgo(f.date)}</span>
+              <button class="btn btn-mustard btn-sm">Read the Rant →</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    if (sidebar && published.length > 1) {
+      sidebar.innerHTML = published.slice(1,5).map((a,i) => `
+        <div class="sidebar-item" onclick="Pages.openArticle('${a.id}')">
+          <span class="sidebar-num">${String(i+1).padStart(2,'0')}</span>
+          <div>
+            <span class="tag tag-${i%2===0?'mustard':'orange'} mb-8">${a.tag}</span>
+            <div style="font-family:'Archivo Black',sans-serif; font-size:15px; line-height:1.2; margin-top:4px;">${a.title}</div>
+            <div style="font-family:'Space Mono',monospace; font-size:11px; color:#888; margin-top:4px;">${a.channel} • ${Pages.timeAgo(a.date)} • 👁 ${a.views?.toLocaleString()}</div>
+          </div>
+        </div>`).join('');
+    }
+
+    if (grid) {
+      const rest = published.slice(5);
+      if (rest.length === 0) {
+        grid.innerHTML = published.slice(0,3).map(a => Pages.articleCard(a)).join('');
+      } else {
+        grid.innerHTML = rest.map(a => Pages.articleCard(a)).join('');
+      }
+    }
+  },
+
+  articleCard(a) {
+    const tagColors = { 'Match Report':'mustard', 'Hot Take':'orange', 'Banter':'mustard', 'Transfers':'charcoal', 'Tactical':'orange', 'Opinion':'charcoal' };
+    const tc = tagColors[a.tag] || 'mustard';
+    return `
+      <div class="card" style="cursor:pointer;" onclick="Pages.openArticle('${a.id}')">
+        <div style="background:var(--charcoal); padding:6px 16px; display:flex; justify-content:space-between; align-items:center;">
+          <span class="tag tag-${tc}">${a.tag}</span>
+          <span style="font-family:'Space Mono',monospace; font-size:10px; color:#888;">${Pages.timeAgo(a.date)}</span>
+        </div>
+        <div style="padding:20px;">
+          <h3 style="font-size:24px; margin-bottom:10px; line-height:1.05;">${a.title}</h3>
+          <p style="font-size:13px; color:#666; line-height:1.7; font-style:italic; margin-bottom:16px;">${a.summary.substring(0,130)}...</p>
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:2px solid var(--charcoal); padding-top:12px;">
+            <span style="font-family:'Space Mono',monospace; font-size:10px; color:#888;">📺 ${a.channel}</span>
+            <span style="font-family:'Space Mono',monospace; font-size:10px; color:#888;">👁 ${a.views?.toLocaleString()}</span>
+          </div>
+        </div>
+      </div>`;
+  },
+
+  openArticle(id) {
+    const a = FB.articles.find(x => x.id === id);
+    if (!a) return;
+    a.views = (a.views || 0) + 1;
+    FB.saveArticles();
+
+    // ── SEO: Inject dynamic <meta> tags ──────────────────────
+    const setMeta = (sel, val) => { let el = document.querySelector(sel); if(!el){el=document.createElement('meta'); el.setAttribute(sel.includes('og:')? 'property':'name', sel.replace('meta[name="','').replace('meta[property="','').replace('"]','')); document.head.appendChild(el);} el.setAttribute('content', val); };
+    document.title = `${a.title} | FutbolBantz`;
+    setMeta('meta[name="description"]',    a.metaDescription || a.summary);
+    setMeta('meta[name="keywords"]',       [a.focusKeyword, ...(a.secondaryKeywords||[])].filter(Boolean).join(', '));
+    setMeta('meta[property="og:title"]',   a.title);
+    setMeta('meta[property="og:description"]', a.metaDescription || a.summary);
+    setMeta('meta[property="og:type"]',    'article');
+    setMeta('meta[property="og:url"]',     `${location.origin}${location.pathname}#article/${a.slug || a.id}`);
+    setMeta('meta[name="twitter:card"]',   'summary_large_image');
+    setMeta('meta[name="twitter:title"]',  a.title);
+    setMeta('meta[name="twitter:description"]', a.metaDescription || a.summary);
+
+    // ── SEO: Article structured data (JSON-LD) ───────────────
+    const existingLd = document.getElementById('article-jsonld');
+    if (existingLd) existingLd.remove();
+    const articleSchema = {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": a.title,
+          "description": a.metaDescription || a.summary,
+          "author": { "@type": "Organization", "name": "FutbolBantz" },
+          "publisher": { "@type": "Organization", "name": "FutbolBantz", "logo": { "@type": "ImageObject", "url": `${location.origin}/logo.png` }},
+          "datePublished": a.date,
+          "dateModified": a.date,
+          "mainEntityOfPage": { "@type": "WebPage", "@id": `${location.origin}${location.pathname}#article/${a.slug || a.id}` },
+          "keywords": [a.focusKeyword, ...(a.secondaryKeywords||[])].filter(Boolean).join(', '),
+          "articleSection": a.tag,
+          "wordCount": a.fullBody ? a.fullBody.replace(/<[^>]+>/g,'').split(' ').length : 400
+        },
+        ...(a.faqSchema && a.faqSchema.length ? [{
+          "@type": "FAQPage",
+          "mainEntity": a.faqSchema.map(f => ({ "@type": "Question", "name": f.question, "acceptedAnswer": { "@type": "Answer", "text": f.answer } }))
+        }] : []),
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": (a.breadcrumb || ['Home', a.tag]).map((name, i) => ({ "@type": "ListItem", "position": i+1, "name": name }))
+        }
+      ]
+    };
+    const ldScript = document.createElement('script');
+    ldScript.id   = 'article-jsonld';
+    ldScript.type = 'application/ld+json';
+    ldScript.text = JSON.stringify(articleSchema);
+    document.head.appendChild(ldScript);
+
+    // ── SEO SCORE calculation ─────────────────────────────────
+    const seoScore = (() => {
+      let score = 0; const tips = [];
+      const body = (a.fullBody || '').replace(/<[^>]+>/g,'').toLowerCase();
+      const kw   = (a.focusKeyword || '').toLowerCase();
+      const titleLen = a.title.length;
+      const descLen  = (a.metaDescription||'').length;
+
+      if (kw && a.title.toLowerCase().includes(kw))  { score+=20; } else { tips.push('❌ Focus keyword missing from title'); }
+      if (titleLen >= 50 && titleLen <= 60)           { score+=15; } else { tips.push(`⚠️ Title length ${titleLen} chars (ideal: 50-60)`); }
+      if (descLen  >= 140 && descLen  <= 155)         { score+=15; } else { tips.push(`⚠️ Meta description ${descLen} chars (ideal: 140-155)`); }
+      if (kw && body.indexOf(kw) < 200)               { score+=10; } else { tips.push('❌ Keyword not in first 100 words'); }
+      const kwCount = kw ? (body.match(new RegExp(kw,'gi'))||[]).length : 0;
+      if (kwCount >= 3 && kwCount <= 6)               { score+=10; } else { tips.push(`⚠️ Keyword used ${kwCount}x (ideal: 3-6)`); }
+      if (/<h2/i.test(a.fullBody||''))                { score+=10; } else { tips.push('❌ No H2 subheadings found'); }
+      if (a.faqSchema && a.faqSchema.length >= 3)     { score+=10; } else { tips.push('⚠️ No FAQ schema (missed rich snippet)'); }
+      if (a.slug && a.slug.includes('-'))             { score+=5;  } else { tips.push('⚠️ No SEO slug generated'); }
+      if ((a.secondaryKeywords||[]).length >= 3)      { score+=5;  } else { tips.push('⚠️ Less than 3 secondary keywords'); }
+      const wc = body.split(' ').filter(Boolean).length;
+      if (wc >= 300)                                  { score+=0;  } else { tips.push(`⚠️ Word count low: ${wc} words`); }
+      const color = score >= 80 ? '#22c55e' : score >= 60 ? 'var(--mustard)' : 'var(--orange)';
+      const label = score >= 80 ? '🟢 Excellent' : score >= 60 ? '🟡 Good' : '🔴 Needs Work';
+      return { score, tips, color, label };
+    })();
+
+    const readTime = a.readTimeMinutes || Math.max(1, Math.round((a.fullBody||'').replace(/<[^>]+>/g,'').split(' ').length / 200));
+    const shareUrl = encodeURIComponent(`${location.origin}${location.pathname}#article/${a.slug||a.id}`);
+    const shareText = encodeURIComponent(a.title + ' | FutbolBantz');
+    const breadcrumbs = a.breadcrumb || ['Home', a.tag];
+
+    const page = document.getElementById('article-page');
+    if (!page) return;
+
+    page.innerHTML = `
+      <div style="max-width:900px; margin:0 auto; padding:40px 32px;">
+
+        <!-- BREADCRUMB -->
+        <nav aria-label="breadcrumb" style="margin-bottom:20px;">
+          <ol style="display:flex; gap:8px; align-items:center; list-style:none; font-family:'Space Mono',monospace; font-size:11px; flex-wrap:wrap;">
+            ${breadcrumbs.map((b,i) => `
+              <li style="display:flex; align-items:center; gap:8px;">
+                ${i > 0 ? '<span style="color:#aaa;">›</span>' : ''}
+                <span style="color:${i===breadcrumbs.length-1?'var(--charcoal)':'var(--orange)'}; ${i===breadcrumbs.length-1?'font-weight:700;':''}">${b}</span>
+              </li>`).join('')}
+          </ol>
+        </nav>
+
+        <button class="btn btn-outline btn-sm mb-16" onclick="Router.go('home')" style="font-size:12px;">← Back to Bantz</button>
+
+        <!-- ARTICLE HEADER -->
+        <header style="margin-bottom:32px;">
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:16px;">
+            <span class="tag tag-mustard">${a.tag}</span>
+            ${a.focusKeyword ? `<span class="tag" style="background:rgba(255,107,53,0.1); border-color:var(--orange); color:var(--orange); font-size:9px;">🎯 ${a.focusKeyword}</span>` : ''}
+          </div>
+
+          <h1 style="font-family:'Bangers',cursive; font-size:clamp(36px,5vw,64px); line-height:0.92; letter-spacing:2px; margin-bottom:20px; color:var(--charcoal);">${a.title}</h1>
+
+          <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:12px 16px; background:var(--cream-dk); border:var(--border); border-radius:var(--radius); box-shadow:var(--shadow-sm);">
+            <span style="font-family:'Space Mono',monospace; font-size:11px; color:#888;">✍️ FutbolBantz</span>
+            <span style="color:#ddd;">|</span>
+            <time style="font-family:'Space Mono',monospace; font-size:11px; color:#888;" datetime="${a.date}">${new Date(a.date).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</time>
+            <span style="color:#ddd;">|</span>
+            <span style="font-family:'Space Mono',monospace; font-size:11px; color:#888;">☕ ${readTime} min read</span>
+            <span style="color:#ddd;">|</span>
+            <span style="font-family:'Space Mono',monospace; font-size:11px; color:#888;">👁 ${(a.views||0).toLocaleString()} views</span>
+            <span style="margin-left:auto; display:flex; gap:8px;">
+              <a href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" target="_blank" class="btn btn-sm btn-charcoal" style="font-size:11px;">🐦 Share</a>
+              <button class="btn btn-sm btn-outline" onclick="navigator.clipboard.writeText(window.location.href); Toast.show('🔗 Link copied!','success');" style="font-size:11px;">🔗 Copy Link</button>
+            </span>
+          </div>
+        </header>
+
+        <!-- LEDE / SUMMARY -->
+        <div class="speech-bubble mb-32" style="background:var(--mustard);">
+          <p style="font-size:17px; font-style:italic; line-height:1.8; font-family:'Bitter',Georgia,serif;">"${a.summary}"</p>
+          <p style="font-family:'Space Mono',monospace; font-size:10px; color:rgba(28,25,23,0.6); margin-top:8px;">— FutbolBantz Editorial Team</p>
+        </div>
+
+        <!-- ARTICLE BODY — semantic HTML -->
+        <article style="font-size:17px; line-height:1.9; color:#2a2725; margin-bottom:32px; font-family:'DM Sans',sans-serif;">
+          ${a.fullBody || a.keypoints.map(k=>`<p style="margin-bottom:20px;">${k}</p>`).join('')}
+        </article>
+
+        <!-- KEY POINTS BOX -->
+        <aside style="background:var(--charcoal); border:var(--border-thick); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:32px;">
+          <h2 style="color:var(--mustard); font-size:24px; margin-bottom:16px; letter-spacing:1px;">📋 TL;DR — Key Points</h2>
+          <ul style="list-style:none; margin-bottom:16px;">
+            ${a.keypoints.map(k=>`<li style="color:var(--cream); font-size:14px; line-height:1.7; padding:5px 0 5px 22px; position:relative; border-bottom:1px solid rgba(255,255,255,0.06);"><span style="position:absolute;left:0;color:var(--mustard);font-size:10px;top:9px;">▶</span>${k}</li>`).join('')}
+          </ul>
+          <div style="border-top:2px solid rgba(255,199,44,0.3); padding-top:16px;">
+            <p style="font-family:'Space Mono',monospace; font-size:13px; color:var(--mustard); font-style:italic;">"${a.conclusion}"</p>
+          </div>
+        </aside>
+
+        <!-- FAQ SECTION (rich snippet) -->
+        ${a.faqSchema && a.faqSchema.length ? `
+        <section style="margin-bottom:32px;" itemscope itemtype="https://schema.org/FAQPage">
+          <h2 style="font-family:'Bangers',cursive; font-size:32px; letter-spacing:2px; margin-bottom:20px;">❓ Fans Also Ask</h2>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            ${a.faqSchema.map(f=>`
+            <div style="border:var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-sm);" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+              <div style="background:var(--mustard); padding:12px 16px; font-family:'Archivo Black',sans-serif; font-size:14px; cursor:pointer;" itemprop="name" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+                ${f.question} <span style="float:right;">▾</span>
+              </div>
+              <div style="padding:14px 16px; background:var(--cream); display:none;" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p itemprop="text" style="font-size:14px; line-height:1.7; color:#444;">${f.answer}</p>
+              </div>
+            </div>`).join('')}
+          </div>
+        </section>` : ''}
+
+        <!-- SEO SCORE WIDGET (admin only) -->
+        ${FB.currentUser?.isAdmin ? `
+        <details style="margin-bottom:32px; border:2px solid var(--charcoal); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-sm);">
+          <summary style="background:var(--charcoal); padding:12px 20px; cursor:pointer; font-family:'Archivo Black',sans-serif; font-size:13px; color:var(--mustard); text-transform:uppercase; letter-spacing:1px; list-style:none;">
+            🔍 SEO Score: <span style="color:${seoScore.color};">${seoScore.score}/100 — ${seoScore.label}</span> (Admin Only)
+          </summary>
+          <div style="padding:20px; background:var(--cream-dk);">
+            <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+              <div style="flex:1; background:#e5e0d0; border:2px solid var(--charcoal); border-radius:2px; height:16px; overflow:hidden;">
+                <div style="height:100%; width:${seoScore.score}%; background:${seoScore.color}; transition:width 0.5s ease;"></div>
+              </div>
+              <span style="font-family:'Bangers',cursive; font-size:28px; color:${seoScore.color};">${seoScore.score}</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+              ${[
+                {ok: a.focusKeyword && a.title.toLowerCase().includes((a.focusKeyword||'').toLowerCase()), label:'Keyword in title'},
+                {ok: a.title.length>=50&&a.title.length<=60, label:`Title length (${a.title.length} chars)`},
+                {ok: (a.metaDescription||'').length>=140&&(a.metaDescription||'').length<=155, label:`Meta desc (${(a.metaDescription||'').length} chars)`},
+                {ok: /<h2/i.test(a.fullBody||''), label:'H2 subheadings present'},
+                {ok: a.faqSchema?.length>=3, label:'FAQ schema (rich snippet)'},
+                {ok: !!(a.slug&&a.slug.includes('-')), label:'SEO slug generated'},
+                {ok: (a.secondaryKeywords||[]).length>=3, label:`Secondary keywords (${(a.secondaryKeywords||[]).length})`},
+                {ok: (a.fullBody||'').replace(/<[^>]+>/g,'').split(' ').filter(Boolean).length>=300, label:`Word count (${(a.fullBody||'').replace(/<[^>]+>/g,'').split(' ').filter(Boolean).length})`},
+              ].map(c=>`<div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11px;padding:6px 10px;background:${c.ok?'rgba(34,197,94,0.1)':'rgba(255,107,53,0.1)'};border:1px solid ${c.ok?'#22c55e':'var(--orange)'};border-radius:2px;"><span>${c.ok?'✅':'❌'}</span><span>${c.label}</span></div>`).join('')}
+            </div>
+            ${a.focusKeyword ? `<div style="margin-top:12px; padding:10px 14px; background:var(--cream); border:var(--border); border-radius:var(--radius); font-family:'Space Mono',monospace; font-size:11px;"><strong>Focus Keyword:</strong> "${a.focusKeyword}" &nbsp;|&nbsp; <strong>Secondary:</strong> ${(a.secondaryKeywords||[]).join(', ')||'none'}${a.slug?` &nbsp;|&nbsp; <strong>Slug:</strong> /${a.slug}`:''}
+            </div>` : ''}
+          </div>
+        </details>` : ''}
+
+        <!-- SECONDARY KEYWORDS (hidden, for SEO) -->
+        ${(a.secondaryKeywords||[]).length ? `<div style="display:none;" aria-hidden="true">${a.secondaryKeywords.join(' ')}</div>` : ''}
+
+        <!-- SOCIAL + CTA -->
+        <div style="padding:24px; border:var(--border-thick); border-radius:var(--radius); background:var(--cream-dk); text-align:center; box-shadow:var(--shadow);">
+          <p style="font-family:'Archivo Black',sans-serif; font-size:15px; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Enjoyed this nonsense?</p>
+          <p style="font-family:'DM Sans',sans-serif; font-size:13px; color:#888; margin-bottom:16px; font-style:italic;">Share it before your mates see it somewhere else.</p>
+          <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <a href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" target="_blank" class="btn btn-charcoal">🐦 Tweet This Banger</a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="btn btn-mustard">📘 Share on Facebook</a>
+            <button class="btn btn-outline" onclick="Router.go('home')">← More Bantz</button>
+          </div>
+        </div>
+
+      </div>`;
+
+    Router.go('article');
+  }
+,
+
+  timeAgo(dateStr) {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff/60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins/60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.floor(hrs/24)}d ago`;
+  },
+
+  renderAuth() {
+    const emailIn = document.getElementById('auth-email');
+    const passIn  = document.getElementById('auth-password');
+    if (emailIn) emailIn.value = '';
+    if (passIn)  passIn.value = '';
+  },
+
+  renderAdmin() {
+    if (!Auth.requireAdmin()) return;
+    this.updateAdminStats();
+    this.renderAdminArticles();
+  },
+
+  updateAdminStats() {
+    const published = FB.articles.filter(a=>a.published).length;
+    const totalViews = FB.articles.reduce((s,a)=>s+(a.views||0),0);
+    const el = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+    el('stat-articles', published);
+    el('stat-views', totalViews.toLocaleString());
+    el('stat-users', FB.users.length);
+    el('stat-channels', '12');
+  },
+
+  renderAdminArticles() {
+    const list = document.getElementById('admin-articles-list');
+    if (!list) return;
+    const sorted = [...FB.articles].sort((a,b)=>new Date(b.date)-new Date(a.date));
+    list.innerHTML = sorted.map(a=>`
+      <div class="card mb-16" style="cursor:default;">
+        <div style="padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:200px;">
+            <div class="flex gap-8 mb-8"><span class="tag tag-${a.published?'mustard':'charcoal'}">${a.published?'✅ Live':'⏸ Draft'}</span><span class="tag tag-orange">${a.tag}</span></div>
+            <div style="font-family:'Archivo Black',sans-serif; font-size:15px;">${a.title}</div>
+            <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:4px;">${a.channel} • ${Pages.timeAgo(a.date)} • 👁 ${(a.views||0).toLocaleString()} views</div>
+          </div>
+          <div class="flex gap-8" style="flex-shrink:0;">
+            <button class="btn btn-sm btn-outline" onclick="Pages.openArticle('${a.id}'); Router.go('article');">👁 View</button>
+            <button class="btn btn-sm ${a.published?'btn-charcoal':'btn-mustard'}" onclick="Admin.togglePublish('${a.id}')">${a.published?'Unpublish':'Publish'}</button>
+            <button class="btn btn-sm" style="background:var(--orange);color:white;box-shadow:var(--shadow-sm);" onclick="Admin.deleteArticle('${a.id}')">🗑 Delete</button>
+          </div>
+        </div>
+      </div>`).join('') || '<p style="text-align:center;color:#888;padding:40px;font-style:italic;">No articles yet. Generate some from the Video Machine! 🎬</p>';
+  }
+};
+
+// ── ADMIN ACTIONS ──────────────────────────────────────────
+const Admin = {
+  togglePublish(id) {
+    const a = FB.articles.find(x=>x.id===id);
+    if (a) { a.published = !a.published; FB.saveArticles(); Pages.renderAdminArticles(); Pages.updateAdminStats(); Toast.show(a.published ? '✅ Article published!' : '⏸ Article unpublished.', a.published?'success':'info'); }
+  },
+
+  deleteArticle(id) {
+    if (!confirm('Delete this article? Gone forever, like Spurs\' title hopes.')) return;
+    FB.articles = FB.articles.filter(x=>x.id!==id);
+    FB.saveArticles();
+    Pages.renderAdminArticles();
+    Pages.updateAdminStats();
+    Toast.show('🗑 Article deleted.', 'error');
+  },
+
+  async generateFromVideo() {
+    const tone   = document.getElementById('gen-tone')?.value || 'banter';
+    const length = document.getElementById('gen-length')?.value || 'medium';
+    const btn    = document.getElementById('generate-btn');
+    const results = document.getElementById('gen-results');
+    const statusEl = document.getElementById('gen-status');
+
+    // Build work list: prefer pre-fetched YouTube videos, fall back to raw inputs
+    let workItems = []; // { sourceText, sourceName, thumbnail, url }
+
+    if (window._fetchedVideos && window._fetchedVideos.length > 0) {
+      // Use real YouTube video data
+      workItems = window._fetchedVideos.map(v => ({
+        sourceText: `Video Title: "${v.title}"\nChannel: ${v.channelName}\nDescription: ${v.description}\nURL: ${v.url}`,
+        sourceName: `${v.channelName} — ${v.title}`,
+        thumbnail:  v.thumbnail,
+        url:        v.url,
+        channelName: v.channelName
+      }));
+    } else {
+      // Fall back to raw inputs
+      const rawSources = Array.from(document.querySelectorAll('.video-source-input')).map(i => (i.value || i.textContent || '').trim()).filter(Boolean);
+      if (rawSources.length === 0) { Toast.show('Add at least one source, you absolute muppet.', 'error'); return; }
+      workItems = rawSources.map(s => ({ sourceText: s, sourceName: s, thumbnail: null, url: null, channelName: s }));
+    }
+
+    if (workItems.length === 0) { Toast.show('Nothing to generate from! Fetch some videos first or add a topic.', 'error'); return; }
+
+    btn.disabled = true; btn.textContent = '⏳ Generating...';
+    results.innerHTML = '';
+    document.getElementById('gen-progress').style.display = 'block';
+    document.getElementById('gen-progress').querySelector('.progress-fill').style.cssText = 'animation:progress-stripes 0.8s linear infinite, progress-grow 10s ease-out forwards;';
+
+    let statusIdx = 0;
+    const statuses = AIEngine.statuses;
+    statusEl.textContent = statuses[0];
+    const interval = setInterval(() => { statusIdx=(statusIdx+1)%statuses.length; statusEl.textContent=statuses[statusIdx]; }, 1600);
+
+    let generated = 0;
+    for (const item of workItems) {
+      try {
+        statusEl.textContent = `✍️ Writing article for: ${item.sourceName.substring(0,50)}...`;
+        const result = await AIEngine.generateFromSource(item.sourceText, item.sourceName, tone, length);
+
+        const article = {
+          id: 'a'+Date.now()+Math.random().toString(36).slice(2,6),
+          title: result.title, tag: result.tag,
+          channel: item.channelName || item.sourceName,
+          thumbnail: item.thumbnail || null,
+          videoUrl: item.url || null,
+          summary: result.summary, keypoints: result.keypoints,
+          conclusion: result.conclusion, fullBody: result.fullBody,
+          date: new Date().toISOString(), published: false, views: 0
+        };
+        FB.articles.unshift(article);
+        FB.saveArticles();
+        generated++;
+
+        // Render result card
+        const card = document.createElement('div');
+        card.className = 'article-result fade-in';
+        card.innerHTML = `
+          <div class="article-result-header">
+            <div class="flex gap-8 items-center">
+              ${item.thumbnail ? `<img src="${item.thumbnail}" style="width:50px;height:37px;object-fit:cover;border:2px solid var(--mustard);border-radius:2px;">` : ''}
+              <span class="tag tag-orange">${article.tag}</span>
+              <span style="font-family:'Space Mono',monospace;font-size:10px;color:#888;">⏸ Draft</span>
+              ${item.url ? `<a href="${item.url}" target="_blank" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--mustard);margin-left:8px;">🔗 Source Video</a>` : ''}
+            </div>
+            <div class="flex gap-8">
+              <button class="btn btn-mustard btn-sm" onclick="Admin.togglePublish('${article.id}'); this.textContent='✅ Published!'; this.disabled=true;">🚀 Publish</button>
+              <button class="btn btn-sm btn-charcoal" onclick="Pages.openArticle('${article.id}'); Router.go('article');">👁 Preview</button>
+            </div>
+          </div>
+          <div class="article-result-body">
+            <h3>${article.title}</h3>
+            <p><em>${article.summary}</em></p>
+            <ul class="key-points">${article.keypoints.map(k=>`<li>${k}</li>`).join('')}</ul>
+            <div style="background:var(--mustard);border:var(--border);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow-sm);">
+              <p style="font-family:'Space Mono',monospace;font-size:13px;"><strong>Conclusion:</strong> ${article.conclusion}</p>
+            </div>
+          </div>`;
+        results.appendChild(card);
+      } catch(e) {
+        Toast.show(`Error on "${item.sourceName.substring(0,40)}": ${e.message}`, 'error');
+      }
+    }
+
+    clearInterval(interval);
+    document.getElementById('gen-progress').style.display = 'none';
+    statusEl.textContent = `✅ Done! Generated ${generated} article${generated!==1?'s':''}. Review and publish above.`;
+    btn.disabled = false; btn.textContent = '⚡ Step 2: Generate Articles';
+    if (generated > 0) {
+      Toast.show(`🎉 ${generated} article${generated!==1?'s':''} created!`, 'success');
+      Pages.renderAdminArticles();
+      Pages.updateAdminStats();
+      window._fetchedVideos = []; // clear after use
+    }
+  },
+
+  // ── FETCH FROM YOUTUBE ────────────────────────────────────
+  async fetchYouTubeVideos() {
+    const ytKey = localStorage.getItem('fb_yt_key');
+    if (!ytKey) { Toast.show('⚠️ Add your YouTube API key first, chief!', 'error'); return; }
+
+    const fetchBtn = document.getElementById('fetch-btn');
+    const statusEl = document.getElementById('gen-status');
+    const preview  = document.getElementById('fetched-videos-preview');
+    const list     = document.getElementById('fetched-videos-list');
+
+    fetchBtn.disabled = true; fetchBtn.textContent = '⏳ Fetching...';
+    preview.classList.add('hidden');
+    list.innerHTML = '';
+
+    // Store fetched videos globally for generateFromVideo to use
+    window._fetchedVideos = [];
+
+    const sources = Array.from(document.querySelectorAll('.video-source-input')).map(i => i.value.trim()).filter(Boolean);
+    if (sources.length === 0) { Toast.show('Add at least one channel or video URL!', 'error'); fetchBtn.disabled=false; fetchBtn.textContent='🔍 Step 1: Fetch from YouTube'; return; }
+
+    const maxVids = parseInt(document.getElementById('vids-per-channel')?.value || 3);
+    let totalFetched = 0;
+
+    for (const src of sources) {
+      const isVideoUrl = src.includes('watch?v=') || src.includes('youtu.be/');
+      statusEl.textContent = `📡 Fetching from ${src}...`;
+      try {
+        let videos;
+        if (isVideoUrl) {
+          videos = await YouTubeAPI.getVideoById(src);
+        } else {
+          const chan = await YouTubeAPI.resolveChannelId(src);
+          if (!chan) { Toast.show(`Couldn't resolve channel: ${src}`, 'error'); continue; }
+          statusEl.textContent = `📺 Found channel: ${chan.name}. Grabbing videos...`;
+          videos = await YouTubeAPI.getChannelVideos(chan.id, maxVids);
+        }
+
+        videos.forEach(v => {
+          window._fetchedVideos.push(v);
+          totalFetched++;
+          const item = document.createElement('div');
+          item.style.cssText = 'display:flex;gap:12px;align-items:center;padding:8px;background:rgba(255,255,255,0.04);border-radius:4px;border:1px solid rgba(255,199,44,0.2);';
+          item.innerHTML = `
+            ${v.thumbnail ? `<img src="${v.thumbnail}" style="width:60px;height:45px;object-fit:cover;border:2px solid var(--charcoal);border-radius:2px;flex-shrink:0;">` : '<div style="width:60px;height:45px;background:#333;border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">🎬</div>'}
+            <div style="flex:1;min-width:0;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:13px;color:var(--cream);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.title}</div>
+              <div style="font-family:'Space Mono',monospace;font-size:10px;color:#888;margin-top:2px;">📺 ${v.channelName} ${v.viewCount ? '• 👁 '+v.viewCount : ''} • ${new Date(v.publishedAt).toLocaleDateString('en-GB')}</div>
+            </div>
+            <span class="tag tag-mustard">✓ Ready</span>`;
+          list.appendChild(item);
+        });
+      } catch(e) {
+        Toast.show(`Error fetching ${src}: ${e.message}`, 'error');
+      }
+    }
+
+    fetchBtn.disabled = false; fetchBtn.textContent = '🔍 Step 1: Fetch from YouTube';
+    if (totalFetched > 0) {
+      preview.classList.remove('hidden');
+      statusEl.textContent = `✅ Found ${totalFetched} video${totalFetched!==1?'s':''}! Now hit Step 2 to generate articles.`;
+      Toast.show(`🎬 Fetched ${totalFetched} videos from YouTube!`, 'success');
+    } else {
+      statusEl.textContent = '⚠️ No videos found. Check your channel handles and API key.';
+    }
+  }
+};
+
+// ── AUTH UI HANDLERS ───────────────────────────────────────
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.tab===tab));
+  document.getElementById('login-form').classList.toggle('hidden', tab!=='login');
+  document.getElementById('register-form').classList.toggle('hidden', tab!=='register');
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass  = document.getElementById('login-pass').value;
+  try {
+    const user = Auth.login(email, pass);
+    Toast.show(`🎉 Welcome back, ${user.name}! Right, let's get bantering.`, 'success');
+    Router.go(user.isAdmin ? 'admin' : 'home');
+  } catch(e) { Toast.show(e.message, 'error'); }
+}
+
+function doRegister() {
+  const name    = document.getElementById('reg-name').value;
+  const email   = document.getElementById('reg-email').value;
+  const pass    = document.getElementById('reg-pass').value;
+  const isAdmin = document.getElementById('reg-admin').checked;
+  const code    = document.getElementById('reg-code').value;
+  try {
+    const user = Auth.register(name, email, pass, isAdmin, code);
+    Toast.show(`🏆 Account created! Welcome to FutbolBantz, ${user.name}!`, 'success');
+    Router.go(user.isAdmin ? 'admin' : 'home');
+  } catch(e) { Toast.show(e.message, 'error'); }
+}
+
+function toggleAdminCode(show) {
+  const row = document.getElementById('admin-code-row');
+  if (row) row.classList.toggle('hidden', !show);
+}
+
+function switchAdminPanel(panel) {
+  document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(`admin-${panel}`);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.admin-nav-item').forEach(i => i.classList.toggle('active', i.dataset.panel===panel));
+  document.getElementById('admin-page-title').textContent = {
+    dashboard:'📊 Dashboard', generate:'⚡ Video Machine', articles:'📄 All Articles', users:'👥 Users'
+  }[panel] || 'Admin';
+}
+</script>
 <script>
+  // ── API KEY HELPERS ───────────────────────────────────────
+  function saveApiKey(val) { localStorage.setItem('fb_api_key', val.trim()); }
+  function saveYtKey(val)  { localStorage.setItem('fb_yt_key',  val.trim()); }
+  function toggleApiKeyVis(id) {
+    const inp = document.getElementById(id || 'api-key-input');
+    if (inp) inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+
+  // ── INPUT MODE SWITCHER ───────────────────────────────────
+  function switchInputMode(mode) {
+    ['channel','video','manual'].forEach(m => {
+      const el = document.getElementById('input-mode-' + m);
+      const tab = document.getElementById('mode-tab-' + m);
+      if (el)  el.classList.toggle('hidden', m !== mode);
+      if (tab) tab.classList.toggle('active', m === mode);
+    });
+  }
+
+  // ── YOUTUBE API ENGINE ────────────────────────────────────
+  const YouTubeAPI = {
+    // Resolve a channel handle/URL to a channel ID
+    async resolveChannelId(handleOrUrl) {
+      const ytKey = localStorage.getItem('fb_yt_key');
+      if (!ytKey) return null;
+
+      // Extract handle from URL if needed
+      let handle = handleOrUrl.trim();
+      const match = handle.match(/youtube\.com\/@([\w.-]+)/);
+      if (match) handle = '@' + match[1];
+      if (!handle.startsWith('@') && !handle.startsWith('UC')) handle = '@' + handle;
+
+      // Try forHandle lookup (handles @username)
+      if (handle.startsWith('@')) {
+        const r = await fetch(
+          `https://www.googleapis.com/youtube/v3/channels?part=id,snippet&forHandle=${encodeURIComponent(handle)}&key=${ytKey}`
+        );
+        const d = await r.json();
+        if (d.items && d.items.length > 0) return { id: d.items[0].id, name: d.items[0].snippet.title };
+      }
+      // If it looks like a channel ID already
+      if (handle.startsWith('UC')) return { id: handle, name: handle };
+      return null;
+    },
+
+    // Fetch latest videos from a channel
+    async getChannelVideos(channelId, maxResults = 3) {
+      const ytKey = localStorage.getItem('fb_yt_key');
+      if (!ytKey) throw new Error('No YouTube API key');
+
+      // Get uploads playlist ID
+      const chanR = await fetch(
+        `https://www.googleapis.com/youtube/v3/channels?part=contentDetails,snippet&id=${channelId}&key=${ytKey}`
+      );
+      const chanD = await chanR.json();
+      if (!chanD.items || chanD.items.length === 0) throw new Error('Channel not found: ' + channelId);
+      const uploadsId = chanD.items[0].contentDetails.relatedPlaylists.uploads;
+      const channelName = chanD.items[0].snippet.title;
+
+      // Get videos from uploads playlist
+      const vidR = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=${maxResults}&key=${ytKey}`
+      );
+      const vidD = await vidR.json();
+      if (!vidD.items) throw new Error('No videos found');
+
+      return vidD.items.map(item => ({
+        videoId:     item.snippet.resourceId.videoId,
+        title:       item.snippet.title,
+        description: item.snippet.description?.substring(0, 500) || '',
+        thumbnail:   item.snippet.thumbnails?.medium?.url || '',
+        publishedAt: item.snippet.publishedAt,
+        channelName,
+        url: `https://youtube.com/watch?v=${item.snippet.resourceId.videoId}`
+      }));
+    },
+
+    // Fetch a single video by URL
+    async getVideoById(urlOrId) {
+      const ytKey = localStorage.getItem('fb_yt_key');
+      if (!ytKey) throw new Error('No YouTube API key');
+
+      let videoId = urlOrId;
+      const m1 = urlOrId.match(/[?&]v=([\w-]+)/);
+      const m2 = urlOrId.match(/youtu\.be\/([\w-]+)/);
+      if (m1) videoId = m1[1];
+      else if (m2) videoId = m2[1];
+
+      const r = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${ytKey}`
+      );
+      const d = await r.json();
+      if (!d.items || d.items.length === 0) throw new Error('Video not found: ' + urlOrId);
+      const v = d.items[0];
+      return [{
+        videoId,
+        title:       v.snippet.title,
+        description: v.snippet.description?.substring(0, 500) || '',
+        thumbnail:   v.snippet.thumbnails?.medium?.url || '',
+        publishedAt: v.snippet.publishedAt,
+        channelName: v.snippet.channelTitle,
+        viewCount:   parseInt(v.statistics?.viewCount || 0).toLocaleString(),
+        url: `https://youtube.com/watch?v=${videoId}`
+      }];
+    }
+  };
+
   // ── INIT ──────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     FB.init();
     Toast.init();
+
+    // Pre-fill saved API keys
+    const savedKey = localStorage.getItem('fb_api_key');
+    const keyInput = document.getElementById('api-key-input');
+    if (savedKey && keyInput) keyInput.value = savedKey;
+    const savedYtKey = localStorage.getItem('fb_yt_key');
+    const ytInput = document.getElementById('yt-key-input');
+    if (savedYtKey && ytInput) ytInput.value = savedYtKey;
 
     // update admin user info
     const userInfo = document.getElementById('admin-user-info');
@@ -517,6 +2524,334 @@
         </div>`).join('') || '<p style="color:#888;padding:20px;text-align:center;font-style:italic;">No articles yet!</p>';
     }
   });
+
+  // ── QUICK LOGIN (demo buttons) ────────────────────────────
+  function quickLogin(email, pass) {
+    document.getElementById('login-email').value = email;
+    document.getElementById('login-pass').value  = pass;
+    doLogin();
+  }
+
+  // ── AUTH TAB SWITCHER (also updates tab IDs) ──────────────
+  const _origSwitchAuthTab = window.switchAuthTab;
+  function switchAuthTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === tab || t.id === 'tab-' + tab);
+    });
+    const lf = document.getElementById('login-form');
+    const rf = document.getElementById('register-form');
+    if (lf) lf.classList.toggle('hidden', tab !== 'login');
+    if (rf) rf.classList.toggle('hidden', tab !== 'register');
+  }
+
+  // ── COPY CHANNEL HANDLE ───────────────────────────────────
+  function copyChannel(handle) {
+    navigator.clipboard.writeText(handle).then(() => {
+      Toast.show('📋 Copied ' + handle + ' — paste it in the Admin Video Machine!', 'info');
+    });
+  }
+
+  // ── RENDER PREMIER LEAGUE PAGE ────────────────────────────
+  function renderPLPage() {
+
+    // ── LIVE STANDINGS (fetched 21 May 2026) ─────────────────
+    const plTable = [
+      { pos:1,  team:'Arsenal FC',                 abbr:'ARS', p:37, w:25, d:7,  l:5,  pts:82,  badge:'🔴', gd:'+42', form:['W','W','W','W','W'] },
+      { pos:2,  team:'Manchester City',            abbr:'MCI', p:37, w:23, d:9,  l:5,  pts:78,  badge:'🔵', gd:'+38', form:['D','W','W','D','W'] },
+      { pos:3,  team:'Manchester United',          abbr:'MUN', p:37, w:19, d:11, l:7,  pts:68,  badge:'🔴', gd:'+21', form:['W','W','D','W','W'] },
+      { pos:4,  team:'Aston Villa',                abbr:'AVL', p:37, w:18, d:8,  l:11, pts:62,  badge:'🟣', gd:'+14', form:['W','W','D','L','W'] },
+      { pos:5,  team:'Liverpool FC',               abbr:'LFC', p:37, w:17, d:8,  l:12, pts:59,  badge:'🔴', gd:'+11', form:['L','W','D','W','L'] },
+      { pos:6,  team:'AFC Bournemouth',            abbr:'BOU', p:37, w:13, d:17, l:7,  pts:56,  badge:'🍒', gd:'+4',  form:['D','W','D','D','D'] },
+      { pos:7,  team:'Brighton & Hove Albion',     abbr:'BRI', p:37, w:14, d:11, l:12, pts:53,  badge:'🔵', gd:'+2',  form:['W','L','D','W','L'] },
+      { pos:8,  team:'Chelsea FC',                 abbr:'CFC', p:37, w:14, d:10, l:13, pts:52,  badge:'🔵', gd:'+5',  form:['W','W','L','D','W'] },
+      { pos:9,  team:'Brentford FC',               abbr:'BRE', p:37, w:14, d:10, l:13, pts:52,  badge:'🐝', gd:'+3',  form:['D','W','L','D','W'] },
+      { pos:10, team:'Sunderland AFC',             abbr:'SUN', p:37, w:13, d:12, l:12, pts:51,  badge:'🔴', gd:'+1',  form:['W','L','W','W','D'] },
+      { pos:11, team:'Newcastle United',           abbr:'NEW', p:37, w:14, d:7,  l:16, pts:49,  badge:'⚫', gd:'-3',  form:['W','W','L','W','W'] },
+      { pos:12, team:'Everton FC',                 abbr:'EVE', p:37, w:13, d:10, l:14, pts:49,  badge:'🔵', gd:'-4',  form:['L','L','D','W','L'] },
+      { pos:13, team:'Fulham FC',                  abbr:'FUL', p:37, w:14, d:7,  l:16, pts:49,  badge:'⚪', gd:'-2',  form:['D','W','L','D','W'] },
+      { pos:14, team:'Leeds United',               abbr:'LEE', p:37, w:11, d:14, l:12, pts:47,  badge:'⚪', gd:'-5',  form:['W','D','D','D','W'] },
+      { pos:15, team:'Crystal Palace',             abbr:'CRY', p:37, w:11, d:12, l:14, pts:45,  badge:'🦅', gd:'-8',  form:['D','D','L','D','D'] },
+      { pos:16, team:'Nottingham Forest',          abbr:'NFO', p:37, w:11, d:10, l:16, pts:43,  badge:'🔴', gd:'-11', form:['L','L','W','D','L'] },
+      { pos:17, team:'Tottenham Hotspur',          abbr:'TOT', p:37, w:9,  d:11, l:17, pts:38,  badge:'⚪', gd:'-16', form:['L','L','L','D','L'] },
+      { pos:18, team:'West Ham United',            abbr:'WHU', p:37, w:9,  d:9,  l:19, pts:36,  badge:'🟣', gd:'-22', form:['L','W','L','L','L'] },
+      { pos:19, team:'Burnley FC',                 abbr:'BUR', p:37, w:4,  d:9,  l:24, pts:21,  badge:'🟤', gd:'-41', form:['L','L','L','L','L'] },
+      { pos:20, team:'Wolverhampton Wanderers',    abbr:'WOL', p:37, w:3,  d:10, l:24, pts:19,  badge:'🐺', gd:'-45', form:['D','L','D','D','L'] },
+    ];
+
+    // zone colours
+    const zone = (pos) => {
+      if (pos === 1)        return 'background:rgba(255,199,44,0.22)'; // title
+      if (pos <= 4)         return 'background:rgba(59,130,246,0.12)'; // UCL
+      if (pos === 5)        return 'background:rgba(255,107,53,0.10)'; // UEL
+      if (pos === 6)        return 'background:rgba(156,163,175,0.10)'; // UECL
+      if (pos >= 18)        return 'background:rgba(239,68,68,0.12)';  // relegation
+      return '';
+    };
+    const formColor = f => ({ W:'#22c55e', D:'#f59e0b', L:'#ef4444' }[f] || '#888');
+
+    const rowEl = document.getElementById('pl-table-rows');
+    if (rowEl) rowEl.innerHTML = plTable.map(r => `
+      <div style="display:grid; grid-template-columns:28px 1fr 36px 36px 36px 36px 48px 80px; gap:4px; align-items:center; padding:9px 16px; border-bottom:1px solid var(--cream-dk); ${zone(r.pos)};" class="pl-row">
+        <span style="font-family:'Bangers',cursive; font-size:18px; color:${r.pos<=4?'var(--mustard)':r.pos>=18?'#ef4444':'var(--charcoal)'};">${r.pos}</span>
+        <span style="font-family:'Archivo Black',sans-serif; font-size:13px; display:flex; align-items:center; gap:6px;">${r.badge} <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.team}</span></span>
+        <span style="font-family:'Space Mono',monospace; font-size:11px; text-align:center; color:#888;">${r.p}</span>
+        <span style="font-family:'Space Mono',monospace; font-size:11px; text-align:center; color:#22c55e;">${r.w}</span>
+        <span style="font-family:'Space Mono',monospace; font-size:11px; text-align:center; color:#f59e0b;">${r.d}</span>
+        <span style="font-family:'Space Mono',monospace; font-size:11px; text-align:center; color:#ef4444;">${r.l}</span>
+        <span style="font-family:'Space Mono',monospace; font-size:11px; text-align:center; color:#888;">${r.gd}</span>
+        <span style="font-family:'Bangers',cursive; font-size:22px; text-align:center; color:${r.pos<=4?'var(--orange)':r.pos>=18?'#ef4444':'var(--charcoal)'};">${r.pts}</span>
+      </div>`).join('') + `
+      <div style="padding:10px 16px; background:var(--cream-dk); border-top:2px solid var(--charcoal);">
+        <div style="display:flex; gap:16px; flex-wrap:wrap; font-family:'Space Mono',monospace; font-size:10px; color:#888;">
+          <span><span style="display:inline-block;width:10px;height:10px;background:rgba(255,199,44,0.5);border:1px solid var(--charcoal);margin-right:4px;"></span>Champions</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:rgba(59,130,246,0.3);border:1px solid var(--charcoal);margin-right:4px;"></span>UCL</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:rgba(255,107,53,0.25);border:1px solid var(--charcoal);margin-right:4px;"></span>UEL</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:rgba(239,68,68,0.25);border:1px solid var(--charcoal);margin-right:4px;"></span>Relegation</span>
+          <span style="margin-left:auto;">⚡ Updated: 21 May 2026 • Matchday 37 of 38</span>
+        </div>
+      </div>`;
+
+    // ── RECENT RESULTS (live data) ────────────────────────────
+    const recentResults = [
+      { date:'19 May', h:'Chelsea FC', a:'Tottenham Hotspur', hs:2, as:1 },
+      { date:'19 May', h:'AFC Bournemouth', a:'Manchester City', hs:1, as:1 },
+      { date:'18 May', h:'Arsenal FC', a:'Burnley FC', hs:1, as:0 },
+      { date:'17 May', h:'Newcastle United', a:'West Ham United', hs:3, as:1 },
+      { date:'17 May', h:'Everton FC', a:'Sunderland AFC', hs:1, as:3 },
+      { date:'17 May', h:'Manchester United', a:'Nottingham Forest', hs:3, as:2 },
+      { date:'17 May', h:'Leeds United', a:'Brighton', hs:1, as:0 },
+      { date:'15 May', h:'Aston Villa', a:'Liverpool FC', hs:4, as:2 },
+    ];
+
+    const resultsEl = document.getElementById('recent-results');
+    if (resultsEl) resultsEl.innerHTML = recentResults.map(r => {
+      const hs = parseInt(r.hs), as = parseInt(r.as);
+      const hWin = hs > as, aWin = as > hs, draw = hs === as;
+      return `<div style="border:var(--border); border-radius:var(--radius); padding:10px 12px; margin-bottom:10px; box-shadow:var(--shadow-sm); background:var(--cream);">
+        <div style="font-family:'Space Mono',monospace; font-size:9px; color:#aaa; margin-bottom:5px;">${r.date} 2026</div>
+        <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:6px; align-items:center;">
+          <span style="font-family:'Archivo Black',sans-serif; font-size:12px; text-align:right; color:${hWin?'var(--charcoal)':'#888'}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.h}</span>
+          <span style="font-family:'Bangers',cursive; font-size:22px; background:var(--charcoal); color:${draw?'var(--mustard)':hWin?'#22c55e':'var(--orange)'}; padding:2px 12px; border-radius:2px; white-space:nowrap;">${r.hs} – ${r.as}</span>
+          <span style="font-family:'Archivo Black',sans-serif; font-size:12px; text-align:left; color:${aWin?'var(--charcoal)':'#888'}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.a}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    // ── UPCOMING FIXTURES (Final Day — 24 May 2026) ───────────
+    const upcoming = [
+      { h:'Crystal Palace', a:'Arsenal FC',             hProb:22.5, aProb:53.9 },
+      { h:'Manchester City', a:'Aston Villa',            hProb:74.2, aProb:11.0 },
+      { h:'Liverpool FC', a:'Brentford FC',              hProb:52.6, aProb:24.4 },
+      { h:'Brighton', a:'Manchester United',             hProb:50.7, aProb:26.2 },
+      { h:'Sunderland AFC', a:'Chelsea FC',              hProb:26.4, aProb:47.6 },
+      { h:'Tottenham Hotspur', a:'Everton FC',           hProb:49.9, aProb:24.6 },
+      { h:'Nottingham Forest', a:'AFC Bournemouth',      hProb:29.0, aProb:45.9 },
+      { h:'Fulham FC', a:'Newcastle United',             hProb:32.8, aProb:41.7 },
+      { h:'West Ham United', a:'Leeds United',           hProb:51.5, aProb:24.4 },
+      { h:'Burnley FC', a:'Wolverhampton Wanderers',     hProb:40.0, aProb:33.2 },
+    ];
+
+    const upcomingEl = document.getElementById('upcoming-fixtures');
+    if (upcomingEl) upcomingEl.innerHTML = upcoming.map(f => `
+      <div style="border:var(--border); border-radius:var(--radius); padding:10px 12px; margin-bottom:10px; box-shadow:var(--shadow-sm); background:var(--cream);">
+        <div style="font-family:'Space Mono',monospace; font-size:9px; color:var(--orange); margin-bottom:6px; font-weight:700;">📅 Sun 24 May 2026 — FINAL DAY</div>
+        <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:6px; align-items:center; margin-bottom:6px;">
+          <span style="font-family:'Archivo Black',sans-serif; font-size:12px; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${f.h}</span>
+          <span style="font-family:'Bangers',cursive; font-size:18px; background:var(--charcoal); color:#aaa; padding:2px 10px; border-radius:2px;">vs</span>
+          <span style="font-family:'Archivo Black',sans-serif; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${f.a}</span>
+        </div>
+        <div style="display:grid; grid-template-columns:${f.hProb}fr ${100-f.hProb-f.aProb}fr ${f.aProb}fr; height:6px; gap:2px; border-radius:2px; overflow:hidden;">
+          <div style="background:#22c55e; border-radius:2px 0 0 2px;"></div>
+          <div style="background:#f59e0b;"></div>
+          <div style="background:var(--orange); border-radius:0 2px 2px 0;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:3px; font-family:'Space Mono',monospace; font-size:9px; color:#888;">
+          <span>${f.hProb}%</span><span style="color:#f59e0b;">Draw</span><span>${f.aProb}%</span>
+        </div>
+      </div>`).join('');
+
+    // ── TOP SCORERS (2025/26 season data) ────────────────────
+    // Top scorers 2025/26 — after Matchday 37 (premierleague.com, May 2026)
+    const scorers = [
+      { name:'Erling Haaland',   club:'Man City',    goals:27, assists:5,  badge:'🔵', note:'Golden Boot leader 🥇 — 5 goal cushion' },
+      { name:'Igor Thiago',      club:'Brentford',   goals:22, assists:4,  badge:'🐝', note:'41% of all Brentford goals' },
+      { name:'Antoine Semenyo',  club:'Man City',    goals:16, assists:3,  badge:'🔵', note:'Prolific after Bournemouth move' },
+      { name:'Joao Pedro',       club:'Chelsea',     goals:15, assists:4,  badge:'🔵', note:'March hat-trick vs Aston Villa' },
+      { name:'Ollie Watkins',    club:'Aston Villa', goals:14, assists:6,  badge:'🟣', note:'Zero penalties — all open play' },
+      { name:'Mohamed Salah',    club:'Liverpool',   goals:13, assists:11, badge:'🔴', note:'Last season\'s Golden Boot winner' },
+      { name:'Bryan Mbeumo',     club:'Brentford',   goals:13, assists:8,  badge:'🐝', note:'Season\'s top assist provider' },
+      { name:'Bukayo Saka',      club:'Arsenal',     goals:12, assists:10, badge:'🔴', note:'Carrying Arsenal\'s title push' },
+    ];;
+
+    const scorersEl = document.getElementById('top-scorers');
+    if (scorersEl) scorersEl.innerHTML = scorers.map((s,i) => `
+      <div style="display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:${i<scorers.length-1?'1px solid var(--cream-dk)':'none'};">
+        <span style="font-family:'Bangers',cursive; font-size:24px; color:${i===0?'var(--mustard)':i<3?'var(--orange)':'var(--charcoal)'}; min-width:26px;">${i+1}</span>
+        <div style="flex:1; min-width:0;">
+          <div style="font-family:'Archivo Black',sans-serif; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${s.badge} ${s.name}</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888;">${s.club} • 🅰️ ${s.assists}</div>
+          ${s.note ? `<div style="font-family:'DM Sans',sans-serif;font-size:11px;color:var(--orange);font-style:italic;">${s.note}</div>` : ''}
+        </div>
+        <span style="font-family:'Bangers',cursive; font-size:28px; color:var(--orange);">${s.goals}</span>
+      </div>`).join('');
+
+    // ── PL ARTICLES ───────────────────────────────────────────
+    const plGrid = document.getElementById('pl-articles-grid');
+    if (plGrid) {
+      const arts = FB.articles.filter(a => a.published && (a.tag === 'Match Report' || a.tag === 'Tactical')).slice(0,6);
+      plGrid.innerHTML = arts.length ? arts.map(a => Pages.articleCard(a)).join('') :
+        `<div style="grid-column:1/-1; text-align:center; padding:60px;">
+          <p style="font-family:'Bangers',cursive; font-size:36px; margin-bottom:12px;">No match articles yet!</p>
+          <p style="font-family:'DM Sans',sans-serif; color:#888; font-style:italic;">Generate some from the Admin Video Machine.</p>
+          <button class="btn btn-mustard mt-16" style="margin-top:16px;" onclick="Router.go('admin'); setTimeout(()=>switchAdminPanel('generate'),100)">⚡ Generate Articles</button>
+        </div>`;
+    }
+  }
+
+
+  // ── RENDER TRANSFERS PAGE ─────────────────────────────────
+  function renderTransfersPage() {
+    const fees = [
+      { player:'Mystery Forward', from:'Club A', to:'Club B', fee:'£89M', note:'First touch: out for 6 months' },
+      { player:'Overpriced Winger', from:'La Liga', to:'PL Club', fee:'£75M', note:'3 goals all season' },
+      { player:'Bargain Keeper', from:'Championship', to:'Top 6', fee:'£2M', note:'Already better than the £45M one' },
+    ];
+    const feesEl = document.getElementById('silly-fees');
+    if (feesEl) feesEl.innerHTML = fees.map((f,i) => `
+      <div class="card" style="padding:20px; display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+        <div style="font-family:'Bangers',cursive; font-size:52px; color:var(--mustard); min-width:52px; text-shadow:3px 3px 0 var(--charcoal);">${['🥇','🥈','🥉'][i]}</div>
+        <div style="flex:1;">
+          <div style="font-family:'Archivo Black',sans-serif; font-size:16px;">${f.player}</div>
+          <div style="font-family:'Space Mono',monospace; font-size:11px; color:#888; margin-top:4px;">${f.from} → ${f.to}</div>
+          <div style="font-family:'DM Sans',sans-serif; font-size:13px; color:var(--orange); margin-top:4px; font-style:italic;">"${f.note}"</div>
+        </div>
+        <div style="font-family:'Bangers',cursive; font-size:42px; color:var(--orange); text-shadow:3px 3px 0 var(--charcoal);">${f.fee}</div>
+      </div>`).join('');
+
+    const grid = document.getElementById('transfers-articles-grid');
+    if (grid) {
+      const arts = FB.articles.filter(a => a.published && a.tag === 'Transfers').slice(0,6);
+      grid.innerHTML = arts.length ? arts.map(a => Pages.articleCard(a)).join('') :
+        `<div style="grid-column:1/-1; text-align:center; padding:60px;">
+          <p style="font-family:'Bangers',cursive; font-size:36px; margin-bottom:12px;">No transfer rumours yet!</p>
+          <p style="font-family:'DM Sans',sans-serif; color:#888; font-style:italic;">Generate some transfer articles from the Admin panel.</p>
+          <button class="btn btn-mustard mt-16" onclick="Router.go('admin'); setTimeout(()=>switchAdminPanel('generate'),100)">⚡ Generate Transfer Articles</button>
+        </div>`;
+    }
+  }
+
+  // ── CHANNEL DATA ──────────────────────────────────────────
+  const YT_CHANNELS = {
+    broadcast: [
+      { name:'Premier League',       handle:'@PremierLeague',      badge:'🏆', subs:'6.4M',  type:'Official PL',       color:'var(--mustard)',  desc:'The official PL channel. Archive, goals and history.' },
+      { name:'Sky Sports PL',        handle:'@SkySportsPL',        badge:'📺', subs:'3.2M',  type:'Broadcaster',        color:'var(--charcoal)', desc:'128 live games a season. The undisputed home of the Prem.' },
+      { name:'Sky Sports Football',  handle:'@SkySportsFootball',  badge:'📡', subs:'2.8M',  type:'Broadcaster',        color:'var(--charcoal)', desc:'All football, all the time. Tactics, analysis, debate.' },
+      { name:'TNT Sports',           handle:'@tntsports',          badge:'⚡', subs:'1.9M',  type:'Broadcaster',        color:'var(--orange)',   desc:'Formerly BT Sport. UCL, UEL and PL rights holder.' },
+      { name:'BBC Sport',            handle:'@BBCSport',           badge:'🏴', subs:'1.4M',  type:'Broadcaster',        color:'#CC0000',         desc:'Match of the Day. Free highlights every Saturday night.' },
+      { name:'Amazon Prime Video',   handle:'@primevideosport',    badge:'🎬', subs:'800K',  type:'Broadcaster',        color:'#00A8E0',         desc:'20 PL matches per season. Boxing Day fixtures!' },
+      { name:'Sky Sports News',      handle:'@SkySportsNews',      badge:'🔴', subs:'1.1M',  type:'News',               color:'var(--charcoal)', desc:'Breaking transfer news 24/7. Deadline Day absolute chaos.' },
+      { name:'talkSPORT',            handle:'@TalkSPORT',          badge:'🎙️', subs:'650K',  type:'Radio / Punditry',   color:'var(--orange)',   desc:'Unfiltered football opinions. Simon Jordan main character.' },
+    ],
+    big6: [
+      { name:'Manchester United',    handle:'@ManUtd',             badge:'🔴', subs:'10.5M', type:'Official',           color:'#DA291C',         desc:'Behind the scenes at Old Trafford. Biggest club channel.' },
+      { name:'Liverpool FC',         handle:'@LiverpoolFC',        badge:'🔴', subs:'8.9M',  type:'Official',           color:'#C8102E',         desc:'Inside Anfield and training. 8.9M subscribers of believers.' },
+      { name:'Arsenal FC',           handle:'@arsenal',            badge:'🔴', subs:'5M',    type:'Official',           color:'#EF0107',         desc:'Closest access to the Gunners. Matchday content done well.' },
+      { name:'Chelsea FC',           handle:'@chelseafc',          badge:'🔵', subs:'4.7M',  type:'Official',           color:'#034694',         desc:'Stamford Bridge behind the scenes and player features.' },
+      { name:'Manchester City',      handle:'@mancity',            badge:'🔵', subs:'4.2M',  type:'Official',           color:'#6CABDD',         desc:'City Studios. Haaland content. Trophy cabinet tours.' },
+      { name:'Tottenham Hotspur',    handle:'@SpursOfficial',      badge:'⚪', subs:'2.8M',  type:'Official',           color:'var(--charcoal)', desc:'Spurs TV. Matchday content. Trophy content: TBC.' },
+    ],
+    pl: [
+      { name:'Aston Villa',          handle:'@avfcofficial',       badge:'🟣', subs:'890K',  type:'Official',           color:'#670E36',         desc:'Villa TV. Emery era. Champions League returnees.' },
+      { name:'Newcastle United',     handle:'@nufc',               badge:'⚫', subs:'980K',  type:'Official',           color:'var(--charcoal)', desc:'Toon TV. St. James Park atmosphere bottled.' },
+      { name:'West Ham United',      handle:'@westhamunitedfc',    badge:'🟣', subs:'720K',  type:'Official',           color:'#7A263A',         desc:'Hammers TV. London Stadium. Proper East End football.' },
+      { name:'Brighton & Hove',      handle:'@officialBHAFC',      badge:'🔵', subs:'480K',  type:'Official',           color:'#0057B8',         desc:'The Seagulls. Tactical innovators on and off the pitch.' },
+      { name:'Brentford FC',         handle:'@brentfordfc',        badge:'🐝', subs:'310K',  type:'Official',           color:'#CC0000',         desc:'The Bees. Proper football club vibes. Thomas Frank era.' },
+      { name:'Fulham FC',            handle:'@FulhamFC',           badge:'⚪', subs:'390K',  type:'Official',           color:'var(--charcoal)', desc:'Craven Cottage. Thames-side football. Marco Silva era.' },
+      { name:'Crystal Palace',       handle:'@cpfc',               badge:'🦅', subs:'440K',  type:'Official',           color:'#1B458F',         desc:'Selhurst Park. Eagles content. Oliver Glasner era.' },
+      { name:'Everton FC',           handle:'@Everton',            badge:'🔵', subs:'530K',  type:'Official',           color:'#003399',         desc:'The Toffees. Goodison Park final chapter content.' },
+      { name:'Wolves',               handle:'@wolves',             badge:'🐺', subs:'560K',  type:'Official',           color:'var(--mustard)',  desc:'Wolves TV. Fast content like their counter attacks.' },
+      { name:'Nottingham Forest',    handle:'@officialnffc',       badge:'🔴', subs:'410K',  type:'Official',           color:'#CC0000',         desc:'The City Ground. European glory callbacks guaranteed.' },
+      { name:'Leicester City',       handle:'@lcfc',               badge:'🦊', subs:'490K',  type:'Official',           color:'#003090',         desc:'The Foxes. King Power Stadium. 2016 tier nostalgia.' },
+      { name:'Ipswich Town',         handle:'@ipswichtown',        badge:'🔵', subs:'200K',  type:'Official',           color:'#003B8E',         desc:'The Tractor Boys. Premier League returnees 2024.' },
+      { name:'Southampton',          handle:'@southampton_fc',     badge:'🔴', subs:'280K',  type:'Official',           color:'#D71920',         desc:'The Saints. St. Marys Stadium content.' },
+      { name:'AFC Bournemouth',      handle:'@officialbournemouth',badge:'🍒', subs:'260K',  type:'Official',           color:'#DA291C',         desc:'The Cherries. Vitality Stadium. Andoni Iraola era.' },
+    ],
+    fans: [
+      { name:'AFTV',                 handle:'@aftv',               badge:'🔴', subs:'1.74M', type:'Fan Channel',        color:'#EF0107',         desc:'1.69B views. Invented the fan TV format. Iconic reactions.' },
+      { name:'The United Stand',     handle:'@TheUnitedStand',     badge:'🔴', subs:'1.2M',  type:'Fan Channel',        color:'#DA291C',         desc:'Man United fan channel. Mark Goldbridge. Very expressive.' },
+      { name:'The Anfield Wrap',     handle:'@TheAnfieldWrap',     badge:'🔴', subs:'480K',  type:'Fan Podcast',        color:'#C8102E',         desc:'Serious Liverpool analysis. The gold standard of fan media.' },
+      { name:'The Football Terrace', handle:'@TheFootballTerrace', badge:'⚽', subs:'400K',  type:'Multi-Club',         color:'var(--charcoal)', desc:'Top 6 coverage plus UCL. Weekly deep dives.' },
+      { name:'Copa90',               handle:'@Copa90',             badge:'🌍', subs:'2.1M',  type:'Football Culture',   color:'var(--orange)',   desc:'Fan culture storytelling. Football beyond the results.' },
+      { name:'The True Geordie',     handle:'@TheTrueGeordie',     badge:'⚫', subs:'1.3M',  type:'Punditry / Banter',  color:'var(--charcoal)', desc:'Newcastle fan. Big podcast energy. Unfiltered opinions.' },
+      { name:'Tifo Football',        handle:'@TifoFootball',       badge:'🧠', subs:'1.1M',  type:'Tactics',            color:'var(--charcoal)', desc:'Best tactical explainers on YouTube. Beautiful animations.' },
+      { name:'Mark Goldbridge',      handle:'@MarkGoldbridge',     badge:'📣', subs:'1.8M',  type:'Punditry',           color:'#DA291C',         desc:'Man United content. Very loud. Very passionate. Must-watch.' },
+      { name:'WhoScored',            handle:'@WhoScored',          badge:'📊', subs:'350K',  type:'Stats & Analysis',   color:'var(--mustard)',  desc:'Data-driven football analysis. Stats nerds paradise.' },
+      { name:'Opta Joe',             handle:'@OptaJoe',            badge:'📈', subs:'290K',  type:'Stats',              color:'var(--orange)',   desc:'Obscure stats that make you say blimey.' },
+      { name:'Soccer AM (archive)',  handle:'@SoccerAM',           badge:'😂', subs:'890K',  type:'Entertainment',      color:'var(--mustard)',  desc:'The iconic Saturday morning show. Skills and banter.' },
+      { name:'The Athletic FC',      handle:'@TheAthleticFC',      badge:'✍️', subs:'220K',  type:'Journalism',         color:'var(--charcoal)', desc:'Premium football journalism on video. Long-form analysis.' },
+    ]
+  };
+
+  // ── RENDER CHANNEL CARDS ──────────────────────────────────
+  function renderChannelCards() {
+    const makeCard = (ch) => {
+      const safe = ch.handle.replace(/'/g, "\\'");
+      return `<div class="card" style="padding:16px; display:flex; gap:12px; align-items:flex-start; cursor:pointer;" onclick="copyChannel('${safe}')"
+        onmouseenter="this.style.transform='translate(-2px,-2px)'; this.style.boxShadow='8px 8px 0px #1C1917'"
+        onmouseleave="this.style.transform=''; this.style.boxShadow='var(--shadow)'">
+        <div style="width:46px; height:46px; background:${ch.color}; border:var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; box-shadow:var(--shadow-sm);">${ch.badge}</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-family:'Archivo Black',sans-serif; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${ch.name}</div>
+          <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--orange); margin-top:2px;">${ch.handle}</div>
+          <div style="display:flex; gap:6px; align-items:center; margin-top:6px; flex-wrap:wrap;">
+            <span class="tag" style="font-size:9px; padding:2px 7px; background:var(--cream-dk); box-shadow:none;">${ch.type}</span>
+            <span style="font-family:'Space Mono',monospace; font-size:9px; color:#888;">👥 ${ch.subs}</span>
+          </div>
+          <p style="font-family:'DM Sans',sans-serif; font-size:12px; color:#888; margin-top:6px; line-height:1.5;">${ch.desc}</p>
+        </div>
+        <span style="font-family:'Space Mono',monospace; font-size:9px; color:#bbb; flex-shrink:0; margin-top:4px; writing-mode:vertical-rl;">📋 copy</span>
+      </div>`;
+    };
+    ['broadcast','big6','pl','fans'].forEach(s => {
+      const el = document.getElementById('channels-' + s);
+      if (el && YT_CHANNELS[s]) el.innerHTML = YT_CHANNELS[s].map(makeCard).join('');
+    });
+  }
+
+  // ── RENDER VIDEO BANTZ PAGE ───────────────────────────────
+  function renderVideoBantzPage() {
+    renderChannelCards();
+    const grid = document.getElementById('vb-articles-grid');
+    const cta  = document.getElementById('vb-generate-cta');
+    const arts = FB.articles.filter(function(a){ return a.published; }).slice(0, 6);
+    if (grid) {
+      if (arts.length > 0) {
+        grid.style.display = '';
+        grid.innerHTML = arts.map(function(a){ return Pages.articleCard(a); }).join('');
+        if (cta) cta.innerHTML = '<button class="btn btn-charcoal btn-lg" onclick="Router.go(\'admin\'); setTimeout(function(){switchAdminPanel(\'generate\')},100)">⚡ Generate More Articles</button>';
+      } else {
+        grid.style.display = 'none';
+        if (cta) cta.innerHTML = '<div style="padding:48px 32px; border:3px dashed var(--charcoal); border-radius:var(--radius); background:var(--cream-dk); max-width:560px; margin:0 auto; box-shadow:var(--shadow);"><p style="font-family:\'Bangers\',cursive; font-size:44px; margin-bottom:12px;">No Video Articles Yet!</p><p style="font-family:\'DM Sans\',sans-serif; font-size:15px; color:#666; font-style:italic; line-height:1.7; margin-bottom:24px;">Pick a channel above, copy its handle, and generate your first article in the Admin Video Machine.</p><button class=\"btn btn-mustard btn-lg\" onclick=\"Router.go(\'admin\'); setTimeout(function(){switchAdminPanel(\'generate\')},100)\">⚡ Open Video Machine</button></div>';
+      }
+    }
+  }
+
+  // ── HOOK INTO ROUTER ──────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    const origRouterGo = Router.go.bind(Router);
+    Router.go = function(page, updateHash = true) {
+      origRouterGo(page, updateHash);
+      if (page === 'pl')          renderPLPage();
+      if (page === 'transfers')   renderTransfersPage();
+      if (page === 'videobantz')  renderVideoBantzPage();
+      // Update active nav
+      ['home','pl','transfers','videobantz'].forEach(p => {
+        const el = document.getElementById('nav-' + p);
+        if (el) el.classList.toggle('active', p === page);
+      });
+    };
+  });
+
 </script>
 </body>
 </html>
