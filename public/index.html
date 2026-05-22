@@ -681,10 +681,10 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
   .card:hover          { transform: none; box-shadow: 3px 3px 0 var(--charcoal); }
 
   /* Auth */
-  .auth-wrap           { padding: 16px; }
-  .auth-card           { padding: 28px 20px; }
+  [data-page="auth"] > div { grid-template-columns: 1fr !important; }
+  [data-page="auth"] .auth-left-panel { display: none !important; }
   .auth-left-panel     { display: none; }
-  .auth-wrap > div     { grid-template-columns: 1fr !important; }
+  [data-page="auth"] > div { grid-template-columns: 1fr !important; }
 
   /* Article page */
   .article-page-inner  { padding: 20px 16px !important; }
@@ -1126,48 +1126,152 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
 <!-- PAGE: AUTH                                              -->
 <!-- ════════════════════════════════════════════════════════ -->
 <div data-page="auth" class="hidden">
-  <div style="min-height:100vh; display:flex; flex-direction:column;">
+  <div style="min-height:100vh; display:grid; grid-template-columns:1fr 1fr; background:var(--charcoal);">
 
-    <!-- LEFT PANEL — branding -->
-    <div class="halftone-bg" style="padding:60px 48px; display:flex; flex-direction:column; justify-content:space-between; border-right:4px solid var(--charcoal);">
-      <a href="#home" class="logo" style="font-size:48px;">Futbol<span>Bantz</span></a>
+    <!-- ── LEFT PANEL — branding + stats ── -->
+    <div class="halftone-bg auth-left-panel" style="padding:48px; display:flex; flex-direction:column; gap:32px; border-right:4px solid var(--mustard); overflow-y:auto;">
+
+      <a href="#home" class="logo" style="font-size:40px;">Futbol<span>Bantz</span></a>
+
       <div>
-        <h2 style="font-family:'Bangers',cursive; font-size:72px; color:var(--cream); letter-spacing:3px; line-height:0.9; text-shadow:4px 4px 0 var(--mustard); margin-bottom:24px;">JOIN THE<br><span style="color:var(--mustard);">BANTER.</span></h2>
-        <p style="font-family:'DM Sans',sans-serif; font-size:16px; color:#aaa; line-height:1.7; max-width:380px; margin-bottom:32px;">Premier League opinions delivered at dangerous speeds. VAR complaints at no extra charge.</p>
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div class="speech-bubble" style="background:var(--mustard); max-width:360px;">
-            <p style="font-family:'Space Mono',monospace; font-size:12px; font-weight:700;">"Best football blog since I stopped arguing with strangers on Reddit"</p>
-            <p style="font-family:'Space Mono',monospace; font-size:10px; color:#666; margin-top:6px;">— BigMouthBarry, Registered Member</p>
+        <h2 style="font-family:'Bangers',cursive; font-size:64px; color:var(--cream); letter-spacing:2px; line-height:0.88; text-shadow:4px 4px 0 var(--mustard); margin-bottom:16px;">JOIN THE<br><span style="color:var(--mustard);">BANTER.</span></h2>
+        <p style="font-family:'DM Sans',sans-serif; font-size:15px; color:#aaa; line-height:1.7; margin-bottom:20px;">Premier League opinions at dangerous speeds. VAR complaints at no extra charge.</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="speech-bubble" style="background:var(--mustard); max-width:340px;">
+            <p style="font-family:'Space Mono',monospace; font-size:11px; font-weight:700;">"Best football blog since I stopped arguing with strangers on Reddit"</p>
+            <p style="font-family:'Space Mono',monospace; font-size:10px; color:#555; margin-top:4px;">— BigMouthBarry, Registered Member</p>
           </div>
-          <div class="speech-bubble right" style="background:var(--orange); margin-left:auto; max-width:300px;">
-            <p style="font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:white;">"I read it ironically and then I just... read it."</p>
-            <p style="font-family:'Space Mono',monospace; font-size:10px; color:rgba(255,255,255,0.7); margin-top:6px;">— TacticalTimothy</p>
+          <div class="speech-bubble right" style="background:var(--orange); margin-left:auto; max-width:280px;">
+            <p style="font-family:'Space Mono',monospace; font-size:11px; font-weight:700; color:white;">"I read it ironically and then I just... read it."</p>
+            <p style="font-family:'Space Mono',monospace; font-size:10px; color:rgba(255,255,255,0.6); margin-top:4px;">— TacticalTimothy</p>
           </div>
         </div>
       </div>
-      <div class="flex gap-12" style="flex-wrap:wrap;">
-        <span class="tag tag-mustard">⚽ 380 Articles</span>
-        <span class="tag tag-orange">🔥 Free to Join</span>
+
+      <!-- SEASON STATS 2025/26 -->
+      <div style="border-top:3px solid rgba(255,199,44,0.3); padding-top:24px;">
+        <div style="font-family:'Bangers',cursive; font-size:18px; color:var(--mustard); letter-spacing:2px; margin-bottom:16px;">📊 2025/26 Season Stats</div>
+
+        <!-- ATTACKING -->
+        <div style="margin-bottom:18px;">
+          <div style="font-family:'Archivo Black',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--orange); margin-bottom:10px;">⚽ Attacking</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,199,44,0.2); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:13px; color:var(--cream);">🥇 Golden Boot</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">E. Haaland · Man City</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:32px; color:var(--mustard);">27</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:12px; color:var(--cream);">🅰️ Record Assists</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">B. Fernandes · Man Utd</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:32px; color:var(--orange);">20</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:12px; color:var(--cream);">⚡ Goal Contributions</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">Haaland · 27G + 7A</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:32px; color:var(--mustard);">34</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:12px; color:var(--cream);">🎯 xG Leader</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">Haaland · Man City</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:32px; color:var(--orange);">25.4</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEFENSIVE -->
+        <div style="margin-bottom:18px;">
+          <div style="font-family:'Archivo Black',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--orange); margin-bottom:10px;">🧤 Goalkeeping & Defence</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,199,44,0.2); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:13px; color:var(--cream);">🧤 Golden Glove</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">D. Raya · Arsenal</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:32px; color:var(--mustard);">19</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:12px; color:var(--cream);">💾 Save %</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">Donnarumma · Man City</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:28px; color:var(--orange);">72.9%</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:12px; color:var(--cream);">🧹 Clearances</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">M. Senesi · Bournemouth</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:28px; color:var(--mustard);">382</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:12px; color:var(--cream);">💪 Tackles</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">J. Garner · Everton · 86.7% success</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:28px; color:var(--orange);">75</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEAM STATS -->
+        <div>
+          <div style="font-family:'Archivo Black',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--orange); margin-bottom:10px;">🏆 Team Performance</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,199,44,0.2); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:13px; color:var(--cream);">🔥 Most Goals Scored</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">Manchester City</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:32px; color:var(--mustard);">76</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:12px; color:var(--cream);">🛡️ Tightest Defence xGA</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">Arsenal</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:28px; color:var(--orange);">27.3</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-family:'Archivo Black',sans-serif; font-size:12px; color:var(--cream);">🎮 Possession</div>
+                <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:2px;">Man City · 18,241 passes</div>
+              </div>
+              <div style="font-family:'Bangers',cursive; font-size:28px; color:var(--mustard);">60.8%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1);">
+        <span class="tag tag-mustard">⚽ Free to Join</span>
+        <span class="tag tag-orange">🔥 Live Stats</span>
         <span class="tag tag-cream">😂 100% Unbiased*</span>
       </div>
-      <p style="font-family:'Space Mono',monospace; font-size:10px; color:#555; margin-top:8px;">*Not even slightly unbiased</p>
+      <p style="font-family:'Space Mono',monospace; font-size:10px; color:#555; margin-top:-20px;">*Not even slightly unbiased</p>
     </div>
 
-    <!-- RIGHT PANEL — form -->
-    <div style="background:var(--cream); padding:60px 48px; display:flex; flex-direction:column; justify-content:center; overflow-y:auto;">
-      <div style="max-width:400px; width:100%; margin:0 auto;">
+    <!-- ── RIGHT PANEL — form ── -->
+    <div style="background:var(--cream); padding:48px; display:flex; flex-direction:column; justify-content:center; overflow-y:auto;">
+      <div style="max-width:420px; width:100%; margin:0 auto;">
 
-        <!-- TABS -->
         <div style="display:flex; border:var(--border-thick); border-radius:var(--radius); overflow:hidden; margin-bottom:32px; box-shadow:var(--shadow);">
           <button id="tab-login"    class="auth-tab active" onclick="switchAuthTab('login')"    style="flex:1; padding:14px; font-size:15px;">🔑 Log In</button>
           <button id="tab-register" class="auth-tab"        onclick="switchAuthTab('register')" style="flex:1; padding:14px; font-size:15px; border-left:3px solid var(--charcoal);">🏆 Sign Up</button>
         </div>
 
-        <!-- LOGIN FORM -->
+        <!-- LOGIN -->
         <div id="login-form">
           <h2 style="font-size:40px; margin-bottom:6px;">Welcome Back</h2>
           <p style="font-family:'DM Sans',sans-serif; font-size:14px; color:#888; margin-bottom:28px; font-style:italic;">Your hot takes missed you.</p>
-
           <div class="form-group">
             <label class="form-label">📧 Email Address</label>
             <input id="login-email" class="form-input" type="email" placeholder="yourname@example.com" onkeydown="if(event.key==='Enter')doLogin()">
@@ -1176,23 +1280,19 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
             <label class="form-label">🔒 Password</label>
             <input id="login-pass" class="form-input" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
           </div>
-
-          <button class="btn btn-mustard w-full btn-lg" style="justify-content:center; margin-bottom:16px;" onclick="doLogin()">⚽ Log In, Mate</button>
-          <button class="btn btn-charcoal w-full" style="justify-content:center;" onclick="switchAuthTab('register')">No account? Sign Up Free →</button>
-
-          <!-- Demo creds -->
-          <div style="margin-top:24px; padding:16px; background:var(--cream-dk); border:2px dashed var(--charcoal); border-radius:var(--radius);">
+          <button class="btn btn-mustard w-full btn-lg" style="justify-content:center; margin-bottom:12px;" onclick="doLogin()">⚽ Log In, Mate</button>
+          <button class="btn btn-charcoal w-full" style="justify-content:center; margin-bottom:24px;" onclick="switchAuthTab('register')">No account? Sign Up Free →</button>
+          <div style="padding:16px; background:var(--cream-dk); border:2px dashed var(--charcoal); border-radius:var(--radius);">
             <p style="font-family:'Archivo Black',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">🎮 Try Demo Accounts</p>
             <button onclick="quickLogin('admin@futbolbantz.com','admin123')" class="btn btn-sm w-full" style="background:var(--orange);color:white;justify-content:center;margin-bottom:8px;box-shadow:var(--shadow-sm);">👑 Login as Admin</button>
             <button onclick="quickLogin('fan@futbolbantz.com','fan123')" class="btn btn-sm w-full btn-outline" style="justify-content:center;">⚽ Login as Fan</button>
           </div>
         </div>
 
-        <!-- REGISTER FORM -->
+        <!-- REGISTER -->
         <div id="register-form" class="hidden">
           <h2 style="font-size:40px; margin-bottom:6px;">Create Account</h2>
           <p style="font-family:'DM Sans',sans-serif; font-size:14px; color:#888; margin-bottom:28px; font-style:italic;">Pick a good football name. You'll regret it otherwise.</p>
-
           <div class="form-group">
             <label class="form-label">🏟️ Your Football Name</label>
             <input id="reg-name" class="form-input" type="text" placeholder="e.g. BigMouthBarry, TacticalTimothy...">
@@ -1205,8 +1305,6 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
             <label class="form-label">🔒 Password (6+ characters)</label>
             <input id="reg-pass" class="form-input" type="password" placeholder="Something better than 'password123'">
           </div>
-
-          <!-- Admin toggle -->
           <div style="border:2px solid var(--charcoal); border-radius:var(--radius); padding:14px 16px; margin-bottom:16px; background:var(--cream-dk); box-shadow:var(--shadow-sm); cursor:pointer;" onclick="document.getElementById('reg-admin').click()">
             <div style="display:flex; align-items:center; gap:12px;">
               <input type="checkbox" id="reg-admin" onchange="toggleAdminCode(this.checked)" style="width:18px; height:18px; accent-color:var(--orange); cursor:pointer;" onclick="event.stopPropagation()">
@@ -1221,9 +1319,8 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
             <input id="reg-code" class="form-input" type="text" placeholder="Ask your editor for the code..." style="border-color:var(--orange);">
             <p style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:4px;">Hint: BANTZ2024. Don't shout it.</p>
           </div>
-
-          <button class="btn btn-mustard w-full btn-lg" style="justify-content:center; margin-bottom:16px;" onclick="doRegister()">🏆 Join the Bantz</button>
-          <button class="btn btn-outline w-full" style="justify-content:center;" onclick="switchAuthTab('login')">Already got an account? Log In →</button>
+          <button class="btn btn-mustard w-full btn-lg" style="justify-content:center; margin-bottom:12px;" onclick="doRegister()">🏆 Join the Bantz</button>
+          <button class="btn btn-outline w-full" style="justify-content:center;" onclick="switchAuthTab('login')">Already have an account? Log In →</button>
         </div>
 
         <div style="text-align:center; margin-top:20px;">
@@ -1661,8 +1758,25 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
               <button class="btn btn-outline btn-sm" onclick="Admin.addVideoSource('manual')">+ Add Topic</button>
             </div>
 
+            <!-- ARTICLE TYPE QUICK SELECT -->
+            <div style="margin:24px 0 16px;">
+              <label class="form-label">Article Type — Quick Select</label>
+              <p style="font-family:'DM Sans',sans-serif; font-size:13px; color:#888; margin-bottom:12px; font-style:italic;">Tap a type to auto-set the tone and tag. Or set manually below.</p>
+              <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:4px;" id="article-type-btns">
+                <button class="article-type-btn" data-tone="banter" data-tag="Match Report" onclick="selectArticleType(this)" style="background:var(--charcoal);color:var(--mustard);border:2px solid var(--mustard);padding:10px 16px;border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;box-shadow:var(--shadow-sm);transition:all 0.15s;">⚽ Match Report</button>
+                <button class="article-type-btn" data-tone="banter" data-tag="Hot Take" onclick="selectArticleType(this)" style="background:var(--charcoal);color:var(--orange);border:2px solid var(--orange);padding:10px 16px;border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;box-shadow:var(--shadow-sm);transition:all 0.15s;">🔥 Hot Take</button>
+                <button class="article-type-btn" data-tone="tactical" data-tag="Tactical" onclick="selectArticleType(this)" style="background:var(--charcoal);color:var(--cream);border:2px solid rgba(255,255,255,0.2);padding:10px 16px;border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;box-shadow:var(--shadow-sm);transition:all 0.15s;">🧠 Tactical</button>
+                <button class="article-type-btn" data-tone="banter" data-tag="Transfers" onclick="selectArticleType(this)" style="background:var(--charcoal);color:var(--mustard);border:2px solid rgba(255,199,44,0.3);padding:10px 16px;border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;box-shadow:var(--shadow-sm);transition:all 0.15s;">🤑 Transfer News</button>
+                <button class="article-type-btn" data-tone="banter" data-tag="Banter" onclick="selectArticleType(this)" style="background:var(--charcoal);color:var(--orange);border:2px solid rgba(255,107,53,0.3);padding:10px 16px;border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;box-shadow:var(--shadow-sm);transition:all 0.15s;">😂 Banter</button>
+                <button class="article-type-btn" data-tone="fan" data-tag="Opinion" onclick="selectArticleType(this)" style="background:var(--charcoal);color:var(--cream);border:2px solid rgba(255,255,255,0.2);padding:10px 16px;border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;box-shadow:var(--shadow-sm);transition:all 0.15s;">💬 Opinion</button>
+                <button class="article-type-btn" data-tone="serious" data-tag="Match Report" onclick="selectArticleType(this)" style="background:var(--charcoal);color:var(--cream);border:2px solid rgba(255,255,255,0.2);padding:10px 16px;border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;box-shadow:var(--shadow-sm);transition:all 0.15s;">📰 News Report</button>
+                <button class="article-type-btn" data-tone="fan" data-tag="Hot Take" onclick="selectArticleType(this)" style="background:var(--charcoal);color:var(--mustard);border:2px solid rgba(255,199,44,0.3);padding:10px 16px;border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;box-shadow:var(--shadow-sm);transition:all 0.15s;">🏟️ Fan View</button>
+              </div>
+              <p id="type-selected-label" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--mustard);margin-top:8px;"></p>
+            </div>
+
             <!-- OPTIONS -->
-            <div style="display:flex; flex-direction:column; gap:12px; margin:24px 0 20px;">
+            <div style="display:flex; flex-direction:column; gap:12px; margin:0 0 20px;">
               <div class="form-group" style="margin-bottom:0;">
                 <label class="form-label">Article Tone</label>
                 <select id="gen-tone" class="form-select">
@@ -1725,6 +1839,114 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
     </div><!-- /admin-content -->
   </div>
 </div><!-- /admin page -->
+
+<!-- ── ARTICLE EDITOR MODAL ─────────────────────────────────────────────────── -->
+<div id="editor-modal" class="modal-overlay hidden" onclick="if(event.target===this)Admin.closeEditor()">
+  <div class="modal-box" style="max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:0;">
+
+    <!-- Header -->
+    <div style="background:var(--charcoal); padding:20px 28px; display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid var(--mustard); position:sticky; top:0; z-index:10;">
+      <h3 style="font-family:'Bangers',cursive; font-size:28px; color:var(--mustard); letter-spacing:2px;">✏️ Edit Article</h3>
+      <div class="flex gap-8">
+        <button class="btn btn-mustard btn-sm" onclick="Admin.saveEdit()">💾 Save Changes</button>
+        <button class="modal-close" onclick="Admin.closeEditor()">✕</button>
+      </div>
+    </div>
+
+    <div style="padding:28px; display:flex; flex-direction:column; gap:20px;">
+
+      <!-- Article Type Buttons -->
+      <div>
+        <label class="form-label">Article Type</label>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+          <button class="editor-tag-btn" data-tag="Match Report" onclick="setEditorTag(this)" style="padding:8px 14px;border:2px solid var(--charcoal);border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1px;transition:all 0.15s;background:var(--cream-dk);">⚽ Match Report</button>
+          <button class="editor-tag-btn" data-tag="Hot Take" onclick="setEditorTag(this)" style="padding:8px 14px;border:2px solid var(--charcoal);border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1px;transition:all 0.15s;background:var(--cream-dk);">🔥 Hot Take</button>
+          <button class="editor-tag-btn" data-tag="Banter" onclick="setEditorTag(this)" style="padding:8px 14px;border:2px solid var(--charcoal);border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1px;transition:all 0.15s;background:var(--cream-dk);">😂 Banter</button>
+          <button class="editor-tag-btn" data-tag="Transfers" onclick="setEditorTag(this)" style="padding:8px 14px;border:2px solid var(--charcoal);border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1px;transition:all 0.15s;background:var(--cream-dk);">🤑 Transfers</button>
+          <button class="editor-tag-btn" data-tag="Tactical" onclick="setEditorTag(this)" style="padding:8px 14px;border:2px solid var(--charcoal);border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1px;transition:all 0.15s;background:var(--cream-dk);">🧠 Tactical</button>
+          <button class="editor-tag-btn" data-tag="Opinion" onclick="setEditorTag(this)" style="padding:8px 14px;border:2px solid var(--charcoal);border-radius:4px;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1px;transition:all 0.15s;background:var(--cream-dk);">💬 Opinion</button>
+        </div>
+        <input type="hidden" id="editor-tag">
+      </div>
+
+      <!-- Title -->
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Headline</label>
+        <input id="editor-title" class="form-input" type="text" placeholder="Make it punchy. No pressure.">
+        <div style="display:flex; justify-content:space-between; margin-top:4px;">
+          <p style="font-family:'Space Mono',monospace;font-size:10px;color:#888;">Ideal: 50-60 characters for SEO</p>
+          <span id="editor-title-count" style="font-family:'Space Mono',monospace;font-size:10px;color:#888;">0 chars</span>
+        </div>
+      </div>
+
+      <!-- Meta Description -->
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Meta Description <span style="font-weight:400;color:#888;font-size:11px;">(SEO — shown in Google)</span></label>
+        <textarea id="editor-meta" class="form-textarea" style="min-height:70px;" placeholder="140-155 characters. Include the focus keyword. End with a call to action."></textarea>
+        <div style="display:flex; justify-content:space-between; margin-top:4px;">
+          <p style="font-family:'Space Mono',monospace;font-size:10px;color:#888;">Ideal: 140-155 chars</p>
+          <span id="editor-meta-count" style="font-family:'Space Mono',monospace;font-size:10px;color:#888;">0 chars</span>
+        </div>
+      </div>
+
+      <!-- Summary / Lede -->
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Summary / Lede <span style="font-weight:400;color:#888;font-size:11px;">(shown on article page as pull quote)</span></label>
+        <textarea id="editor-summary" class="form-textarea" style="min-height:80px;" placeholder="2 punchy sentences. This goes in the speech bubble on the article page."></textarea>
+      </div>
+
+      <!-- Key Points -->
+      <div>
+        <label class="form-label">Key Points <span style="font-weight:400;color:#888;font-size:11px;">(one per line)</span></label>
+        <textarea id="editor-keypoints" class="form-textarea" style="min-height:120px;" placeholder="Each line becomes a key point bullet. Keep them punchy."></textarea>
+      </div>
+
+      <!-- Conclusion -->
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Closing Line</label>
+        <input id="editor-conclusion" class="form-input" type="text" placeholder="One killer closing sentence. Make it land.">
+      </div>
+
+      <!-- Full Body -->
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <label class="form-label" style="margin-bottom:0;">Full Article Body <span style="font-weight:400;color:#888;font-size:11px;">(HTML supported)</span></label>
+          <button class="btn btn-sm btn-outline" onclick="Admin.aiRewrite()" style="font-size:11px;">🤖 AI Rewrite</button>
+        </div>
+        <textarea id="editor-body" class="form-textarea" style="min-height:200px; font-family:'Space Mono',monospace; font-size:12px; line-height:1.6;" placeholder="Full article HTML. Use &lt;h2&gt; for subheadings, &lt;strong&gt; for key terms, &lt;p&gt; for paragraphs."></textarea>
+        <p style="font-family:'Space Mono',monospace;font-size:10px;color:#888;margin-top:4px;">
+          Tip: Use &lt;h2&gt;Heading&lt;/h2&gt;, &lt;p&gt;paragraph&lt;/p&gt;, &lt;strong&gt;bold&lt;/strong&gt;
+        </p>
+      </div>
+
+      <!-- Channel / Source -->
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Source / Channel</label>
+        <input id="editor-channel" class="form-input" type="text" placeholder="e.g. @SkySportsPL or FutbolBantz Editorial">
+      </div>
+
+      <!-- Focus Keyword -->
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Focus Keyword <span style="font-weight:400;color:#888;font-size:11px;">(SEO)</span></label>
+        <input id="editor-keyword" class="form-input" type="text" placeholder="e.g. haaland hat trick arsenal — 2-4 words">
+      </div>
+
+      <!-- Status -->
+      <div style="padding:16px; background:var(--cream-dk); border:var(--border); border-radius:var(--radius); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+        <div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:13px; margin-bottom:4px;">Publication Status</div>
+          <div id="editor-status-label" style="font-family:'Space Mono',monospace;font-size:11px;color:#888;"></div>
+        </div>
+        <div class="flex gap-8">
+          <button class="btn btn-mustard" onclick="Admin.saveEdit(true)">🚀 Save & Publish</button>
+          <button class="btn btn-charcoal" onclick="Admin.saveEdit(false)">💾 Save as Draft</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 <script>/* ============================================================
    FUTBOLBANTZ — Core JS: Auth, State, Utils
@@ -2395,8 +2617,9 @@ const Pages = {
             <div style="font-family:'Archivo Black',sans-serif; font-size:15px;">${a.title}</div>
             <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:4px;">${a.channel} • ${Pages.timeAgo(a.date)} • 👁 ${(a.views||0).toLocaleString()} views</div>
           </div>
-          <div class="flex gap-8" style="flex-shrink:0;">
+          <div class="flex gap-8" style="flex-shrink:0; flex-wrap:wrap;">
             <button class="btn btn-sm btn-outline" onclick="Pages.openArticle('${a.id}'); Router.go('article');">👁 View</button>
+            <button class="btn btn-sm btn-mustard" onclick="Admin.openEditor('${a.id}')">✏️ Edit</button>
             <button class="btn btn-sm ${a.published?'btn-charcoal':'btn-mustard'}" onclick="Admin.togglePublish('${a.id}')">${a.published?'Unpublish':'Publish'}</button>
             <button class="btn btn-sm" style="background:var(--orange);color:white;box-shadow:var(--shadow-sm);" onclick="Admin.deleteArticle('${a.id}')">🗑 Delete</button>
           </div>
@@ -3350,6 +3573,179 @@ function switchAdminPanel(panel) {
     if (mobileLogoutBtn)  mobileLogoutBtn.style.display  = u ? 'flex' : 'none';
     if (mobileAuthInfo)   mobileAuthInfo.textContent     = u ? (u.avatar + ' ' + u.name + (u.isAdmin ? ' (Admin)' : '')) : '';
   };
+
+
+  // ── ARTICLE TYPE QUICK SELECT ─────────────────────────────
+  function selectArticleType(btn) {
+    // Reset all buttons
+    document.querySelectorAll('.article-type-btn').forEach(b => {
+      b.style.background = 'var(--charcoal)';
+      b.style.transform = '';
+      b.style.boxShadow = 'var(--shadow-sm)';
+    });
+    // Highlight selected
+    btn.style.background = 'var(--mustard)';
+    btn.style.color = 'var(--charcoal)';
+    btn.style.transform = 'translate(-2px,-2px)';
+    btn.style.boxShadow = '5px 5px 0 var(--charcoal)';
+    // Set tone select
+    const tone = btn.dataset.tone;
+    const tag  = btn.dataset.tag;
+    const toneEl = document.getElementById('gen-tone');
+    if (toneEl) toneEl.value = tone;
+    // Show feedback
+    const label = document.getElementById('type-selected-label');
+    if (label) label.textContent = '✅ Set to: ' + tag + ' (' + tone + ' tone)';
+    // Store tag for generation
+    window._selectedArticleTag = tag;
+  }
+
+  // ── EDITOR: open with article data ───────────────────────
+  Admin.openEditor = function(id) {
+    const a = FB.getArticles().find(x => x.id === id);
+    if (!a) return;
+    window._editingArticleId = id;
+
+    // Populate fields
+    const set = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val || ''; };
+    set('editor-title',      a.title);
+    set('editor-meta',       a.metaDescription || '');
+    set('editor-summary',    a.summary);
+    set('editor-keypoints',  (a.keypoints || []).join(String.fromCharCode(10)));
+    set('editor-conclusion', a.conclusion);
+    set('editor-body',       a.fullBody || '');
+    set('editor-channel',    a.channel);
+    set('editor-keyword',    a.focusKeyword || '');
+    set('editor-tag',        a.tag);
+
+    // Highlight current tag button
+    document.querySelectorAll('.editor-tag-btn').forEach(b => {
+      const isActive = b.dataset.tag === a.tag;
+      b.style.background = isActive ? 'var(--mustard)' : 'var(--cream-dk)';
+      b.style.color      = isActive ? 'var(--charcoal)' : '';
+      b.style.borderColor= isActive ? 'var(--charcoal)' : 'var(--charcoal)';
+      b.style.boxShadow  = isActive ? 'var(--shadow-sm)' : '';
+    });
+
+    // Status label
+    const statusEl = document.getElementById('editor-status-label');
+    if (statusEl) statusEl.textContent = a.published ? '✅ Currently LIVE' : '⏸ Currently Draft';
+
+    // Char counters
+    ['editor-title', 'editor-meta'].forEach(id => {
+      const el = document.getElementById(id);
+      const counter = document.getElementById(id + '-count');
+      if (el && counter) {
+        counter.textContent = el.value.length + ' chars';
+        el.addEventListener('input', () => {
+          counter.textContent = el.value.length + ' chars';
+          const ideal = id === 'editor-title' ? [50,60] : [140,155];
+          counter.style.color = (el.value.length >= ideal[0] && el.value.length <= ideal[1]) ? '#22c55e' : 'var(--orange)';
+        });
+      }
+    });
+
+    // Show modal
+    document.getElementById('editor-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  };
+
+  Admin.closeEditor = function() {
+    document.getElementById('editor-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+    window._editingArticleId = null;
+  };
+
+  Admin.saveEdit = function(publish) {
+    const id = window._editingArticleId;
+    if (!id) return;
+    const arts = FB.getArticles();
+    const a = arts.find(x => x.id === id);
+    if (!a) return;
+
+    const get = (elId) => { const el = document.getElementById(elId); return el ? el.value.trim() : ''; };
+
+    // Validate
+    const title = get('editor-title');
+    if (!title) { Toast.show('Title cannot be empty, mate.', 'error'); return; }
+
+    // Update article
+    a.title          = title;
+    a.metaDescription= get('editor-meta');
+    a.summary        = get('editor-summary');
+    a.keypoints      = get('editor-keypoints').split(String.fromCharCode(10)).map(s=>s.trim()).filter(Boolean);
+    a.conclusion     = get('editor-conclusion');
+    a.fullBody       = get('editor-body');
+    a.channel        = get('editor-channel');
+    a.focusKeyword   = get('editor-keyword');
+    a.tag            = get('editor-tag') || a.tag;
+    a.updatedAt      = new Date().toISOString();
+    if (typeof publish === 'boolean') a.published = publish;
+
+    FB.articles = arts;
+    FB.saveArticles();
+    Admin.closeEditor();
+    Pages.renderAdminArticles();
+    Pages.updateAdminStats();
+    Toast.show(publish ? '🚀 Saved and published!' : '💾 Saved as draft!', 'success');
+  };
+
+  // ── AI REWRITE inside editor ──────────────────────────────
+  Admin.aiRewrite = async function() {
+    const title   = document.getElementById('editor-title')?.value || '';
+    const summary = document.getElementById('editor-summary')?.value || '';
+    const tag     = document.getElementById('editor-tag')?.value || 'Hot Take';
+    const tone    = document.getElementById('gen-tone')?.value || 'banter';
+    const bodyEl  = document.getElementById('editor-body');
+    if (!bodyEl) return;
+
+    const apiKey = localStorage.getItem('fb_api_key');
+    if (!apiKey) { Toast.show('Add your Anthropic API key in the Video Machine panel first!', 'error'); return; }
+
+    const btn = document.querySelector('[onclick="Admin.aiRewrite()"]');
+    if (btn) { btn.textContent = '⏳ Rewriting...'; btn.disabled = true; }
+
+    try {
+      const toneMap = { banter:'witty banter with football humour', serious:'serious football journalism', tactical:'tactical analysis', fan:'passionate fan perspective' };
+      const prompt = `You are FutbolBantz. Rewrite this football article in ${toneMap[tone]||toneMap.banter} style.
+Title: "${title}"
+Tag: ${tag}
+Summary: "${summary}"
+Current body: "${bodyEl.value.substring(0,500)}"
+Write a fresh, engaging full article body (400-600 words). Use HTML: <h2> for subheadings, <p> for paragraphs, <strong> for key terms. Return ONLY the HTML body — no JSON, no preamble.`;
+
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
+        body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, messages:[{role:'user',content:prompt}] })
+      });
+      const data = await resp.json();
+      const newBody = data.content?.map(b=>b.type==='text'?b.text:'').join('') || '';
+      if (newBody) {
+        bodyEl.value = newBody.trim();
+        Toast.show('✍️ Article rewritten by AI! Review and save.', 'success');
+      } else {
+        Toast.show('AI returned nothing. Try again.', 'error');
+      }
+    } catch(e) {
+      Toast.show('AI rewrite failed: ' + e.message, 'error');
+    }
+    if (btn) { btn.textContent = '🤖 AI Rewrite'; btn.disabled = false; }
+  };
+
+  // ── EDITOR TAG BUTTON SELECTOR ────────────────────────────
+  function setEditorTag(btn) {
+    document.querySelectorAll('.editor-tag-btn').forEach(b => {
+      b.style.background  = 'var(--cream-dk)';
+      b.style.color       = '';
+      b.style.borderColor = 'var(--charcoal)';
+      b.style.boxShadow   = '';
+    });
+    btn.style.background  = 'var(--mustard)';
+    btn.style.color       = 'var(--charcoal)';
+    btn.style.boxShadow   = 'var(--shadow-sm)';
+    document.getElementById('editor-tag').value = btn.dataset.tag;
+  }
 
 </script>
 </body>
