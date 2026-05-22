@@ -631,21 +631,287 @@ h1,h2,h3 { font-family: 'Bangers', cursive; letter-spacing: 2px; line-height: 0.
 .italic  { font-style: italic; }
 
 /* ── RESPONSIVE ── */
+/* ── TOUCH & MOBILE GLOBAL ─────────────────────────────── */
+* { -webkit-tap-highlight-color: transparent; }
+button, a, [onclick] { touch-action: manipulation; }
+input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
+
+/* ── TABLET (max 900px) ──────────────────────────────────── */
 @media (max-width: 900px) {
-  .hero-section { grid-template-columns: 1fr; }
-  .article-grid { grid-template-columns: 1fr 1fr; }
-  .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s; }
-  .admin-sidebar.open { transform: translateX(0); }
-  .admin-content { margin-left: 0; }
-  .admin-stats { grid-template-columns: 1fr 1fr; }
+  .hero-section        { grid-template-columns: 1fr; gap: 16px; padding: 24px 16px; }
+  .news-grid           { grid-template-columns: 1fr !important; }
+  .article-grid        { grid-template-columns: 1fr 1fr; }
+  .article-grid-2      { grid-template-columns: 1fr; }
+  .admin-sidebar       { transform: translateX(-100%); transition: transform 0.3s ease; width: 280px; }
+  .admin-sidebar.open  { transform: translateX(0); box-shadow: 8px 0 0 var(--charcoal); }
+  .admin-content       { margin-left: 0; }
+  .admin-stats         { grid-template-columns: 1fr 1fr; }
+  .options-row         { grid-template-columns: 1fr 1fr; }
+  .auth-wrap > div     { grid-template-columns: 1fr !important; }
+  .auth-left-panel     { display: none; }
+  .pl-grid             { grid-template-columns: 1fr !important; }
+  .channels-grid       { grid-template-columns: 1fr 1fr !important; }
+  .transfer-tiers      { grid-template-columns: 1fr 1fr !important; }
+  .how-it-works        { grid-template-columns: 1fr 1fr !important; }
 }
+
+/* ── MOBILE (max 600px) ──────────────────────────────────── */
 @media (max-width: 600px) {
-  .nav-links { display: none; }
-  .article-grid { grid-template-columns: 1fr; }
-  .admin-stats { grid-template-columns: 1fr; }
-  .hero-section { padding: 24px 16px; }
-  .section-wrap { padding: 32px 16px; }
+  /* Nav */
+  .nav-links           { display: none; }
+  .nav-inner           { padding: 10px 16px; }
+  .logo                { font-size: 30px; }
+
+  /* Layouts */
+  .article-grid        { grid-template-columns: 1fr; }
+  .article-grid-2      { grid-template-columns: 1fr; }
+  .admin-stats         { grid-template-columns: 1fr 1fr; }
+  .hero-section        { padding: 16px; }
+  .section-wrap        { padding: 24px 16px; }
+  .section-title-bar h2 { font-size: 28px; }
+  .channels-grid       { grid-template-columns: 1fr !important; }
+  .transfer-tiers      { grid-template-columns: 1fr !important; }
+  .how-it-works        { grid-template-columns: 1fr !important; }
+  .options-row         { grid-template-columns: 1fr; }
+
+  /* Hero */
+  .hero-stats-grid     { grid-template-columns: repeat(3, 1fr) !important; }
+
+  /* Cards */
+  .card                { box-shadow: 3px 3px 0 var(--charcoal); }
+  .card:hover          { transform: none; box-shadow: 3px 3px 0 var(--charcoal); }
+
+  /* Auth */
+  .auth-wrap           { padding: 16px; }
+  .auth-card           { padding: 28px 20px; }
+  .auth-left-panel     { display: none; }
+  .auth-wrap > div     { grid-template-columns: 1fr !important; }
+
+  /* Article page */
+  .article-page-inner  { padding: 20px 16px !important; }
+  .article-page-inner h1 { font-size: clamp(32px, 8vw, 56px) !important; }
+
+  /* PL table */
+  .pl-table-grid       { display: none; }
+  .pl-table-mobile     { display: flex !important; }
+
+  /* Admin */
+  .admin-topbar        { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+  .admin-page          { padding: 16px; }
+  .stat-card-admin     { padding: 14px; }
+  .stat-card-admin .big-num { font-size: 38px; }
+
+  /* Modals */
+  .modal-box           { padding: 24px 16px; margin: 16px; }
+
+  /* Comments */
+  .comment-card        { padding: 12px; }
+  .fp-title            { font-size: 32px !important; }
+
+  /* Buttons */
+  .btn-lg              { font-size: 15px; padding: 12px 20px; }
+  .hero-btns           { flex-direction: column; }
+  .hero-btns .btn      { justify-content: center; width: 100%; }
+
+  /* Speech bubble fix */
+  .speech-bubble       { margin-left: 0 !important; }
 }
+
+/* ── SMALL PHONES (max 380px) ────────────────────────────── */
+@media (max-width: 380px) {
+  .logo               { font-size: 26px; }
+  .article-grid       { grid-template-columns: 1fr; }
+  .admin-stats        { grid-template-columns: 1fr; }
+}
+
+  /* ── HAMBURGER MENU ──────────────────────────────────────── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 6px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    background: transparent;
+    transition: border-color 0.2s;
+  }
+  .hamburger:hover { border-color: var(--mustard); }
+  .hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--cream);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--charcoal);
+    z-index: 300;
+    flex-direction: column;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 3px solid var(--mustard);
+  }
+  .mobile-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  .mobile-menu-links a {
+    font-family: 'Bangers', cursive;
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: var(--cream);
+    text-decoration: none;
+    padding: 12px 0;
+    border-bottom: 2px solid rgba(255,255,255,0.08);
+    transition: color 0.2s, padding-left 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mobile-menu-links a:hover { color: var(--mustard); padding-left: 8px; }
+  .mobile-menu-links a.admin-mobile { color: var(--orange); }
+  .mobile-menu-footer {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 2px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .admin-mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 149;
+  }
+  .admin-mobile-overlay.open { display: block; }
+
+  @media (max-width: 600px) {
+    .hamburger { display: flex; }
+  }
+
+  /* ── COMMENTS ──────────────────────────────────────────────── */
+  .comments-section {
+    margin-top: 32px;
+    border: var(--border-thick);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .comments-header {
+    background: var(--charcoal);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .comment-form {
+    padding: 20px;
+    background: var(--cream-dk);
+    border-bottom: var(--border);
+  }
+  .comment-name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .comment-list { padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+  .comment-card {
+    background: var(--cream);
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .comment-card.admin-comment { border-color: var(--mustard); background: rgba(255,199,44,0.06); }
+  .comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .comment-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--mustard);
+    border: 2px solid var(--charcoal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+  }
+  .comment-author { font-family: 'Archivo Black', sans-serif; font-size: 14px; }
+  .comment-date   { font-family: 'Space Mono', monospace; font-size: 10px; color: #888; }
+  .comment-body   { font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.7; color: #444; }
+  .comment-likes  {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 4px 10px;
+    border: 1px solid var(--charcoal);
+    border-radius: 2px;
+    transition: all 0.15s;
+    background: var(--cream-dk);
+    box-shadow: var(--shadow-sm);
+    user-select: none;
+  }
+  .comment-likes:hover { background: var(--mustard); transform: translate(-1px,-1px); }
+  .comment-likes.liked { background: var(--mustard); border-color: var(--charcoal); }
+  .comment-delete {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: transparent;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+  .comment-delete:hover { background: var(--orange); color: white; }
+  .no-comments {
+    text-align: center;
+    padding: 32px;
+    font-family: 'DM Sans', sans-serif;
+    color: #888;
+    font-style: italic;
+  }
+  @media (max-width: 600px) {
+    .comment-name-row { grid-template-columns: 1fr; }
+    .comment-list { padding: 12px; }
+    .comment-form { padding: 14px; }
+  }
 </style>
 <meta name="robots" content="index, follow">
   <meta name="author" content="FutbolBantz">
@@ -684,19 +950,41 @@ h1,h2,h3 { font-family: 'Bangers', cursive; letter-spacing: 2px; line-height: 0.
     <a href="#home" class="logo">Futbol<span>Bantz</span></a>
     <ul class="nav-links">
       <li><a href="#home" class="nav-links-a" id="nav-home">Home</a></li>
-      <li><a href="#pl" class="nav-links-a" id="nav-pl">⚽ Premier League</a></li>
-      <li><a href="#transfers" class="nav-links-a" id="nav-transfers">🤑 Transfers</a></li>
-      <li><a href="#videobantz" class="nav-links-a" id="nav-videobantz">📺 Video Bantz</a></li>
-      <li id="nav-admin-link" style="display:none;"><a href="#admin" class="nav-links-a admin-link">⚡ Admin</a></li>
+      <li><a href="#pl" class="nav-links-a" id="nav-pl">&#x26BD; Premier League</a></li>
+      <li><a href="#transfers" class="nav-links-a" id="nav-transfers">&#x1F911; Transfers</a></li>
+      <li><a href="#videobantz" class="nav-links-a" id="nav-videobantz">&#x1F4FA; Video Bantz</a></li>
+      <li id="nav-admin-link" style="display:none;"><a href="#admin" class="nav-links-a admin-link">&#x26A1; Admin</a></li>
     </ul>
     <div class="flex items-center gap-12">
       <div id="nav-auth-link">
         <a href="#auth" class="nav-links-a" style="color:var(--mustard);">Login / Sign Up</a>
       </div>
       <button id="nav-logout" class="btn btn-sm btn-orange" style="display:none;" onclick="Auth.logout()">Log Out</button>
+      <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-header">
+    <span class="logo" style="font-size:32px;">Futbol<span>Bantz</span></span>
+    <button onclick="closeMobileMenu()" style="background:var(--orange);border:2px solid var(--charcoal);border-radius:4px;color:white;width:36px;height:36px;font-size:20px;cursor:pointer;">X</button>
+  </div>
+  <div class="mobile-menu-links">
+    <a href="#home"       onclick="closeMobileMenu()">Home</a>
+    <a href="#pl"         onclick="closeMobileMenu()">Premier League</a>
+    <a href="#transfers"  onclick="closeMobileMenu()">Transfers</a>
+    <a href="#videobantz" onclick="closeMobileMenu()">Video Bantz</a>
+    <a href="#admin" id="mobile-admin-link" class="admin-mobile" onclick="closeMobileMenu()" style="display:none;">Admin Panel</a>
+  </div>
+  <div class="mobile-menu-footer">
+    <div id="mobile-auth-info" style="font-family:'Space Mono',monospace;font-size:12px;color:#888;padding:8px 0;"></div>
+    <a href="#auth" id="mobile-login-btn" class="btn btn-mustard" style="justify-content:center;text-align:center;" onclick="closeMobileMenu()">Login / Sign Up</a>
+    <button id="mobile-logout-btn" class="btn btn-orange" style="display:none;justify-content:center;" onclick="Auth.logout();closeMobileMenu()">Log Out</button>
+  </div>
+</div>
 
 <!-- ════════════════════════════════════════════════════════ -->
 <!-- PAGE: HOME                                              -->
@@ -2019,6 +2307,37 @@ const Pages = {
           </div>
         </div>
 
+        <!-- COMMENTS -->
+        <div class="comments-section">
+          <div class="comments-header">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <h2 style="font-family:'Bangers',cursive;font-size:26px;color:var(--mustard);letter-spacing:2px;">&#x1F4AC; Comments</h2>
+              <span class="tag tag-orange" id="comment-count-${a.id}">0 bantz</span>
+            </div>
+            <span style="font-family:'Space Mono',monospace;font-size:11px;color:#888;white-space:nowrap;">No VAR. Just opinions.</span>
+          </div>
+          <div class="comment-form">
+            <div class="comment-name-row">
+              <div>
+                <label class="form-label" style="font-size:11px;">Your Name</label>
+                <input id="comment-name-${a.id}" class="form-input" type="text" placeholder="e.g. BigMouthBarry" value="${FB.currentUser ? FB.currentUser.name : ''}">
+              </div>
+              <div>
+                <label class="form-label" style="font-size:11px;">Your Club (optional)</label>
+                <input id="comment-club-${a.id}" class="form-input" type="text" placeholder="e.g. Arsenal (sigh)">
+              </div>
+            </div>
+            <textarea id="comment-text-${a.id}" class="form-textarea" style="min-height:80px;margin-bottom:12px;" placeholder="Go on then, what do you reckon? Keep it mostly clean."></textarea>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+              <p style="font-family:'Space Mono',monospace;font-size:10px;color:#888;">Comments are public. Be a good sport.</p>
+              <button class="btn btn-mustard" onclick="Comments.post('${a.id}')">&#x1F4E8; Post Comment</button>
+            </div>
+          </div>
+          <div class="comment-list" id="comment-list-${a.id}">
+            <div class="no-comments">Be the first to comment. Don't be shy.</div>
+          </div>
+        </div>
+
       </div>`;
 
     Router.go('article');
@@ -2845,6 +3164,190 @@ function switchAdminPanel(panel) {
       });
     };
   });
+
+
+  // ── MOBILE MENU ───────────────────────────────────────────
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn  = document.getElementById('hamburger-btn');
+    const isOpen = menu.classList.contains('open');
+    if (isOpen) { menu.classList.remove('open'); btn.classList.remove('open'); document.body.style.overflow = ''; }
+    else         { menu.classList.add('open');    btn.classList.add('open');    document.body.style.overflow = 'hidden'; }
+  }
+  function closeMobileMenu() {
+    document.getElementById('mobile-menu')?.classList.remove('open');
+    document.getElementById('hamburger-btn')?.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  // Close mobile menu on hash change (page navigation)
+  window.addEventListener('hashchange', closeMobileMenu);
+
+  // ── COMMENTS ENGINE ───────────────────────────────────────
+  const Comments = {
+    // Load comments for an article from localStorage
+    get(articleId) {
+      try {
+        const raw = localStorage.getItem('fb_comments_' + articleId);
+        return raw ? JSON.parse(raw) : [];
+      } catch(e) { return []; }
+    },
+
+    // Save comments
+    save(articleId, comments) {
+      localStorage.setItem('fb_comments_' + articleId, JSON.stringify(comments));
+    },
+
+    // Post a new comment
+    post(articleId) {
+      const nameEl = document.getElementById('comment-name-' + articleId);
+      const clubEl = document.getElementById('comment-club-' + articleId);
+      const textEl = document.getElementById('comment-text-' + articleId);
+      if (!nameEl || !textEl) return;
+
+      const name = nameEl.value.trim();
+      const club = clubEl ? clubEl.value.trim() : '';
+      const text = textEl.value.trim();
+
+      if (!name) { Toast.show('Add your name first, mystery commenter!', 'error'); nameEl.focus(); return; }
+      if (!text)  { Toast.show('Write something! Anything! Even "VAR is rubbish" is fine.', 'error'); textEl.focus(); return; }
+      if (text.length < 3)  { Toast.show('A bit more effort please, mate.', 'error'); return; }
+      if (text.length > 1000) { Toast.show('Steady on — keep it under 1000 characters.', 'error'); return; }
+
+      const isAdmin = FB.currentUser?.isAdmin || false;
+      const comment = {
+        id:        'c' + Date.now() + Math.random().toString(36).slice(2,6),
+        articleId,
+        name:      name.substring(0, 40),
+        club:      club.substring(0, 30),
+        text:      text.substring(0, 1000),
+        isAdmin,
+        avatar:    FB.currentUser?.avatar || this._autoAvatar(name),
+        date:      new Date().toISOString(),
+        likes:     0,
+        likedBy:   []
+      };
+
+      const comments = this.get(articleId);
+      comments.unshift(comment);
+      this.save(articleId, comments);
+
+      // Clear form
+      textEl.value = '';
+      if (!FB.currentUser) nameEl.value = '';
+
+      this.render(articleId);
+      Toast.show('Comment posted! The discourse is now elevated. Slightly.', 'success');
+    },
+
+    // Toggle like on a comment
+    like(articleId, commentId) {
+      const sessionKey = 'fb_liked_' + commentId;
+      const comments   = this.get(articleId);
+      const c = comments.find(x => x.id === commentId);
+      if (!c) return;
+
+      const alreadyLiked = localStorage.getItem(sessionKey);
+      if (alreadyLiked) {
+        c.likes = Math.max(0, (c.likes || 0) - 1);
+        localStorage.removeItem(sessionKey);
+      } else {
+        c.likes = (c.likes || 0) + 1;
+        localStorage.setItem(sessionKey, '1');
+      }
+      this.save(articleId, comments);
+      this.render(articleId);
+    },
+
+    // Delete a comment (admin only or own comment)
+    delete(articleId, commentId) {
+      if (!confirm('Delete this comment? Gone like Spurs from the top 4.')) return;
+      const comments = this.get(articleId).filter(c => c.id !== commentId);
+      this.save(articleId, comments);
+      this.render(articleId);
+      Toast.show('Comment deleted.', 'info');
+    },
+
+    // Render comments into the list
+    render(articleId) {
+      const listEl  = document.getElementById('comment-list-' + articleId);
+      const countEl = document.getElementById('comment-count-' + articleId);
+      if (!listEl) return;
+
+      const comments = this.get(articleId);
+      if (countEl) countEl.textContent = comments.length + (comments.length === 1 ? ' comment' : ' comments');
+
+      if (comments.length === 0) {
+        listEl.innerHTML = '<div class="no-comments">Be the first to comment. Don't be shy.</div>';
+        return;
+      }
+
+      const canDelete = (c) => FB.currentUser?.isAdmin || FB.currentUser?.name === c.name;
+      const isLiked   = (c) => !!localStorage.getItem('fb_liked_' + c.id);
+
+      listEl.innerHTML = comments.map(c => {
+        const dateStr = new Date(c.date).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+        const timeStr = new Date(c.date).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+        return `<div class="comment-card${c.isAdmin ? ' admin-comment' : ''}">
+          ${canDelete(c) ? `<button class="comment-delete" onclick="Comments.delete('${articleId}','${c.id}')" title="Delete">&#x1F5D1;</button>` : ''}
+          <div class="comment-meta">
+            <div class="comment-avatar">${c.avatar || '⚽'}</div>
+            <div>
+              <div class="comment-author">${c.name}${c.club ? ` <span style="font-family:'Space Mono',monospace;font-size:10px;color:#888;font-weight:400;">(${c.club})</span>` : ''}${c.isAdmin ? ' <span class="tag tag-orange" style="font-size:9px;box-shadow:none;">ADMIN</span>' : ''}</div>
+              <div class="comment-date">${dateStr} at ${timeStr}</div>
+            </div>
+          </div>
+          <p class="comment-body">${this._escHtml(c.text)}</p>
+          <button class="comment-likes${isLiked(c) ? ' liked' : ''}" onclick="Comments.like('${articleId}','${c.id}')">
+            &#x1F44D; ${c.likes || 0}
+          </button>
+        </div>`;
+      }).join('');
+    },
+
+    // Load comments when article opens
+    load(articleId) {
+      // Small delay to let the DOM render
+      setTimeout(() => this.render(articleId), 50);
+    },
+
+    // Auto-pick avatar emoji from name
+    _autoAvatar(name) {
+      const avatars = ['⚽','🏆','🥅','🎽','👟','🏟️','🔴','🔵','⚪','🟡'];
+      return avatars[name.charCodeAt(0) % avatars.length];
+    },
+
+    // Escape HTML in comment text
+    _escHtml(text) {
+      return text
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+    }
+  };
+
+  // ── PATCH openArticle to load comments after render ───────────────────────
+  // (hook in via the Router.go override at bottom)
+  const _origOpenArticle = Pages.openArticle.bind(Pages);
+  Pages.openArticle = function(id) {
+    _origOpenArticle(id);
+    // Load comments after the DOM updates
+    setTimeout(() => Comments.load(id), 100);
+  };
+
+  // ── PATCH Nav.update to also update mobile menu ───────────────────────────
+  const _origNavUpdate = Nav.update.bind(Nav);
+  Nav.update = function() {
+    _origNavUpdate();
+    const u = FB.currentUser;
+    // Mobile menu sync
+    const mobileAdminLink  = document.getElementById('mobile-admin-link');
+    const mobileLoginBtn   = document.getElementById('mobile-login-btn');
+    const mobileLogoutBtn  = document.getElementById('mobile-logout-btn');
+    const mobileAuthInfo   = document.getElementById('mobile-auth-info');
+    if (mobileAdminLink)  mobileAdminLink.style.display  = (u && u.isAdmin) ? 'flex' : 'none';
+    if (mobileLoginBtn)   mobileLoginBtn.style.display   = u ? 'none' : 'flex';
+    if (mobileLogoutBtn)  mobileLogoutBtn.style.display  = u ? 'flex' : 'none';
+    if (mobileAuthInfo)   mobileAuthInfo.textContent     = u ? (u.avatar + ' ' + u.name + (u.isAdmin ? ' (Admin)' : '')) : '';
+  };
 
 </script>
 </body>
