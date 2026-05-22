@@ -1452,16 +1452,24 @@ const FB = {
 
   init() {
     this.loadState();
-    this.seedData();
+    this.seedUsers();   // seed demo users only — never seed articles
     Router.init();
+  },
+
+  // Always read fresh from localStorage — never use stale in-memory copy
+  getArticles() {
+    try {
+      const raw = localStorage.getItem('fb_articles');
+      this.articles = raw ? JSON.parse(raw) : [];
+    } catch(e) { this.articles = []; }
+    return this.articles;
   },
 
   loadState() {
     try {
       const u = localStorage.getItem('fb_user');
       this.currentUser = u ? JSON.parse(u) : null;
-      const arts = localStorage.getItem('fb_articles');
-      this.articles = arts ? JSON.parse(arts) : [];
+      this.getArticles();
       const users = localStorage.getItem('fb_users');
       this.users = users ? JSON.parse(users) : [];
     } catch(e) { console.warn('State load error', e); }
@@ -1469,50 +1477,21 @@ const FB = {
 
   saveArticles() {
     localStorage.setItem('fb_articles', JSON.stringify(this.articles));
+    // Bust any cached copies so all renders get fresh data
+    this.articles = JSON.parse(localStorage.getItem('fb_articles'));
   },
 
   saveUsers() {
     localStorage.setItem('fb_users', JSON.stringify(this.users));
   },
 
-  seedData() {
-    if (this.articles.length === 0) {
-      this.articles = [
-        {
-          id: 'a1', title: "Haaland Does It AGAIN — How Many Is Too Many?",
-          tag: "Match Report", channel: "@ManCityTV", summary: "Erling Haaland has once again made goalkeepers question their career choices, slotting home his 47th league goal and apparently still hungry. The man doesn't walk to training — he runs, uphill, backwards, with a defender on his back.",
-          keypoints: ["Hat-trick inside 22 minutes like he was bored", "Third keeper this season reduced to tears", "Pep's post-match face was pure smug", "Fantasy football managers weeping with joy"],
-          conclusion: "At this rate Haaland will need a separate trophy cabinet just for Golden Boots.",
-          date: new Date(Date.now()-3600000*2).toISOString(), published: true, views: 4821
-        },
-        {
-          id: 'a2', title: "VAR Watch: 18 Minutes To Spot A Toenail Offside",
-          tag: "Hot Take", channel: "@RefereeTalk", summary: "Eighteen. Whole. Minutes. While thirty thousand fans stood in existential dread, the VAR team apparently needed to recalibrate the camera, phone a friend, and have a quiet cry before ruling the goal out for a toenail.",
-          keypoints: ["Offside margin: 0.3 centimetres", "Draw the line, they said. It'll be fun, they said.", "Match effectively ruined. Tea gone cold.", "PGMOL issued a statement nobody read"],
-          conclusion: "Football: the beautiful game. Until technology gets involved.",
-          date: new Date(Date.now()-3600000*6).toISOString(), published: true, views: 9214
-        },
-        {
-          id: 'a3', title: "Arsenal's Title Charge: Bottled It Faster Than A Craft Beer",
-          tag: "Banter", channel: "@ArsenalFanTV", summary: "It was going so well. Four points clear, ten games to go, the internet full of Arsenal fans being absolutely NORMAL about things. And then, as is tradition, the wheels fell off spectacularly.",
-          keypoints: ["Dropped 14 points in 7 games somehow", "Mikel Arteta press conference lasted 40 minutes of sighing", "Fan cam footage now classified as distressing content", "Still technically in fourth. Silver linings."],
-          conclusion: "Next year is definitely the year. It's always next year.",
-          date: new Date(Date.now()-3600000*12).toISOString(), published: true, views: 18740
-        },
-        {
-          id: 'a4', title: "The £85M Signing Who's Touched The Ball 4 Times This Season",
-          tag: "Transfers", channel: "@TransferGossip", summary: "He arrived to fanfare, a full stadium, a replica shirt photoshoot, and a manager talking about 'world class'. Seven months later he's been subbed off at half time three times and blamed a slight hamstring twinge.",
-          keypoints: ["Contribution: 1 goal, 1 assist, 14 disappearing acts", "Was described as 'still settling in' in November", "Agent already making calls apparently", "Club insists he's 'not for sale at any price' (£45m will do)"],
-          conclusion: "A bargain at £85m — if you squint, stand very far back, and have very low standards.",
-          date: new Date(Date.now()-3600000*24).toISOString(), published: true, views: 7331
-        },
-      ];
-      this.saveArticles();
-    }
-    if (this.users.length === 0) {
+  // Seed ONLY the two demo user accounts — never touch articles
+  seedUsers() {
+    const users = localStorage.getItem('fb_users');
+    if (!users || JSON.parse(users).length === 0) {
       this.users = [
-        { id:'u1', email:'admin@futbolbantz.com', password:'admin123', name:'The Gaffer', isAdmin:true, joined: new Date().toISOString(), avatar:'🧔' },
-        { id:'u2', email:'fan@futbolbantz.com', password:'fan123', name:'BigMouthBarry', isAdmin:false, joined: new Date().toISOString(), avatar:'🤩' }
+        { id:'u1', email:'admin@futbolbantz.com', password:'admin123', name:'The Gaffer', isAdmin:true,  joined: new Date().toISOString(), avatar:'🧔' },
+        { id:'u2', email:'fan@futbolbantz.com',   password:'fan123',   name:'BigMouthBarry', isAdmin:false, joined: new Date().toISOString(), avatar:'🤩' }
       ];
       this.saveUsers();
     }
@@ -1526,6 +1505,7 @@ const Auth = {
     if (!user) throw new Error("Wrong email or password, mate. Try again.");
     FB.currentUser = user;
     localStorage.setItem('fb_user', JSON.stringify(user));
+    FB.getArticles(); // reload fresh articles for this session
     return user;
   },
 
@@ -1543,11 +1523,13 @@ const Auth = {
     FB.saveUsers();
     FB.currentUser = user;
     localStorage.setItem('fb_user', JSON.stringify(user));
+    FB.getArticles(); // reload fresh articles for this session
     return user;
   },
 
   logout() {
     FB.currentUser = null;
+    FB.articles = [];
     localStorage.removeItem('fb_user');
     Router.go('home');
   },
@@ -1763,7 +1745,8 @@ const Pages = {
     const sidebar = document.getElementById('sidebar-articles');
     if (!grid) return;
 
-    const published = FB.articles.filter(a => a.published).sort((a,b) => new Date(b.date)-new Date(a.date));
+    // Always load fresh from storage — catches new articles and deletions
+    const published = FB.getArticles().filter(a => a.published).sort((a,b) => new Date(b.date)-new Date(a.date));
 
     if (featured && published.length > 0) {
       const f = published[0];
@@ -1827,7 +1810,7 @@ const Pages = {
   },
 
   openArticle(id) {
-    const a = FB.articles.find(x => x.id === id);
+    const a = FB.getArticles().find(x => x.id === id);
     if (!a) return;
     a.views = (a.views || 0) + 1;
     FB.saveArticles();
@@ -2060,13 +2043,15 @@ const Pages = {
 
   renderAdmin() {
     if (!Auth.requireAdmin()) return;
+    FB.getArticles(); // always reload fresh before rendering admin panel
     this.updateAdminStats();
     this.renderAdminArticles();
   },
 
   updateAdminStats() {
-    const published = FB.articles.filter(a=>a.published).length;
-    const totalViews = FB.articles.reduce((s,a)=>s+(a.views||0),0);
+    const arts = FB.getArticles();
+    const published = arts.filter(a=>a.published).length;
+    const totalViews = arts.reduce((s,a)=>s+(a.views||0),0);
     const el = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
     el('stat-articles', published);
     el('stat-views', totalViews.toLocaleString());
@@ -2077,7 +2062,7 @@ const Pages = {
   renderAdminArticles() {
     const list = document.getElementById('admin-articles-list');
     if (!list) return;
-    const sorted = [...FB.articles].sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const sorted = [...FB.getArticles()].sort((a,b)=>new Date(b.date)-new Date(a.date));
     list.innerHTML = sorted.map(a=>`
       <div class="card mb-16" style="cursor:default;">
         <div style="padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
@@ -2099,8 +2084,16 @@ const Pages = {
 // ── ADMIN ACTIONS ──────────────────────────────────────────
 const Admin = {
   togglePublish(id) {
-    const a = FB.articles.find(x=>x.id===id);
-    if (a) { a.published = !a.published; FB.saveArticles(); Pages.renderAdminArticles(); Pages.updateAdminStats(); Toast.show(a.published ? '✅ Article published!' : '⏸ Article unpublished.', a.published?'success':'info'); }
+    const arts = FB.getArticles();
+    const a = arts.find(x=>x.id===id);
+    if (a) {
+      a.published = !a.published;
+      FB.articles = arts;
+      FB.saveArticles();
+      Pages.renderAdminArticles();
+      Pages.updateAdminStats();
+      Toast.show(a.published ? '✅ Article published!' : '⏸ Article unpublished.', a.published?'success':'info');
+    }
   },
 
   deleteArticle(id) {
@@ -2166,6 +2159,7 @@ const Admin = {
           conclusion: result.conclusion, fullBody: result.fullBody,
           date: new Date().toISOString(), published: false, views: 0
         };
+        FB.articles = FB.getArticles();
         FB.articles.unshift(article);
         FB.saveArticles();
         generated++;
@@ -2455,7 +2449,7 @@ function switchAdminPanel(panel) {
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const grid = document.getElementById('articles-grid');
-    const published = FB.articles.filter(a => a.published).sort((a,b) => new Date(b.date)-new Date(a.date));
+    const published = FB.getArticles().filter(a => a.published).sort((a,b) => new Date(b.date)-new Date(a.date));
     const filtered = cat === 'all' ? published : published.filter(a => a.tag === cat);
     if (grid) grid.innerHTML = filtered.map(a => Pages.articleCard(a)).join('') ||
       `<div style="grid-column:1/-1; text-align:center; padding:60px; color:#888;"><p style="font-family:'Bangers',cursive;font-size:36px;">No "${cat}" articles yet!</p><p style="font-family:'DM Sans',sans-serif;font-style:italic;">Probably VAR's fault.</p></div>`;
@@ -2513,7 +2507,7 @@ function switchAdminPanel(panel) {
   document.addEventListener('DOMContentLoaded', () => {
     const recent = document.getElementById('admin-recent-articles');
     if (recent) {
-      const arts = FB.articles.slice(0,4);
+      const arts = FB.getArticles().slice(0,4);
       recent.innerHTML = arts.map(a=>`
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--cream-dk);flex-wrap:wrap;gap:8px;">
           <div>
@@ -2698,7 +2692,7 @@ function switchAdminPanel(panel) {
     // ── PL ARTICLES ───────────────────────────────────────────
     const plGrid = document.getElementById('pl-articles-grid');
     if (plGrid) {
-      const arts = FB.articles.filter(a => a.published && (a.tag === 'Match Report' || a.tag === 'Tactical')).slice(0,6);
+      const arts = FB.getArticles().filter(a => a.published && (a.tag === 'Match Report' || a.tag === 'Tactical')).slice(0,6);
       plGrid.innerHTML = arts.length ? arts.map(a => Pages.articleCard(a)).join('') :
         `<div style="grid-column:1/-1; text-align:center; padding:60px;">
           <p style="font-family:'Bangers',cursive; font-size:36px; margin-bottom:12px;">No match articles yet!</p>
@@ -2730,7 +2724,7 @@ function switchAdminPanel(panel) {
 
     const grid = document.getElementById('transfers-articles-grid');
     if (grid) {
-      const arts = FB.articles.filter(a => a.published && a.tag === 'Transfers').slice(0,6);
+      const arts = FB.getArticles().filter(a => a.published && a.tag === 'Transfers').slice(0,6);
       grid.innerHTML = arts.length ? arts.map(a => Pages.articleCard(a)).join('') :
         `<div style="grid-column:1/-1; text-align:center; padding:60px;">
           <p style="font-family:'Bangers',cursive; font-size:36px; margin-bottom:12px;">No transfer rumours yet!</p>
@@ -2823,7 +2817,7 @@ function switchAdminPanel(panel) {
     renderChannelCards();
     const grid = document.getElementById('vb-articles-grid');
     const cta  = document.getElementById('vb-generate-cta');
-    const arts = FB.articles.filter(function(a){ return a.published; }).slice(0, 6);
+    const arts = FB.getArticles().filter(function(a){ return a.published; }).slice(0, 6);
     if (grid) {
       if (arts.length > 0) {
         grid.style.display = '';
