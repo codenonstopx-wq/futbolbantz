@@ -4206,6 +4206,88 @@ Write a fresh, engaging full article body (400-600 words). Use HTML: <h2> for su
     } catch(e) { console.warn('Supabase PL data load failed:', e.message); }
   };
 
+
+  // ── SUPABASE CONFIG HELPERS (global scope) ───────────────
+  function saveSbConfig() {
+    const url  = document.getElementById('sb-url-input')?.value.trim();
+    const anon = document.getElementById('sb-anon-input')?.value.trim();
+    if (url)  localStorage.setItem('sb_url',  url);
+    if (anon) localStorage.setItem('sb_anon', anon);
+  }
+
+  async function testSupabaseConnection() {
+    const url  = (document.getElementById('sb-url-input')?.value  || '').trim() || localStorage.getItem('sb_url')  || '';
+    const anon = (document.getElementById('sb-anon-input')?.value || '').trim() || localStorage.getItem('sb_anon') || '';
+
+    if (!url || url === 'YOUR_SUPABASE_URL') {
+      Toast.show('Paste your Supabase Project URL first.', 'error'); return;
+    }
+    if (!anon || anon.length < 20) {
+      Toast.show('Paste your Supabase anon key first.', 'error'); return;
+    }
+
+    // Save to localStorage so the page picks them up on reload
+    localStorage.setItem('sb_url',  url);
+    localStorage.setItem('sb_anon', anon);
+
+    const badge = document.getElementById('sb-status-badge');
+    if (badge) { badge.textContent = '⏳ Testing...'; badge.style.color = 'var(--mustard)'; }
+    Toast.show('Testing Supabase connection...', 'info');
+
+    try {
+      const res = await fetch(url.replace(/\/$/, '') + '/rest/v1/articles?select=id&limit=1', {
+        headers: {
+          'apikey':        anon,
+          'Authorization': 'Bearer ' + anon,
+        }
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || 'HTTP ' + res.status);
+      }
+
+      // Success
+      if (badge) {
+        badge.style.background  = 'rgba(34,197,94,0.2)';
+        badge.style.color       = '#22c55e';
+        badge.style.borderColor = '#22c55e';
+        badge.textContent       = '🟢 Connected!';
+      }
+      Toast.show('Connected! Reloading to fetch live articles...', 'success');
+      setTimeout(() => location.reload(), 1800);
+
+    } catch(e) {
+      if (badge) {
+        badge.style.background  = 'rgba(255,107,53,0.15)';
+        badge.style.color       = 'var(--orange)';
+        badge.style.borderColor = 'var(--orange)';
+        badge.textContent       = '🔴 Failed';
+      }
+      Toast.show('Connection failed: ' + e.message, 'error');
+    }
+  }
+
+  // Pre-fill Supabase inputs and show status on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    const savedUrl  = localStorage.getItem('sb_url')  || '';
+    const savedAnon = localStorage.getItem('sb_anon') || '';
+    const urlIn  = document.getElementById('sb-url-input');
+    const anonIn = document.getElementById('sb-anon-input');
+    if (urlIn  && savedUrl)  urlIn.value  = savedUrl;
+    if (anonIn && savedAnon) anonIn.value = savedAnon;
+
+    // Show green badge if already configured and Supabase client loaded
+    const isConfigured = savedUrl && savedUrl !== 'YOUR_SUPABASE_URL';
+    const badge = document.getElementById('sb-status-badge');
+    if (badge && isConfigured && window.sb) {
+      badge.style.background  = 'rgba(34,197,94,0.2)';
+      badge.style.color       = '#22c55e';
+      badge.style.borderColor = '#22c55e';
+      badge.textContent       = '🟢 Connected';
+    }
+  });
+
 </script>
 </body>
 </html>
