@@ -1,159 +1,146 @@
-# ⚽ FutbolBantz — Setup Guide
-## GitHub Actions Auto-Refresh + Supabase Integration
+# FutbolBantz — Edge Functions (Fixed)
+
+## Why you got that error
+
+The error `entrypoint path does not exist` means the Supabase CLI
+couldn't find `index.ts` inside the function folder. This happens when:
+- You run `supabase functions deploy` from the wrong directory
+- The `supabase/config.toml` file is missing
+- The folder structure is wrong
+
+This zip fixes all three.
 
 ---
 
-## PART 1 — GitHub Actions (Auto-refresh PL data)
+## Correct folder structure (already set up for you)
 
-### Step 1: Put your site on GitHub
+```
+futbolbantz-supabase/          ← run ALL commands from here
+  supabase/
+    config.toml                ← required by Supabase CLI
+    functions/
+      import_map.json          ← Deno module imports
+      daily-articles/
+        index.ts               ← article generation function
+      refresh-pl-data/
+        index.ts               ← PL data refresh function
+    002_edge_functions.sql
+    cron-schedules.sql
+```
+
+---
+
+## Setup — exact commands in exact order
+
+### 1. Install Supabase CLI
 ```bash
-# In your futbolbantz folder:
-git init
-git add .
-git commit -m "Initial FutbolBantz commit"
-
-# Create a repo on github.com, then:
-git remote add origin https://github.com/YOUR_USERNAME/futbolbantz.git
-git push -u origin main
+npm install -g supabase
 ```
 
-### Step 2: Get a free football data API key
-1. Go to **https://www.football-data.org**
-2. Click **Register** → free tier gives you PL standings, results, scorers
-3. Copy your API key (looks like `abc123def456...`)
+### 2. Go into the project folder
+```bash
+cd futbolbantz-supabase
+```
+**Every command from here must be run inside this folder.**
 
-### Step 3: Add secrets to GitHub
-Go to your repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
+### 3. Log in
+```bash
+supabase login
+```
+Opens a browser, click Authorize.
 
-Add these secrets:
+### 4. Link to your Supabase project
+```bash
+supabase link --project-ref YOUR_PROJECT_REF
+```
+Find your project ref: Supabase dashboard → Settings → General → Reference ID
+Looks like: `abcdefghijklmnop`
 
-| Secret name | Value |
-|-------------|-------|
-| `SUPABASE_URL` | `https://xxxxx.supabase.co` |
-| `SUPABASE_SERVICE_KEY` | Your Supabase service_role key (NOT anon) |
-| `NETLIFY_AUTH_TOKEN` | From netlify.com → User settings → Personal access tokens |
-| `NETLIFY_SITE_ID` | From your Netlify site → Site configuration → Site ID |
+When prompted for database password, enter the one you set when creating the project.
 
-### Step 4: Push the workflow file
-The file `.github/workflows/refresh-pl-data.yml` tells GitHub when to run.
-It will now run automatically after every matchday. Done!
+### 5. Deploy the functions
+```bash
+supabase functions deploy daily-articles
+supabase functions deploy refresh-pl-data
+```
 
-### Step 5: Test it manually
-Go to your repo → **Actions** tab → **Refresh Premier League Data** → **Run workflow**
+You should see:
+```
+Bundling daily-articles
+Deploying daily-articles... done.
+```
+
+### 6. Set your secrets
+```bash
+supabase secrets set ANTHROPIC_API_KEY=sk-ant-your-key-here
+supabase secrets set YOUTUBE_API_KEY=AIzaSy-your-key-here
+```
+
+The SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are injected automatically —
+you do NOT need to set those.
+
+### 7. Test manually (optional but recommended)
+```bash
+supabase functions invoke daily-articles --no-verify-jwt
+supabase functions invoke refresh-pl-data --no-verify-jwt
+```
+
+Check Supabase → Table Editor → articles to see new rows appear.
+
+### 8. Run the SQL files
+In Supabase → SQL Editor, paste and run:
+1. `supabase/002_edge_functions.sql`
+2. Then edit `supabase/cron-schedules.sql` — replace YOUR_PROJECT and YOUR_SERVICE_ROLE_KEY
+   with real values — then run it
 
 ---
 
-## PART 2 — Supabase Setup
+## Customise which channels generate articles
 
-### Step 1: Create a Supabase project
-1. Go to **https://supabase.com** → Sign up free
-2. Click **New Project**
-3. Name it `futbolbantz`, pick a region close to your users (London = `eu-west-2`)
-4. Set a strong database password, save it somewhere
+Edit line 14 in `supabase/functions/daily-articles/index.ts`:
 
-### Step 2: Run the database schema
-1. In your Supabase project → go to **SQL Editor**
-2. Click **New query**
-3. Copy the entire contents of `supabase/migrations/001_schema.sql`
-4. Paste it in and click **Run**
-
-This creates all your tables: profiles, articles, pl_standings, pl_results, pl_fixtures, pl_scorers, pl_meta.
-
-### Step 3: Get your API keys
-Go to **Project Settings** → **API**:
-
-- **Project URL** → this is your `SUPABASE_URL`
-- **anon / public** key → use this in the frontend HTML
-- **service_role / secret** key → use this in GitHub Actions only (never in frontend!)
-
-### Step 4: Connect your site to Supabase
-
-In your `futbolbantz-standalone.html`, add to `<head>`:
-```html
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+```typescript
+const CHANNELS = [
+  { handle: "@SkySportsPL",    tag: "Match Report", tone: "banter"   },
+  { handle: "@TheAnfieldWrap", tag: "Opinion",      tone: "fan"      },
+  // Add your own channels here
+];
 ```
 
-Then add this just before your closing `</script>` tag:
-```javascript
-const SUPABASE_URL  = 'https://YOUR_PROJECT_ID.supabase.co';
-const SUPABASE_ANON = 'YOUR_ANON_PUBLIC_KEY';
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-```
+Available tones: `banter` `serious` `tactical` `fan`
+Available tags:  `Match Report` `Hot Take` `Banter` `Transfers` `Tactical` `Opinion`
 
-### Step 5: Enable Email Auth
-1. Go to **Authentication** → **Providers**
-2. Make sure **Email** is enabled
-3. Optional: turn off **Confirm email** while testing (Auth → Settings → Email Confirmations)
-
-### Step 6: Set up Realtime (optional — makes articles update live)
-1. Go to **Database** → **Replication**
-2. Enable replication for the `articles` table
-3. Your site will now update live when you publish an article — no page refresh needed
-
----
-
-## PART 3 — Netlify Deployment
-
-### Step 1: Deploy to Netlify
-1. Go to **https://netlify.com** → Sign up free
-2. Click **Add new site** → **Import an existing project** → GitHub
-3. Select your `futbolbantz` repo
-4. Build settings:
-   - Build command: (leave blank — GitHub Actions builds it)
-   - Publish directory: `public`
-5. Click **Deploy site**
-
-### Step 2: Get your Netlify tokens (for GitHub Actions)
-- **NETLIFY_AUTH_TOKEN**: netlify.com → User settings → Applications → Personal access tokens → New token
-- **NETLIFY_SITE_ID**: Your site → Site configuration → Site ID
-
----
-
-## HOW IT ALL WORKS TOGETHER
-
-```
-Every Saturday 6pm UTC:
-  GitHub Actions wakes up
-    → Calls football-data.org API
-    → Gets live standings, results, scorers
-    → Saves data to Supabase database
-    → Rebuilds public/index.html with fresh data
-    → Commits updated file to GitHub
-    → Deploys to Netlify automatically
-
-Your site visitors:
-    → Load the site (served from Netlify CDN — super fast)
-    → Auth goes through Supabase Auth (real JWT sessions)
-    → Articles load from Supabase database (real-time capable)
-    → PL data already baked into HTML (fast, no extra API calls)
-
-Admin publishes article:
-    → Saved to Supabase
-    → Realtime subscription fires
-    → Home page updates without refresh
+Redeploy after editing:
+```bash
+supabase functions deploy daily-articles
 ```
 
 ---
 
-## COSTS (Everything is free tier)
+## Check your functions in the dashboard
 
-| Service | Free tier |
-|---------|-----------|
-| GitHub Actions | 2,000 minutes/month |
-| football-data.org | 10 req/min, PL included |
-| Supabase | 500MB DB, 50k auth users, 2GB bandwidth |
-| Netlify | 100GB bandwidth, 300 build minutes |
-
-For a football blog, you won't hit any of these limits. Total cost: **£0/month**.
+Supabase → Edge Functions → you'll see both functions listed with:
+- Last invocation time
+- Logs (click to view)
+- Status
 
 ---
 
-## TROUBLESHOOTING
+## Common errors
 
-**"football-data.org returns 429"** → You hit the rate limit (10 req/min). The script uses Promise.all() for 4 requests which is fine, but don't run it more than twice a minute.
+**"project-ref not found"**
+→ Double check the ref in Settings → General. Copy it exactly.
 
-**"Supabase RLS blocking writes"** → Make sure you're using the `service_role` key in GitHub Actions, not the `anon` key.
+**"Invalid JWT"**
+→ Add `--no-verify-jwt` flag when invoking manually
 
-**"GitHub Actions can't push"** → Go to repo Settings → Actions → General → Workflow permissions → set to "Read and write permissions".
+**"ANTHROPIC_API_KEY not set"**
+→ Run `supabase secrets set ANTHROPIC_API_KEY=sk-ant-...` again
 
-**"Netlify deploy failing"** → Check your NETLIFY_SITE_ID is the Site ID (not the site name). Find it in Netlify → Site configuration.
+**"relation articles does not exist"**
+→ Run `001_schema.sql` first, then `002_edge_functions.sql`
+
+**Articles not appearing on site**
+→ Your site currently reads from localStorage, not Supabase.
+   Articles ARE being saved to Supabase — check Table Editor → articles.
+   To show them live on site, ask Claude to connect the frontend to Supabase.
