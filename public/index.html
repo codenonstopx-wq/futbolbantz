@@ -1637,7 +1637,7 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
 
         <!-- Supabase Config -->
         <div class="card mb-24" id="sb-config-card">
-          <div style="background:var(--charcoal); padding:14px 20px; border-bottom:var(--border); display:flex; align-items:center; justify-content:space-between;">
+          <div style="background:var(--charcoal); padding:14px 20px; border-bottom:var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
             <h3 style="font-size:22px; color:var(--mustard);">🔌 Supabase Connection</h3>
             <span id="sb-status-badge" class="tag tag-orange">⚠️ Not Connected</span>
           </div>
@@ -1646,15 +1646,18 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
             <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
               <div class="form-group" style="margin-bottom:0;">
                 <label class="form-label">Project URL</label>
-                <input id="sb-url-input" class="form-input" type="text" placeholder="https://xxxxx.supabase.co">
+                <input id="sb-url-input" class="form-input" type="text" placeholder="https://xxxxx.supabase.co" oninput="saveSbConfig()">
               </div>
               <div class="form-group" style="margin-bottom:0;">
                 <label class="form-label">Anon / Public Key</label>
-                <input id="sb-anon-input" class="form-input" type="password" placeholder="eyJhbGciOiJIUzI1NiIs...">
+                <div style="display:flex; gap:8px;">
+                  <input id="sb-anon-input" class="form-input" type="password" placeholder="eyJhbGciOiJIUzI1NiIs..." oninput="saveSbConfig()">
+                  <button class="btn btn-sm btn-mustard" onclick="toggleApiKeyVis('sb-anon-input-2')">👁</button>
+                </div>
               </div>
             </div>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <button class="btn btn-mustard" onclick="saveSupabaseConfig()">💾 Save & Connect</button>
+              <button class="btn btn-mustard" onclick="testSupabaseConnection()">🔌 Save & Connect</button>
               <button class="btn btn-outline" onclick="clearSupabaseConfig()">✕ Disconnect</button>
             </div>
           </div>
@@ -1708,19 +1711,19 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
                 <div>
                   <label class="form-label" style="font-size:11px;">Project URL</label>
                   <div style="display:flex; gap:8px;">
-                    <input id="sb-url-input" class="form-input" type="text" placeholder="https://yourproject.supabase.co" oninput="saveSbConfig()">
+                    <input id="sb-url-input-2" class="form-input" type="text" placeholder="https://yourproject.supabase.co" oninput="syncSbInputs(this,'url')">
                   </div>
                 </div>
                 <div>
                   <label class="form-label" style="font-size:11px;">Anon / Public Key</label>
                   <div style="display:flex; gap:8px;">
-                    <input id="sb-anon-input" class="form-input" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." oninput="saveSbConfig()">
-                    <button class="btn btn-sm btn-mustard" onclick="toggleApiKeyVis('sb-anon-input')">👁</button>
+                    <input id="sb-anon-input-2" class="form-input" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." oninput="syncSbInputs(this,'anon')">
+                    <button class="btn btn-sm btn-mustard" onclick="toggleApiKeyVis('sb-anon-input-2')">👁</button>
                   </div>
                   <p style="font-family:'Space Mono',monospace; font-size:10px; color:#888; margin-top:4px;">Supabase → Settings → API → Project API keys → anon public</p>
                 </div>
               </div>
-              <button class="btn btn-mustard w-full" style="justify-content:center;" onclick="testSupabaseConnection()">🔌 Connect to Supabase</button>
+              <button class="btn btn-mustard w-full" style="justify-content:center;" onclick="testSupabaseConnection()">🔌 Save & Connect</button>
             </div>
 
             <!-- ANTHROPIC KEY -->
@@ -4215,15 +4218,35 @@ Write a fresh, engaging full article body (400-600 words). Use HTML: <h2> for su
     if (anon) localStorage.setItem('sb_anon', anon);
   }
 
-  async function testSupabaseConnection() {
-    const url  = (document.getElementById('sb-url-input')?.value  || '').trim() || localStorage.getItem('sb_url')  || '';
-    const anon = (document.getElementById('sb-anon-input')?.value || '').trim() || localStorage.getItem('sb_anon') || '';
-
-    if (!url || url === 'YOUR_SUPABASE_URL') {
-      Toast.show('Paste your Supabase Project URL first.', 'error'); return;
+  function syncSbInputs(el, type) {
+    // Keep both config cards in sync
+    const val = el.value.trim();
+    if (type === 'url') {
+      const p = document.getElementById('sb-url-input');
+      if (p && p !== el) p.value = val;
+      localStorage.setItem('sb_url', val);
+    } else {
+      const p = document.getElementById('sb-anon-input');
+      if (p && p !== el) p.value = val;
+      localStorage.setItem('sb_anon', val);
     }
-    if (!anon || anon.length < 20) {
-      Toast.show('Paste your Supabase anon key first.', 'error'); return;
+  }
+
+  async function testSupabaseConnection() {
+    // Read from either input card — whichever has a value
+    const urlA  = (document.getElementById('sb-url-input')?.value   || '').trim();
+    const urlB  = (document.getElementById('sb-url-input-2')?.value || '').trim();
+    const anonA = (document.getElementById('sb-anon-input')?.value   || '').trim();
+    const anonB = (document.getElementById('sb-anon-input-2')?.value || '').trim();
+
+    const url  = urlA  || urlB  || localStorage.getItem('sb_url')  || '';
+    const anon = anonA || anonB || localStorage.getItem('sb_anon') || '';
+
+    if (!url || url.includes('YOUR_') || !url.startsWith('http')) {
+      Toast.show('Paste your Supabase Project URL first — e.g. https://abc.supabase.co', 'error'); return;
+    }
+    if (!anon || anon.length < 30) {
+      Toast.show('Paste your Supabase anon key first — the long JWT string.', 'error'); return;
     }
 
     // Save to localStorage so the page picks them up on reload
@@ -4272,10 +4295,12 @@ Write a fresh, engaging full article body (400-600 words). Use HTML: <h2> for su
   document.addEventListener('DOMContentLoaded', () => {
     const savedUrl  = localStorage.getItem('sb_url')  || '';
     const savedAnon = localStorage.getItem('sb_anon') || '';
-    const urlIn  = document.getElementById('sb-url-input');
-    const anonIn = document.getElementById('sb-anon-input');
-    if (urlIn  && savedUrl)  urlIn.value  = savedUrl;
-    if (anonIn && savedAnon) anonIn.value = savedAnon;
+    ['sb-url-input','sb-url-input-2'].forEach(id => {
+      const el = document.getElementById(id); if (el && savedUrl) el.value = savedUrl;
+    });
+    ['sb-anon-input','sb-anon-input-2'].forEach(id => {
+      const el = document.getElementById(id); if (el && savedAnon) el.value = savedAnon;
+    });
 
     // Show green badge if already configured and Supabase client loaded
     const isConfigured = savedUrl && savedUrl !== 'YOUR_SUPABASE_URL';
