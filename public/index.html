@@ -1357,11 +1357,11 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div class="card card-mustard" style="padding:20px; text-align:center; cursor:default;">
-          <div style="font-family:'Bangers',cursive; font-size:56px; line-height:1; text-shadow:3px 3px 0 var(--charcoal);">37</div>
+          <div style="font-family:'Bangers',cursive; font-size:56px; line-height:1; text-shadow:3px 3px 0 var(--charcoal);">38</div>
           <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Matchdays<br>played</div>
         </div>
         <div class="card" style="padding:20px; text-align:center; background:var(--orange); border:var(--border); cursor:default;">
-          <div style="font-family:'Bangers',cursive; font-size:56px; line-height:1; color:white; text-shadow:3px 3px 0 var(--charcoal);">82</div>
+          <div style="font-family:'Bangers',cursive; font-size:56px; line-height:1; color:white; text-shadow:3px 3px 0 var(--charcoal);">85</div>
           <div style="font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700; color:white;">Arsenal<br>points</div>
         </div>
         <div class="card" style="padding:20px; text-align:center; background:var(--charcoal); border:3px solid var(--mustard); cursor:default;">
@@ -1381,7 +1381,7 @@ input, select, textarea { font-size: 16px !important; } /* prevent iOS zoom */
     <div class="section-title-bar">
       <h2>📊 The Table (Opinions Vary)</h2>
       <div class="line"></div>
-      <span class="tag tag-orange">🔴 Live — Matchday 37 of 38</span>
+      <span class="tag tag-orange">✅ CHAMPIONS — Season Complete</span>
     </div>
 
     <div style="display:flex; flex-direction:column; gap:20px;">
@@ -2545,8 +2545,9 @@ const Auth = {
   },
 
   requireAdmin() {
-    if (!FB.currentUser || !FB.currentUser.isAdmin) {
-      Toast.show('Admins only, pal.', 'error');
+    const u = FB.currentUser;
+    if (!u || (!u.isAdmin && !u.is_admin)) {
+      Toast.show('Admins only, pal. Log in with an admin account.', 'error');
       Router.go('auth');
       return false;
     }
@@ -2601,7 +2602,6 @@ const Router = {
     window.scrollTo(0, 0);
   }
 };
-
 
 // ── NAV ────────────────────────────────────────────────────
 const Nav = {
@@ -3329,29 +3329,43 @@ function switchAuthTab(tab) {
   document.getElementById('register-form').classList.toggle('hidden', tab!=='register');
 }
 
-function doLogin() {
-  const email = document.getElementById('login-email').value;
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
   const pass  = document.getElementById('login-pass').value;
+  if (!email) { Toast.show('Enter your email address.', 'error'); return; }
+  if (!pass)  { Toast.show('Enter your password.', 'error'); return; }
+  const btn = document.querySelector('[onclick="doLogin()"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Logging in...'; }
   try {
-    const user = Auth.login(email, pass);
-    Toast.show(`🎉 Welcome back, ${user.name}! Right, let's get bantering.`, 'success');
-    Router.go(user.isAdmin ? 'admin' : 'home');
-  } catch(e) { Toast.show(e.message, 'error'); }
+    const user = await Auth.login(email, pass);
+    const name = user.name || user.email || 'Mate';
+    Toast.show('Welcome back, ' + name + '! Right, let\'s get bantering.', 'success');
+    Router.go((user.isAdmin || user.is_admin) ? 'admin' : 'home');
+  } catch(e) {
+    Toast.show(e.message || 'Login failed. Check your email and password.', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '⚽ Log In, Mate'; }
+  }
 }
 
-function doRegister() {
-  const name    = document.getElementById('reg-name').value;
-  const email   = document.getElementById('reg-email').value;
+async function doRegister() {
+  const name    = document.getElementById('reg-name').value.trim();
+  const email   = document.getElementById('reg-email').value.trim();
   const pass    = document.getElementById('reg-pass').value;
   const isAdmin = document.getElementById('reg-admin').checked;
-  const code    = document.getElementById('reg-code').value;
+  const code    = document.getElementById('reg-code')?.value || '';
+  const btn = document.querySelector('[onclick="doRegister()"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Creating account...'; }
   try {
-    const user = Auth.register(name, email, pass, isAdmin, code);
-    Toast.show(`🏆 Account created! Welcome to FutbolBantz, ${user.name}!`, 'success');
-    Router.go(user.isAdmin ? 'admin' : 'home');
-  } catch(e) { Toast.show(e.message, 'error'); }
+    const user = await Auth.register(name, email, pass, isAdmin, code);
+    Toast.show('Account created! Welcome to FutbolBantz, ' + (name || 'mate') + '!', 'success');
+    Router.go((user && (user.isAdmin || user.is_admin)) ? 'admin' : 'home');
+  } catch(e) {
+    Toast.show(e.message || 'Registration failed. Try again.', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '🏆 Join the Bantz'; }
+  }
 }
-
 function toggleAdminCode(show) {
   const row = document.getElementById('admin-code-row');
   if (row) row.classList.toggle('hidden', !show);
@@ -3582,10 +3596,10 @@ function switchAdminPanel(panel) {
   });
 
   // ── QUICK LOGIN (demo buttons) ────────────────────────────
-  function quickLogin(email, pass) {
+  async function quickLogin(email, pass) {
     document.getElementById('login-email').value = email;
     document.getElementById('login-pass').value  = pass;
-    doLogin();
+    await doLogin();
   }
 
   // ── AUTH TAB SWITCHER (also updates tab IDs) ──────────────
@@ -3612,26 +3626,27 @@ function switchAdminPanel(panel) {
 
     // ── LIVE STANDINGS (fetched 21 May 2026) ─────────────────
     const plTable = [
-      { pos:1,  team:'Arsenal FC',                 abbr:'ARS', p:37, w:25, d:7,  l:5,  pts:82,  badge:'🔴', gd:'+42', form:['W','W','W','W','W'] },
-      { pos:2,  team:'Manchester City',            abbr:'MCI', p:37, w:23, d:9,  l:5,  pts:78,  badge:'🔵', gd:'+38', form:['D','W','W','D','W'] },
-      { pos:3,  team:'Manchester United',          abbr:'MUN', p:37, w:19, d:11, l:7,  pts:68,  badge:'🔴', gd:'+21', form:['W','W','D','W','W'] },
-      { pos:4,  team:'Aston Villa',                abbr:'AVL', p:37, w:18, d:8,  l:11, pts:62,  badge:'🟣', gd:'+14', form:['W','W','D','L','W'] },
-      { pos:5,  team:'Liverpool FC',               abbr:'LFC', p:37, w:17, d:8,  l:12, pts:59,  badge:'🔴', gd:'+11', form:['L','W','D','W','L'] },
-      { pos:6,  team:'AFC Bournemouth',            abbr:'BOU', p:37, w:13, d:17, l:7,  pts:56,  badge:'🍒', gd:'+4',  form:['D','W','D','D','D'] },
-      { pos:7,  team:'Brighton & Hove Albion',     abbr:'BRI', p:37, w:14, d:11, l:12, pts:53,  badge:'🔵', gd:'+2',  form:['W','L','D','W','L'] },
-      { pos:8,  team:'Chelsea FC',                 abbr:'CFC', p:37, w:14, d:10, l:13, pts:52,  badge:'🔵', gd:'+5',  form:['W','W','L','D','W'] },
-      { pos:9,  team:'Brentford FC',               abbr:'BRE', p:37, w:14, d:10, l:13, pts:52,  badge:'🐝', gd:'+3',  form:['D','W','L','D','W'] },
-      { pos:10, team:'Sunderland AFC',             abbr:'SUN', p:37, w:13, d:12, l:12, pts:51,  badge:'🔴', gd:'+1',  form:['W','L','W','W','D'] },
-      { pos:11, team:'Newcastle United',           abbr:'NEW', p:37, w:14, d:7,  l:16, pts:49,  badge:'⚫', gd:'-3',  form:['W','W','L','W','W'] },
-      { pos:12, team:'Everton FC',                 abbr:'EVE', p:37, w:13, d:10, l:14, pts:49,  badge:'🔵', gd:'-4',  form:['L','L','D','W','L'] },
-      { pos:13, team:'Fulham FC',                  abbr:'FUL', p:37, w:14, d:7,  l:16, pts:49,  badge:'⚪', gd:'-2',  form:['D','W','L','D','W'] },
-      { pos:14, team:'Leeds United',               abbr:'LEE', p:37, w:11, d:14, l:12, pts:47,  badge:'⚪', gd:'-5',  form:['W','D','D','D','W'] },
-      { pos:15, team:'Crystal Palace',             abbr:'CRY', p:37, w:11, d:12, l:14, pts:45,  badge:'🦅', gd:'-8',  form:['D','D','L','D','D'] },
-      { pos:16, team:'Nottingham Forest',          abbr:'NFO', p:37, w:11, d:10, l:16, pts:43,  badge:'🔴', gd:'-11', form:['L','L','W','D','L'] },
-      { pos:17, team:'Tottenham Hotspur',          abbr:'TOT', p:37, w:9,  d:11, l:17, pts:38,  badge:'⚪', gd:'-16', form:['L','L','L','D','L'] },
-      { pos:18, team:'West Ham United',            abbr:'WHU', p:37, w:9,  d:9,  l:19, pts:36,  badge:'🟣', gd:'-22', form:['L','W','L','L','L'] },
-      { pos:19, team:'Burnley FC',                 abbr:'BUR', p:37, w:4,  d:9,  l:24, pts:21,  badge:'🟤', gd:'-41', form:['L','L','L','L','L'] },
-      { pos:20, team:'Wolverhampton Wanderers',    abbr:'WOL', p:37, w:3,  d:10, l:24, pts:19,  badge:'🐺', gd:'-45', form:['D','L','D','D','L'] },
+      // FINAL STANDINGS 2025/26 — Matchday 38 Complete — 24 May 2026
+      { pos:1,  team:'Arsenal FC',               abbr:'ARS', p:38, w:26, d:7,  l:5,  pts:85,  badge:'🔴', gd:'+44', form:['W','W','W','W','W'] },
+      { pos:2,  team:'Manchester City',           abbr:'MCI', p:38, w:23, d:9,  l:6,  pts:78,  badge:'🔵', gd:'+37', form:['D','L','W','D','D'] },
+      { pos:3,  team:'Manchester United',         abbr:'MUN', p:38, w:20, d:11, l:7,  pts:71,  badge:'🔴', gd:'+23', form:['W','W','W','W','W'] },
+      { pos:4,  team:'Aston Villa',               abbr:'AVL', p:38, w:19, d:8,  l:11, pts:65,  badge:'🟣', gd:'+16', form:['W','L','W','W','W'] },
+      { pos:5,  team:'Liverpool FC',              abbr:'LFC', p:38, w:17, d:9,  l:12, pts:60,  badge:'🔴', gd:'+12', form:['L','W','D','L','D'] },
+      { pos:6,  team:'AFC Bournemouth',           abbr:'BOU', p:38, w:13, d:18, l:7,  pts:57,  badge:'🍒', gd:'+5',  form:['D','D','D','D','D'] },
+      { pos:7,  team:'Sunderland AFC',            abbr:'SUN', p:38, w:14, d:12, l:12, pts:54,  badge:'🔴', gd:'+2',  form:['W','L','D','L','W'] },
+      { pos:8,  team:'Brighton & Hove Albion',    abbr:'BRI', p:38, w:14, d:11, l:13, pts:53,  badge:'🔵', gd:'+2',  form:['L','D','W','L','L'] },
+      { pos:9,  team:'Brentford FC',              abbr:'BRE', p:38, w:14, d:11, l:13, pts:53,  badge:'🐝', gd:'+3',  form:['D','D','W','D','D'] },
+      { pos:10, team:'Chelsea FC',                abbr:'CFC', p:38, w:14, d:10, l:14, pts:52,  badge:'🔵', gd:'+4',  form:['W','L','D','L','L'] },
+      { pos:11, team:'Fulham FC',                 abbr:'FUL', p:38, w:15, d:7,  l:16, pts:52,  badge:'⚪', gd:'-1',  form:['W','D','W','W','W'] },
+      { pos:12, team:'Newcastle United',          abbr:'NEW', p:38, w:14, d:7,  l:17, pts:49,  badge:'⚫', gd:'-4',  form:['W','L','L','W','L'] },
+      { pos:13, team:'Everton FC',                abbr:'EVE', p:38, w:13, d:10, l:15, pts:49,  badge:'🔵', gd:'-5',  form:['L','D','D','D','L'] },
+      { pos:14, team:'Leeds United',              abbr:'LEE', p:38, w:11, d:14, l:13, pts:47,  badge:'⚪', gd:'-6',  form:['W','D','D','D','L'] },
+      { pos:15, team:'Crystal Palace',            abbr:'CRY', p:38, w:11, d:12, l:15, pts:45,  badge:'🦅', gd:'-9',  form:['L','D','L','D','L'] },
+      { pos:16, team:'Nottingham Forest',         abbr:'NFO', p:38, w:11, d:11, l:16, pts:44,  badge:'🔴', gd:'-12', form:['L','D','W','L','D'] },
+      { pos:17, team:'Tottenham Hotspur',         abbr:'TOT', p:38, w:10, d:11, l:17, pts:41,  badge:'⚪', gd:'-17', form:['L','L','L','D','W'] },
+      { pos:18, team:'West Ham United',           abbr:'WHU', p:38, w:10, d:9,  l:19, pts:39,  badge:'🟣', gd:'-23', form:['L','W','D','W','W'] },
+      { pos:19, team:'Burnley FC',                abbr:'BUR', p:38, w:4,  d:10, l:24, pts:22,  badge:'🟤', gd:'-42', form:['L','D','L','D','D'] },
+      { pos:20, team:'Wolverhampton Wanderers',   abbr:'WOL', p:38, w:3,  d:11, l:24, pts:20,  badge:'🐺', gd:'-46', form:['D','L','D','D','D'] },
     ];
 
     // zone colours
@@ -3663,20 +3678,23 @@ function switchAdminPanel(panel) {
           <span><span style="display:inline-block;width:10px;height:10px;background:rgba(59,130,246,0.3);border:1px solid var(--charcoal);margin-right:4px;"></span>UCL</span>
           <span><span style="display:inline-block;width:10px;height:10px;background:rgba(255,107,53,0.25);border:1px solid var(--charcoal);margin-right:4px;"></span>UEL</span>
           <span><span style="display:inline-block;width:10px;height:10px;background:rgba(239,68,68,0.25);border:1px solid var(--charcoal);margin-right:4px;"></span>Relegation</span>
-          <span style="margin-left:auto;">⚡ Updated: 21 May 2026 • Matchday 37 of 38</span>
+          <span style="margin-left:auto;">✅ Final Day 24 May 2026 • Matchday 38 — Final</span>
         </div>
       </div>`;
 
     // ── RECENT RESULTS (live data) ────────────────────────────
     const recentResults = [
-      { date:'19 May', h:'Chelsea FC', a:'Tottenham Hotspur', hs:2, as:1 },
-      { date:'19 May', h:'AFC Bournemouth', a:'Manchester City', hs:1, as:1 },
-      { date:'18 May', h:'Arsenal FC', a:'Burnley FC', hs:1, as:0 },
-      { date:'17 May', h:'Newcastle United', a:'West Ham United', hs:3, as:1 },
-      { date:'17 May', h:'Everton FC', a:'Sunderland AFC', hs:1, as:3 },
-      { date:'17 May', h:'Manchester United', a:'Nottingham Forest', hs:3, as:2 },
-      { date:'17 May', h:'Leeds United', a:'Brighton', hs:1, as:0 },
-      { date:'15 May', h:'Aston Villa', a:'Liverpool FC', hs:4, as:2 },
+      // FINAL DAY — Matchday 38 — 24 May 2026
+      { date:'24 May', h:'Brighton',       a:'Man United',   hs:0, as:3 },
+      { date:'24 May', h:'Crystal Palace', a:'Arsenal',      hs:1, as:2 },
+      { date:'24 May', h:'Man City',       a:'Aston Villa',  hs:1, as:2 },
+      { date:'24 May', h:'Sunderland',     a:'Chelsea',      hs:2, as:1 },
+      { date:'24 May', h:'Fulham',         a:'Newcastle',    hs:2, as:0 },
+      { date:'24 May', h:'West Ham',       a:'Leeds',        hs:3, as:0 },
+      { date:'24 May', h:'Tottenham',      a:'Everton',      hs:1, as:0 },
+      { date:'24 May', h:'Liverpool',      a:'Brentford',    hs:1, as:1 },
+      { date:'24 May', h:'Burnley',        a:'Wolves',       hs:1, as:1 },
+      { date:'24 May', h:'Nottm Forest',   a:'Bournemouth',  hs:1, as:1 },
     ];
 
     const resultsEl = document.getElementById('recent-results');
@@ -3695,16 +3713,15 @@ function switchAdminPanel(panel) {
 
     // ── UPCOMING FIXTURES (Final Day — 24 May 2026) ───────────
     const upcoming = [
-      { h:'Crystal Palace', a:'Arsenal FC',             hProb:22.5, aProb:53.9 },
-      { h:'Manchester City', a:'Aston Villa',            hProb:74.2, aProb:11.0 },
-      { h:'Liverpool FC', a:'Brentford FC',              hProb:52.6, aProb:24.4 },
-      { h:'Brighton', a:'Manchester United',             hProb:50.7, aProb:26.2 },
-      { h:'Sunderland AFC', a:'Chelsea FC',              hProb:26.4, aProb:47.6 },
-      { h:'Tottenham Hotspur', a:'Everton FC',           hProb:49.9, aProb:24.6 },
-      { h:'Nottingham Forest', a:'AFC Bournemouth',      hProb:29.0, aProb:45.9 },
-      { h:'Fulham FC', a:'Newcastle United',             hProb:32.8, aProb:41.7 },
-      { h:'West Ham United', a:'Leeds United',           hProb:51.5, aProb:24.4 },
-      { h:'Burnley FC', a:'Wolverhampton Wanderers',     hProb:40.0, aProb:33.2 },
+      // WORLD CUP 2026 — Opening Fixtures
+      { h:'Mexico',    a:'South Africa', hProb:61.2, aProb:14.8 },
+      { h:'England',   a:'Croatia',      hProb:55.2, aProb:21.3 },
+      { h:'Brazil',    a:'Morocco',      hProb:48.1, aProb:26.4 },
+      { h:'Argentina', a:'Algeria',      hProb:71.2, aProb:10.1 },
+      { h:'France',    a:'Senegal',      hProb:58.3, aProb:18.2 },
+      { h:'Germany',   a:'Japan',        hProb:52.1, aProb:22.4 },
+      { h:'Spain',     a:'Saudi Arabia', hProb:67.4, aProb:14.3 },
+      { h:'USA',       a:'Paraguay',     hProb:55.8, aProb:20.1 },
     ];
 
     const upcomingEl = document.getElementById('upcoming-fixtures');
@@ -3727,50 +3744,16 @@ function switchAdminPanel(panel) {
       </div>`).join('');
 
     // ── TOP SCORERS (2025/26 season data) ────────────────────
-    // Top scorers 2025/26 — after Matchday 37 (premierleague.com, May 2026)
+    // Top scorers 2025/26 — FINAL (Matchday 38, 24 May 2026)
     const scorers = [
-      { name:'Erling Haaland',   club:'Man City',    goals:27, assists:5,  badge:'🔵', note:'Golden Boot leader 🥇 — 5 goal cushion' },
-      { name:'Igor Thiago',      club:'Brentford',   goals:22, assists:4,  badge:'🐝', note:'41% of all Brentford goals' },
-      { name:'Antoine Semenyo',  club:'Man City',    goals:16, assists:3,  badge:'🔵', note:'Prolific after Bournemouth move' },
-      { name:'Joao Pedro',       club:'Chelsea',     goals:15, assists:4,  badge:'🔵', note:'March hat-trick vs Aston Villa' },
+      { name:'Erling Haaland',   club:'Man City',    goals:27, assists:5,  badge:'🔵', note:'Golden Boot 🥇 — dominant all season' },
+      { name:'Igor Thiago',      club:'Brentford',   goals:22, assists:4,  badge:'🐝', note:'Sensational — 41% of all Brentford goals' },
+      { name:'Antoine Semenyo',  club:'Man City',    goals:16, assists:3,  badge:'🔵', note:'Also in England group at World Cup' },
+      { name:'Joao Pedro',       club:'Chelsea',     goals:15, assists:4,  badge:'🔵', note:'March hat-trick vs Aston Villa standout' },
       { name:'Ollie Watkins',    club:'Aston Villa', goals:14, assists:6,  badge:'🟣', note:'Zero penalties — all open play' },
-      { name:'Mohamed Salah',    club:'Liverpool',   goals:13, assists:11, badge:'🔴', note:'Last season\'s Golden Boot winner' },
-      { name:'Bryan Mbeumo',     club:'Brentford',   goals:13, assists:8,  badge:'🐝', note:'Season\'s top assist provider' },
-      { name:'Bukayo Saka',      club:'Arsenal',     goals:12, assists:10, badge:'🔴', note:'Carrying Arsenal\'s title push' },
-    ];;
-
-    const scorersEl = document.getElementById('top-scorers');
-    if (scorersEl) scorersEl.innerHTML = scorers.map((s,i) => `
-      <div style="display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:${i<scorers.length-1?'1px solid var(--cream-dk)':'none'};">
-        <span style="font-family:'Bangers',cursive; font-size:24px; color:${i===0?'var(--mustard)':i<3?'var(--orange)':'var(--charcoal)'}; min-width:26px;">${i+1}</span>
-        <div style="flex:1; min-width:0;">
-          <div style="font-family:'Archivo Black',sans-serif; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${s.badge} ${s.name}</div>
-          <div style="font-family:'Space Mono',monospace; font-size:10px; color:#888;">${s.club} • 🅰️ ${s.assists}</div>
-          ${s.note ? `<div style="font-family:'DM Sans',sans-serif;font-size:11px;color:var(--orange);font-style:italic;">${s.note}</div>` : ''}
-        </div>
-        <span style="font-family:'Bangers',cursive; font-size:28px; color:var(--orange);">${s.goals}</span>
-      </div>`).join('');
-
-    // ── PL ARTICLES ───────────────────────────────────────────
-    const plGrid = document.getElementById('pl-articles-grid');
-    if (plGrid) {
-      const arts = FB.getArticles().filter(a => a.published && (a.tag === 'Match Report' || a.tag === 'Tactical')).slice(0,6);
-      plGrid.innerHTML = arts.length ? arts.map(a => Pages.articleCard(a)).join('') :
-        `<div style="grid-column:1/-1; text-align:center; padding:60px;">
-          <p style="font-family:'Bangers',cursive; font-size:36px; margin-bottom:12px;">No match articles yet!</p>
-          <p style="font-family:'DM Sans',sans-serif; color:#888; font-style:italic;">Generate some from the Admin Video Machine.</p>
-          <button class="btn btn-mustard mt-16" style="margin-top:16px;" onclick="Router.go('admin'); setTimeout(()=>switchAdminPanel('generate'),100)">⚡ Generate Articles</button>
-        </div>`;
-    }
-  }
-
-
-  // ── RENDER TRANSFERS PAGE ─────────────────────────────────
-  function renderTransfersPage() {
-    const fees = [
-      { player:'Mystery Forward', from:'Club A', to:'Club B', fee:'£89M', note:'First touch: out for 6 months' },
-      { player:'Overpriced Winger', from:'La Liga', to:'PL Club', fee:'£75M', note:'3 goals all season' },
-      { player:'Bargain Keeper', from:'Championship', to:'Top 6', fee:'£2M', note:'Already better than the £45M one' },
+      { name:'Mohamed Salah',    club:'Liverpool',   goals:13, assists:11, badge:'🔴', note:'Last season Golden Boot winner' },
+      { name:'Bryan Mbeumo',     club:'Brentford',   goals:13, assists:8,  badge:'🐝', note:'Season assist leader too' },
+      { name:'Bukayo Saka',      club:'Arsenal',     goals:12, assists:10, badge:'🔴', note:'England World Cup starter' },
     ];
     const feesEl = document.getElementById('silly-fees');
     if (feesEl) feesEl.innerHTML = fees.map((f,i) => `

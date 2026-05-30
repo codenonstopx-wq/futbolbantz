@@ -1,0 +1,227 @@
+{
+  "name": "FutbolBantz — Daily Article Generator",
+  "flow": [
+    {
+      "id": 1,
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "parameters": {
+        "hook": 0,
+        "maxResults": 1
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": { "x": 0, "y": 0 },
+        "restore": {
+          "hook": {
+            "label": "FutbolBantz Daily Trigger"
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "util:SetVariables",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "variables": [
+          {
+            "name": "yt_key",
+            "value": "YOUR_YOUTUBE_API_KEY_HERE"
+          },
+          {
+            "name": "anthropic_key",
+            "value": "YOUR_ANTHROPIC_API_KEY_HERE"
+          },
+          {
+            "name": "supabase_url",
+            "value": "https://YOUR_PROJECT.supabase.co"
+          },
+          {
+            "name": "supabase_service_key",
+            "value": "YOUR_SUPABASE_SERVICE_ROLE_KEY_HERE"
+          },
+          {
+            "name": "channel_handle",
+            "value": "@SkySportsPL"
+          },
+          {
+            "name": "article_tag",
+            "value": "Match Report"
+          },
+          {
+            "name": "article_tone",
+            "value": "banter"
+          }
+        ]
+      },
+      "metadata": {
+        "designer": { "x": 300, "y": 0 }
+      }
+    },
+    {
+      "id": 3,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": false,
+        "useNewZLibDeCompression": true
+      },
+      "mapper": {
+        "url": "https://www.googleapis.com/youtube/v3/channels",
+        "serializeUrl": true,
+        "method": "get",
+        "headers": [],
+        "qs": [
+          { "name": "part", "value": "id,contentDetails,snippet" },
+          { "name": "forHandle", "value": "{{2.yt_key}}" },
+          { "name": "key", "value": "{{2.yt_key}}" }
+        ],
+        "bodyType": "raw",
+        "parseResponse": true
+      },
+      "metadata": {
+        "designer": { "x": 600, "y": 0 }
+      }
+    },
+    {
+      "id": 4,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": false,
+        "useNewZLibDeCompression": true
+      },
+      "mapper": {
+        "url": "https://www.googleapis.com/youtube/v3/playlistItems",
+        "serializeUrl": true,
+        "method": "get",
+        "headers": [],
+        "qs": [
+          { "name": "part", "value": "snippet" },
+          { "name": "playlistId", "value": "{{3.data.items[].contentDetails.relatedPlaylists.uploads}}" },
+          { "name": "maxResults", "value": "1" },
+          { "name": "key", "value": "{{2.yt_key}}" }
+        ],
+        "bodyType": "raw",
+        "parseResponse": true
+      },
+      "metadata": {
+        "designer": { "x": 900, "y": 0 }
+      }
+    },
+    {
+      "id": 5,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": false,
+        "useNewZLibDeCompression": true
+      },
+      "mapper": {
+        "url": "{{2.supabase_url}}/rest/v1/articles",
+        "serializeUrl": true,
+        "method": "get",
+        "headers": [
+          { "name": "apikey", "value": "{{2.supabase_service_key}}" },
+          { "name": "Authorization", "value": "Bearer {{2.supabase_service_key}}" }
+        ],
+        "qs": [
+          { "name": "select", "value": "id" },
+          { "name": "video_url", "value": "eq.https://youtube.com/watch?v={{4.data.items[].snippet.resourceId.videoId}}" },
+          { "name": "limit", "value": "1" }
+        ],
+        "bodyType": "raw",
+        "parseResponse": true
+      },
+      "metadata": {
+        "designer": { "x": 1200, "y": 0 }
+      }
+    },
+    {
+      "id": 6,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": false,
+        "useNewZLibDeCompression": true
+      },
+      "mapper": {
+        "url": "https://api.anthropic.com/v1/messages",
+        "serializeUrl": false,
+        "method": "post",
+        "headers": [
+          { "name": "x-api-key", "value": "{{2.anthropic_key}}" },
+          { "name": "anthropic-version", "value": "2023-06-01" },
+          { "name": "Content-Type", "value": "application/json" }
+        ],
+        "qs": [],
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "body": "{\"model\":\"claude-sonnet-4-6\",\"max_tokens\":2000,\"messages\":[{\"role\":\"user\",\"content\":\"You are FutbolBantz, Britain most entertaining Premier League football blog. Write a fully SEO-optimised article.\\n\\nChannel: {{3.data.items[].snippet.title}}\\nVideo Title: {{4.data.items[].snippet.title}}\\nDescription: {{substring(4.data.items[].snippet.description; 0; 500)}}\\nURL: https://youtube.com/watch?v={{4.data.items[].snippet.resourceId.videoId}}\\n\\nTone: {{2.article_tone}} football writing\\nTag: {{2.article_tag}}\\nLength: 400-600 words\\n\\nReturn ONLY valid JSON no markdown:\\n{\\\"title\\\":\\\"50-60 char SEO headline\\\",\\\"slug\\\":\\\"url-slug\\\",\\\"tag\\\":\\\"{{2.article_tag}}\\\",\\\"focusKeyword\\\":\\\"2-4 word phrase\\\",\\\"secondaryKeywords\\\":[\\\"kw2\\\",\\\"kw3\\\"],\\\"metaDescription\\\":\\\"140-155 char description\\\",\\\"summary\\\":\\\"Two punchy sentences.\\\",\\\"keypoints\\\":[\\\"p1\\\",\\\"p2\\\",\\\"p3\\\"],\\\"conclusion\\\":\\\"One closing line.\\\",\\\"fullBody\\\":\\\"<h2>Heading</h2><p>Body</p>\\\",\\\"readTimeMinutes\\\":4}\"}]}",
+        "parseResponse": true
+      },
+      "metadata": {
+        "designer": { "x": 1500, "y": 0 }
+      }
+    },
+    {
+      "id": 7,
+      "module": "json:ParseJSON",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "input": "{{6.data.content[].text}}"
+      },
+      "metadata": {
+        "designer": { "x": 1800, "y": 0 }
+      }
+    },
+    {
+      "id": 8,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": false,
+        "useNewZLibDeCompression": true
+      },
+      "mapper": {
+        "url": "{{2.supabase_url}}/rest/v1/articles",
+        "serializeUrl": false,
+        "method": "post",
+        "headers": [
+          { "name": "apikey", "value": "{{2.supabase_service_key}}" },
+          { "name": "Authorization", "value": "Bearer {{2.supabase_service_key}}" },
+          { "name": "Content-Type", "value": "application/json" },
+          { "name": "Prefer", "value": "return=minimal" }
+        ],
+        "qs": [],
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "body": "{\"title\":\"{{7.title}}\",\"slug\":\"{{7.slug}}\",\"tag\":\"{{7.tag}}\",\"channel\":\"{{3.data.items[].snippet.title}}\",\"video_url\":\"https://youtube.com/watch?v={{4.data.items[].snippet.resourceId.videoId}}\",\"thumbnail\":\"{{4.data.items[].snippet.thumbnails.medium.url}}\",\"summary\":\"{{7.summary}}\",\"full_body\":\"{{7.fullBody}}\",\"keypoints\":{{toJSON(7.keypoints)}},\"conclusion\":\"{{7.conclusion}}\",\"focus_keyword\":\"{{7.focusKeyword}}\",\"meta_description\":\"{{7.metaDescription}}\",\"published\":true,\"views\":0}",
+        "parseResponse": true
+      },
+      "metadata": {
+        "designer": { "x": 2100, "y": 0 }
+      }
+    }
+  ],
+  "metadata": {
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    }
+  }
+}
