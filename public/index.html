@@ -2247,7 +2247,13 @@ const FB = {
     // Listen for auth changes
     sb.auth.onAuthStateChange(async (event, session) => {
       if (session) {
-        const profile = await this.getProfile(session.user.id);
+        let profile = {};
+        try { profile = await this.getProfile(session.user.id); } catch(e) {}
+        if (!profile.name) {
+          const m = session.user.user_metadata || {};
+          profile.name     = m.name     || session.user.email.split('@')[0];
+          profile.is_admin = m.is_admin || false;
+        }
         this.currentUser = this.formatUser(session.user, profile);
       } else {
         this.currentUser = null;
@@ -2257,8 +2263,11 @@ const FB = {
   },
 
   async getProfile(userId) {
-    const { data } = await sb.from('profiles').select('*').eq('id', userId).single();
-    return data || { name: 'Fan', avatar: '⚽', is_admin: false };
+    try {
+      const { data, error } = await sb.from('profiles').select('*').eq('id', userId).single();
+      if (!error && data) return data;
+    } catch(e) { /* profiles table may not exist yet */ }
+    return { name: '', avatar: '⚽', is_admin: false };
   },
 
   formatUser(user, profile) {
@@ -2488,11 +2497,18 @@ const Auth = {
 
   async login(email, password) {
     if (sb) {
-      // Supabase Auth
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) throw new Error(error.message);
-      const profile = await FB.getProfile(data.user.id);
+      let profile = {};
+      try { profile = await FB.getProfile(data.user.id); } catch(e) {}
+      if (!profile.name) {
+        const m = data.user.user_metadata || {};
+        profile.name     = m.name     || data.user.email.split('@')[0];
+        profile.avatar   = m.avatar   || '⚽';
+        profile.is_admin = m.is_admin || false;
+      }
       FB.currentUser = FB.formatUser(data.user, profile);
+      localStorage.setItem('fb_user', JSON.stringify(FB.currentUser));
       Nav.update();
       return FB.currentUser;
     }
@@ -2547,7 +2563,7 @@ const Auth = {
   requireAdmin() {
     const u = FB.currentUser;
     if (!u || (!u.isAdmin && !u.is_admin)) {
-      Toast.show('Admins only, pal. Log in with an admin account.', 'error');
+      Toast.show('Admins only. Log in with an admin account.', 'error');
       Router.go('auth');
       return false;
     }
